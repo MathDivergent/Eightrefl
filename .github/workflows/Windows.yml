@@ -11,6 +11,10 @@ on:
         description: "EIGHTREFL_RTTI_ENABLE"
         required: false
         default: "ON"
+      EIGHTREFL_STANDARD_ENABLE:
+        description: "EIGHTREFL_STANDARD_ENABLE"
+        required: false
+        default: "ON"
       EIGHTREFL_DEV_ENABLE:
         description: "EIGHTREFL_DEV_ENABLE"
         required: false
@@ -26,6 +30,7 @@ jobs:
       Eightrefl: ${{ github.workspace }}
       EIGHTREFL_FULLY_ENABLE: ${{ github.event.inputs.EIGHTREFL_FULLY_ENABLE || 'ON' }}
       EIGHTREFL_RTTI_ENABLE: ${{ github.event.inputs.EIGHTREFL_RTTI_ENABLE || 'ON' }}
+      EIGHTREFL_STANDARD_ENABLE: ${{ github.event.inputs.EIGHTREFL_STANDARD_ENABLE || 'ON' }}
       EIGHTREFL_DEV_ENABLE: ${{ github.event.inputs.EIGHTREFL_DEV_ENABLE || 'ON' }}
 
     steps:
@@ -51,6 +56,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release ^
           -DEIGHTREFL_FULLY_ENABLE=%EIGHTREFL_FULLY_ENABLE% ^
           -DEIGHTREFL_RTTI_ENABLE=%EIGHTREFL_RTTI_ENABLE% ^
+          -DEIGHTREFL_STANDARD_ENABLE=${EIGHTREFL_STANDARD_ENABLE} ^
           -DEIGHTREFL_DEV_ENABLE=%EIGHTREFL_DEV_ENABLE% ^
           -DEIGHTREFL_BUILD_TEST_LIBS=ON
         cmake --build Intermediate --parallel
