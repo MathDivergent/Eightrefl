@@ -9,6 +9,7 @@ set(CMAKE_SHARED_LIBRARY_PREFIX "")
 
 
 # [[Options]]
+option(EIGHTREFL_BUILD_FAST_LIBS "Build with -O3 by Default" OFF)
 option(EIGHTREFL_BUILD_SHARED_LIBS "Build shared libraies by Default" ON)
 option(EIGHTREFL_FULLY_ENABLE "Build fully by Default" OFF)
 option(EIGHTREFL_RTTI_ENABLE "Build with RTTI by Default" OFF)
@@ -55,6 +56,12 @@ file(GLOB_RECURSE PROJECT_SOURCES_FILES "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp" "$
 add_library(Eightrefl ${PROJECT_LIBS_TYPE} ${PROJECT_SOURCES_FILES})
 target_include_directories(Eightrefl PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include")
 
+if(EIGHTREFL_BUILD_FAST_LIBS)
+    target_compile_options(Eightrefl PRIVATE -O3)
+else()
+    target_compile_options(Eightrefl PRIVATE -O2)
+endif()
+
 if(EIGHTREFL_BUILD_SHARED_LIBS)
     target_compile_definitions(Eightrefl PRIVATE "EIGHTREFL_API=${EIGHTREFL_MODULE_EXPORT}" INTERFACE "EIGHTREFL_API=${EIGHTREFL_MODULE_IMPORT}")
 else()
@@ -91,6 +98,12 @@ if(EIGHTREFL_BUILD_TEST_LIBS)
         # you should manually download Eightest if not
         set(EIGHTEST_RUN_MODULE "EightreflTests")
         add_subdirectory("Eightest")
+    endif()
+
+    if(EIGHTREFL_BUILD_FAST_LIBS)
+        target_compile_options(EightreflTests PRIVATE -O3)
+    else()
+        target_compile_options(EightreflTests PRIVATE -O2)
     endif()
 
     target_link_libraries(EightreflTests PUBLIC Eightrefl Eightest)
