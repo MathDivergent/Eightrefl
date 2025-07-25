@@ -654,7 +654,9 @@ TEST(TestLibrary, TestImplicitRegistry)
 }
 
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Standard/shared_ptr.hpp>
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 TEST_SPACE()
 {
@@ -678,7 +680,9 @@ REFLECTABLE_DECLARATION_INIT()
 REFLECTABLE(TestFactorArgumentsAndResultStruct)
     FACTORY(TestFactorArgumentsAndResultStruct())
     FACTORY(TestFactorArgumentsAndResultStruct(float const*, unsigned))
+    #ifdef EIGHTREFL_STANDARD_ENABLE
     FACTORY(std::shared_ptr<TestFactorArgumentsAndResultStruct>())
+    #endif // EIGHTREFL_STANDARD_ENABLE
     FACTORY(TestFactorArgumentsAndResultProxy(TestFactorArgumentsAndResultStruct const&))
 REFLECTABLE_INIT()
 
@@ -712,6 +716,7 @@ TEST(TestLibrary, TestFactorArgumentsAndResult)
         EXPECT("with_arguments_with_return-result", with_arguments_with_return->result == type);
         EXPECT("with_arguments_with_return-arguments", with_arguments_with_return->arguments.size() == 2 && with_arguments_with_return->arguments[0] == eightrefl::builtin()->find("float*") && with_arguments_with_return->arguments[1] == eightrefl::builtin()->find("unsigned int"));
     }
+    #ifdef EIGHTREFL_STANDARD_ENABLE
     {
         auto without_arguments_withother_return = reflection->factory.find("std::shared_ptr<TestFactorArgumentsAndResultStruct>()");
 
@@ -719,6 +724,7 @@ TEST(TestLibrary, TestFactorArgumentsAndResult)
         EXPECT("without_arguments_withother_return-result", without_arguments_withother_return->result == eightrefl::standard()->find("std::shared_ptr<TestFactorArgumentsAndResultStruct>"));
         EXPECT("without_arguments_withother_return-arguments", without_arguments_withother_return->arguments.size() == 0);
     }
+    #endif // EIGHTREFL_STANDARD_ENABLE
     {
         auto with_arguments_withother_return = reflection->factory.find("TestFactorArgumentsAndResultProxy(TestFactorArgumentsAndResultStruct const&)");
 
@@ -1214,4 +1220,70 @@ TEST(TestLibrary, TestTypeContext)
             EXPECT("non_member_function-without_args-call", success);
         }
     }
+}
+
+
+TEST_SPACE()
+{
+
+struct TestPointerDereferenceTypeStruct {};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestPointerDereferenceTypeStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestPointerDereferenceTypeStruct)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestPointerDereferenceType)
+{
+    eightrefl::reflectable<TestPointerDereferenceTypeStruct*>();
+
+    auto type = eightrefl::builtin()->find("TestPointerDereferenceTypeStruct*");
+
+    ASSERT("type", type != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+
+    auto meta = reflection->meta.find("*");
+    ASSERT("reflection.meta", meta != nullptr);
+
+    auto value = std::any_cast<eightrefl::type_t*>(&meta->value);
+    ASSERT("reflection.meta.value", value != nullptr && *value != nullptr && *value == eightrefl::global()->find("TestPointerDereferenceTypeStruct"));
+}
+
+
+TEST_SPACE()
+{
+
+struct TestMemberFunctionPointerStruct
+{
+    void (TestMemberFunctionPointerStruct::*Handler)() = nullptr;
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestMemberFunctionPointerStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestMemberFunctionPointerStruct)
+    PROPERTY(Handler)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestMemberFunctionPointer)
+{
+    auto type = eightrefl::global()->find("TestMemberFunctionPointerStruct");
+
+    ASSERT("type", type != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+
+    auto property = reflection->property.find("Handler");
+
+    EXPECT("reflection.property", property != nullptr && property->type == eightrefl::builtin()->find("std::type_identity_t<void()> TestMemberFunctionPointerStruct::*"));
 }

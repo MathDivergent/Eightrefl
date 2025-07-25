@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Standard/any.hpp>
 
 #include <Eightrefl/BuiltIn/Core.hpp>
@@ -20,3 +21,4 @@ REFLECTABLE(std::any)
     FUNCTION(type)
     #endif // EIGHTREFL_RTTI_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE

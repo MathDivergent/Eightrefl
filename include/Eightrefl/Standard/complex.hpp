@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_COMPLEX_HPP
 #define EIGHTREFL_STANDARD_COMPLEX_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <complex> // complex
 
 #include <Eightrefl/Reflectable.hpp>
@@ -64,5 +65,6 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::complex<ValueType>)
     PROPERTY(real)
     PROPERTY(imag)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_COMPLEX_HPP

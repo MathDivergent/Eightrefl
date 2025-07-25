@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Standard/shared_ptr.hpp>
 
 REFLECTABLE(std::shared_ptr<void>)
@@ -18,3 +19,4 @@ REFLECTABLE(std::shared_ptr<void>)
 
     FUNCTION(operator bool)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE

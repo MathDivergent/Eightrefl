@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/any.hpp>
@@ -32,3 +33,4 @@ TEST(TestBuiltin, TestAny)
     EXPECT("function-type", reflection->function.find("type") != nullptr);
     #endif // EIGHTREFL_RTTI_ENABLE
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

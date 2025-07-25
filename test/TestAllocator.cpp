@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/allocator.hpp>
@@ -21,3 +22,4 @@ TEST(TestBuiltin, TestAllocator)
     EXPECT("factory-R()", reflection->factory.find("std::allocator<int>()") != nullptr);
     EXPECT("factory-R(R const&)", reflection->factory.find("std::allocator<int>(std::allocator<int> const&)") != nullptr);
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

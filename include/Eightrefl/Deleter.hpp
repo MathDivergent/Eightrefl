@@ -22,7 +22,7 @@ namespace eightrefl
 
 struct meta_t;
 
-struct deleter_t
+struct EIGHTREFL_API deleter_t
 {
     std::string const name;
     std::function<void(std::any const& context)> const call = nullptr;

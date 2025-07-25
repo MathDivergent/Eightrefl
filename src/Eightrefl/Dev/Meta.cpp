@@ -1,4 +1,5 @@
 #ifdef EIGHTREFL_DEV_ENABLE
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Dev/Meta.hpp>
 #include <Eightrefl/Dev/Attribute.hpp>
 
@@ -10,4 +11,5 @@ REFLECTABLE(eightrefl::meta_t)
     PROPERTY(value)
     PROPERTY(meta)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE

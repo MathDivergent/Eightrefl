@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/weak_ptr.hpp>
@@ -37,3 +38,4 @@ TEST(TestBuiltin, TestWseakPtr)
 //  EXPECT("function-owner_before", reflection->function.find("owner_before") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

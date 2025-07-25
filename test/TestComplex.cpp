@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/complex.hpp>
@@ -31,3 +32,4 @@ TEST(TestBuiltin, TestComplex)
     EXPECT("property-real", reflection->property.find("real") != nullptr);
     EXPECT("property-imag", reflection->property.find("imag") != nullptr);
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/pair.hpp>
@@ -30,3 +31,4 @@ TEST(TestBuiltin, TestPair)
     EXPECT("property-first", reflection->property.find("first") != nullptr);
     EXPECT("property-second", reflection->property.find("second") != nullptr);
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

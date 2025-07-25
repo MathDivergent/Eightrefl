@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/list.hpp>
@@ -94,3 +95,4 @@ TEST(TestBuiltin, TestList)
     EXPECT("function-reverse", reflection->function.find("reverse") != nullptr);
     EXPECT("function-sort", reflection->function.find("sort") != nullptr);
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_LIST_HPP
 #define EIGHTREFL_STANDARD_LIST_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <list> // list
 
 #include <Eightrefl/Reflectable.hpp>
@@ -153,5 +154,6 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     FUNCTION(sort, void(std::function<bool(typename R::const_reference, typename R::const_reference)>))
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_LIST_HPP

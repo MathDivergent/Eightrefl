@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/reference_wrapper.hpp>
@@ -29,3 +30,4 @@ TEST(TestBuiltin, TestReferenceWrapper)
 
     EXPECT("function-get", reflection->function.find("get") != nullptr);
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

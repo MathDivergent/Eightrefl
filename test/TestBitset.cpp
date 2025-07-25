@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/bitset.hpp>
@@ -74,3 +75,4 @@ TEST(TestBuiltin, TestBitset)
 
     EXPECT("function-to_ullong", reflection->function.find("to_ullong") != nullptr);
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

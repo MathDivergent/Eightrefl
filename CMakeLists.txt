@@ -12,6 +12,7 @@ set(CMAKE_SHARED_LIBRARY_PREFIX "")
 option(EIGHTREFL_BUILD_SHARED_LIBS "Build shared libraies by Default" ON)
 option(EIGHTREFL_FULLY_ENABLE "Build fully by Default" OFF)
 option(EIGHTREFL_RTTI_ENABLE "Build with RTTI by Default" OFF)
+option(EIGHTREFL_STANDARD_ENABLE "Build with Standard by Default" OFF)
 option(EIGHTREFL_DEV_ENABLE "Build with Dev by Default" OFF)
 option(EIGHTREFL_BUILD_TEST_LIBS "Build testing libraies by Default" OFF)
 
@@ -32,6 +33,14 @@ elseif(APPLE)
     set(EIGHTREFL_RPATH "@loader_path/../Frameworks")
 endif()
 
+if(WIN32)
+    set(EIGHTREFL_MODULE_EXPORT "__declspec(dllexport)")
+    set(EIGHTREFL_MODULE_IMPORT "__declspec(dllimport)")
+else()
+    set(EIGHTREFL_MODULE_EXPORT "__attribute__((visibility(\"default\")))")
+    set(EIGHTREFL_MODULE_IMPORT "")
+endif()
+
 
 # [[Binaries]]
 if(EIGHTREFL_BUILD_SHARED_LIBS)
@@ -47,7 +56,9 @@ add_library(Eightrefl ${PROJECT_LIBS_TYPE} ${PROJECT_SOURCES_FILES})
 target_include_directories(Eightrefl PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include")
 
 if(EIGHTREFL_BUILD_SHARED_LIBS)
-    set_target_properties(Eightrefl PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+    target_compile_definitions(Eightrefl PRIVATE "EIGHTREFL_API=${EIGHTREFL_MODULE_EXPORT}" INTERFACE "EIGHTREFL_API=${EIGHTREFL_MODULE_IMPORT}")
+else()
+    target_compile_definitions(Eightrefl PUBLIC "EIGHTREFL_API=")
 endif()
 
 if(EIGHTREFL_FULLY_ENABLE)
@@ -59,6 +70,10 @@ if(EIGHTREFL_RTTI_ENABLE)
     target_compile_definitions(Eightrefl PUBLIC "EIGHTREFL_RTTI_ENABLE")
 else()
     target_compile_options(Eightrefl PUBLIC -fno-rtti)
+endif()
+
+if(EIGHTREFL_STANDARD_ENABLE)
+    target_compile_definitions(Eightrefl PUBLIC "EIGHTREFL_STANDARD_ENABLE")
 endif()
 
 if(EIGHTREFL_DEV_ENABLE)

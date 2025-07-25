@@ -6,7 +6,7 @@ namespace eightrefl
 
 struct registry_t;
 
-extern registry_t* builtin();
+extern EIGHTREFL_API registry_t* builtin();
 
 } // namespace eightrefl
 

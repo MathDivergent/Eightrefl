@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_VECTOR_HPP
 #define EIGHTREFL_STANDARD_VECTOR_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <vector> // vector
 
 #include <Eightrefl/Reflectable.hpp>
@@ -272,5 +273,6 @@ TEMPLATE_REFLECTABLE(template <typename AllocatorType>, std::vector<bool, Alloca
     FUNCTION(flip)
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_VECTOR_HPP

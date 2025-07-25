@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_WEAK_PTR_HPP
 #define EIGHTREFL_STANDARD_WEAK_PTR_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <memory> // weak_ptr
 
 #include <Eightrefl/Reflectable.hpp>
@@ -44,5 +45,6 @@ TEMPLATE_REFLECTABLE(template <typename ElementType>, std::weak_ptr<ElementType>
 //  FUNCTION(owner_before, bool(std::shared_ptr<typename R::element_type> const&) const)
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_WEAK_PTR_HPP

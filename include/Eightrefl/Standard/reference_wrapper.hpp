@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_REFERENCE_WRAPPER_HPP
 #define EIGHTREFL_STANDARD_REFERENCE_WRAPPER_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <functional> // reference_wrapper
 
 #include <Eightrefl/Reflectable.hpp>
@@ -31,5 +32,6 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::reference_wrapper<Value
 
     FUNCTION(get)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_REFERENCE_WRAPPER_HPP

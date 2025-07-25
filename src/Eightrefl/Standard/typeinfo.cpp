@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #ifdef EIGHTREFL_RTTI_ENABLE
 #include <Eightrefl/Standard/typeinfo.hpp>
 
@@ -14,3 +15,4 @@ REFLECTABLE(std::type_info)
     FUNCTION(name)
 REFLECTABLE_INIT()
 #endif // EIGHTREFL_RTTI_ENABLE
+#endif // EIGHTREFL_STANDARD_ENABLE

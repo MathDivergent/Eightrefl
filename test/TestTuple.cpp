@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/tuple.hpp>
@@ -28,3 +29,4 @@ TEST(TestBuiltin, TestTuple)
     EXPECT("function-swap", reflection->function.find("swap") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/forward_list.hpp>
@@ -91,3 +92,4 @@ TEST(TestBuiltin, TestForwardList)
     EXPECT("function-reverse", reflection->function.find("reverse") != nullptr);
     EXPECT("function-sort", reflection->function.find("sort") != nullptr);
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

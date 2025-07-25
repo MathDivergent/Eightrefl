@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Standard/string.hpp>
 
 template struct ::xxeightrefl<std::string>;
@@ -13,3 +14,4 @@ template struct ::xxeightrefl<std::u16string>;
 
 template struct ::xxeightrefl<std::u32string>;
 #endif // EIGHTREFL_FULLY_ENABLE
+#endif // EIGHTREFL_STANDARD_ENABLE

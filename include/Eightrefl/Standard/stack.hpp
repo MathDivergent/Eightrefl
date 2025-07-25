@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_STACK_HPP
 #define EIGHTREFL_STANDARD_STACK_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <stack> // stack
 
 #include <Eightrefl/Reflectable.hpp>
@@ -48,5 +49,6 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, class ContainerType>), std::
     FUNCTION(swap)
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_STACK_HPP

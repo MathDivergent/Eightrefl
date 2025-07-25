@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/functional.hpp>
@@ -75,3 +76,4 @@ TEST(TestBuiltin::TestFunctional, TestGreater)
     ASSERT("reflection", reflection != nullptr);
     EXPECT("reflection-name", reflection->name == "std::greater<int>");
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

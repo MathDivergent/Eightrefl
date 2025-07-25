@@ -3,7 +3,10 @@
 
 #include <string> // string
 #include <unordered_map> // unordered_map
+
+#ifdef EIGHTREFL_RTTI_ENABLE
 #include <typeindex> // type_index
+#endif // EIGHTREFL_RTTI_ENABLE
 
 #include <Eightrefl/Type.hpp>
 #include <Eightrefl/Reflection.hpp>
@@ -15,7 +18,7 @@
 namespace eightrefl
 {
 
-struct registry_t
+struct EIGHTREFL_API registry_t
 {
     std::unordered_map<std::string, type_t*> all;
 
@@ -58,7 +61,7 @@ struct registry_t
     }
 };
 
-extern registry_t* global();
+extern EIGHTREFL_API registry_t* global();
 
 } // namespace eightrefl
 

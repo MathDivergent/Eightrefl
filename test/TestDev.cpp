@@ -1,4 +1,5 @@
 #ifdef EIGHTREFL_DEV_ENABLE
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Dev/Dev.hpp>
@@ -231,4 +232,5 @@ TEST(TestDev, TestRegistry)
     EXPECT("property-rtti_all", reflection->property.find("rtti_all") != nullptr);
     #endif // EIGHTREFL_RTTI_ENABLE
 }
+#endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE

@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_CHAR_TRAITS_HPP
 #define EIGHTREFL_STANDARD_CHAR_TRAITS_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <string> // char_traits
 
 #include <Eightrefl/Reflectable.hpp>
@@ -62,5 +63,6 @@ TEMPLATE_REFLECTABLE(template <typename CharType>, std::char_traits<CharType>)
     FUNCTION(not_eof)
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_CHAR_TRAITS_HPP

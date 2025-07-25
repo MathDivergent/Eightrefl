@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/function.hpp>
@@ -37,3 +38,4 @@ TEST(TestBuiltin, TestFunction)
     #endif // EIGHTREFL_RTTI_ENABLE
     #endif // EIGHTREFL_FULLY_ENABLE
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

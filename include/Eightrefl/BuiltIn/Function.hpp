@@ -77,16 +77,42 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename ReturnType, typename... ArgumentTypes>), ReturnType(*)(ArgumentTypes...)
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    ReturnType(*)(ArgumentTypes...)
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...)>() + ">*")
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
+TEMPLATE_REFLECTABLE
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    ReturnType(*)(ArgumentTypes...)
+)
+REFLECTABLE_INIT()
+
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename ReturnType, typename... ArgumentTypes>), ReturnType(&)(ArgumentTypes...)
+    (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
+    ReturnType(ReflectableType::*)(ArgumentTypes...)
+)
+    REFLECTABLE_REGISTRY(eightrefl::builtin())
+    REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...)>() + "> " + eightrefl::name_of<ReflectableType>() + "::*")
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE
+(
+    (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
+    ReturnType(ReflectableType::*)(ArgumentTypes...)
+)
+REFLECTABLE_INIT()
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    ReturnType(&)(ArgumentTypes...)
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...)>() + ">&")

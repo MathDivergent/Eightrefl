@@ -16,7 +16,7 @@ struct reflection_t;
 struct registry_t;
 struct injection_t;
 
-struct type_t
+struct EIGHTREFL_API type_t
 {
     std::string const name;
     reflection_t* const reflection = nullptr;

@@ -1,5 +1,4 @@
-#include <Eightrefl/BuiltIn/Incomplete.hpp>
+#include <Eightrefl/BuiltIn/Void.hpp>
 
-// incomplete type
 REFLECTABLE(void)
 REFLECTABLE_INIT()
