@@ -1215,3 +1215,69 @@ TEST(TestLibrary, TestTypeContext)
         }
     }
 }
+
+
+TEST_SPACE()
+{
+
+struct TestPointerDereferenceTypeStruct {};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestPointerDereferenceTypeStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestPointerDereferenceTypeStruct)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestPointerDereferenceType)
+{
+    eightrefl::reflectable<TestPointerDereferenceTypeStruct*>();
+
+    auto type = eightrefl::builtin()->find("TestPointerDereferenceTypeStruct*");
+
+    ASSERT("type", type != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+
+    auto meta = reflection->meta.find("*");
+    ASSERT("reflection.meta", meta != nullptr);
+
+    auto value = std::any_cast<eightrefl::type_t*>(&meta->value);
+    ASSERT("reflection.meta.value", value != nullptr && *value != nullptr && *value == eightrefl::global()->find("TestPointerDereferenceTypeStruct"));
+}
+
+
+TEST_SPACE()
+{
+
+struct TestMemberFunctionPointerStruct
+{
+    void (TestMemberFunctionPointerStruct::*Handler)() = nullptr;
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestMemberFunctionPointerStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestMemberFunctionPointerStruct)
+    PROPERTY(Handler)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestMemberFunctionPointer)
+{
+    auto type = eightrefl::global()->find("TestMemberFunctionPointerStruct");
+
+    ASSERT("type", type != nullptr);
+
+    auto reflection = type->reflection;
+
+    ASSERT("reflection", reflection != nullptr);
+
+    auto property = reflection->property.find("Handler");
+
+    EXPECT("reflection.property", property != nullptr && property->type == eightrefl::builtin()->find("std::type_identity_t<void()> TestMemberFunctionPointerStruct::*"));
+}

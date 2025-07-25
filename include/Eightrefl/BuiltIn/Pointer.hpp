@@ -14,6 +14,7 @@ TEMPLATE_REFLECTABLE_DECLARATION(template <typename ElementType>, ElementType*)
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename ElementType>, ElementType*)
+    META("*", eightrefl::find_or_add_type<ElementType>())
     FACTORY(R())
     FACTORY(R(R))
 REFLECTABLE_INIT()
