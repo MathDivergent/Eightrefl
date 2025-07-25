@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_BITSET_HPP
 #define EIGHTREFL_STANDARD_BITSET_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <string> // to_string
 
 #include <bitset> // bitest
@@ -117,5 +118,6 @@ TEMPLATE_REFLECTABLE(template <std::size_t SizeValue>, std::bitset<SizeValue>)
 
     FUNCTION(to_ullong)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_BITSET_HPP

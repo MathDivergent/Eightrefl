@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_DEQUE_HPP
 #define EIGHTREFL_STANDARD_DEQUE_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <deque> // deque
 
 #include <Eightrefl/Reflectable.hpp>
@@ -119,5 +120,6 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, typename AllocatorType>), st
     FUNCTION(swap)
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_DEQUE_HPP

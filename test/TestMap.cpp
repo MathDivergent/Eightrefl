@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/map.hpp>
@@ -91,3 +92,4 @@ TEST(TestBuiltin, TestMap)
 //  EXPECT("function-value_comp", reflection->function.find("value_comp") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

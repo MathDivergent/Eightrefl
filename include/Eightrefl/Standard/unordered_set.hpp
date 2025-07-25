@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_UNORDERED_SET_HPP
 #define EIGHTREFL_STANDARD_UNORDERED_SET_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <unordered_set> // unordered_set, unordered_multiset
 
 #include <Eightrefl/Reflectable.hpp>
@@ -221,5 +222,6 @@ CONDITIONAL_REFLECTABLE(xxeightrefl_is_any_std_unordered_set<R>::value)
     FUNCTION(key_eq)
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_UNORDERED_SET_HPP

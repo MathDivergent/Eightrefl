@@ -2,6 +2,7 @@
 #define EIGHTREFL_DEV_ATTRIBUTE_HPP
 
 #ifdef EIGHTREFL_DEV_ENABLE
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Reflectable.hpp>
 
 #include <Eightrefl/BuiltIn/Core.hpp>
@@ -21,6 +22,7 @@ TEMPLATE_REFLECTABLE((template <typename MetaType>), eightrefl::attribute_t<Meta
     FUNCTION(add)
     PROPERTY(all)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE
 
 #endif // EIGHTREFL_DEV_ATTRIBUTE_HPP

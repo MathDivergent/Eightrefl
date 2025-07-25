@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_UNIQUE_PTR_HPP
 #define EIGHTREFL_STANDARD_UNIQUE_PTR_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <memory> // unique_ptr
 
 #include <Eightrefl/Reflectable.hpp>
@@ -64,5 +65,6 @@ TEMPLATE_REFLECTABLE
     FUNCTION(operator->)
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_UNIQUE_PTR_HPP

@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_STRING_HPP
 #define EIGHTREFL_STANDARD_STRING_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <string> // basic_string
 
 #include <Eightrefl/Reflectable.hpp>
@@ -270,5 +271,6 @@ TEMPLATE_REFLECTABLE
 
     FUNCTION(substr, R(typename R::size_type, typename R::size_type) const)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_STRING_HPP

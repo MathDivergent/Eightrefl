@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_PAIR_HPP
 #define EIGHTREFL_STANDARD_PAIR_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <utility> // pair
 
 #include <Eightrefl/Reflectable.hpp>
@@ -33,5 +34,6 @@ TEMPLATE_REFLECTABLE((template <typename FirstType, typename SecondType>), std::
     PROPERTY(first, typename R::first_type)
     PROPERTY(second, typename R::second_type)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_PAIR_HPP

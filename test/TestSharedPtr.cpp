@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/shared_ptr.hpp>
@@ -44,3 +45,4 @@ TEST(TestBuiltin, TestSharedPtr)
 
     EXPECT("function-operator bool", reflection->function.find("operator bool") != nullptr);
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

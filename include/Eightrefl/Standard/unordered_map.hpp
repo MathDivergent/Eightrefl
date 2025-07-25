@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_UNORDERED_MAP_HPP
 #define EIGHTREFL_STANDARD_UNORDERED_MAP_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <unordered_map> // unordered_map, unordered_multimap
 
 #include <Eightrefl/Reflectable.hpp>
@@ -232,5 +233,6 @@ CONDITIONAL_REFLECTABLE(xxeightrefl_is_any_std_unordered_map<R>::value)
     FUNCTION(key_eq)
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_UNORDERED_MAP_HPP

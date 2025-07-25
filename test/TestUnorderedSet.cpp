@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/unordered_set.hpp>
@@ -95,3 +96,4 @@ TEST(TestBuiltin, TestUnorderedSet)
     EXPECT("function-key_eq", reflection->function.find("key_eq") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

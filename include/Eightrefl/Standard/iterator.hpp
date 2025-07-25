@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_ITERATOR_HPP
 #define EIGHTREFL_STANDARD_ITERATOR_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Reflectable.hpp>
 
 #include <Eightrefl/Standard/Standard.hpp>
@@ -95,5 +96,6 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_local_iterator<StdContainerType>)
 REFLECTABLE_INIT()
 #endif // EIGHTREFL_FULLY_ENABLE
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_ITERATOR_HPP

@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_OPTIONAL_HPP
 #define EIGHTREFL_STANDARD_OPTIONAL_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <optional> // optional, nullopt_t
 
 #include <Eightrefl/Reflectable.hpp>
@@ -57,5 +58,6 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::optional<ValueType>)
 //  FUNCTION(reset)
     FUNCTION(emplace, typename R::value_type&(typename R::value_type const&))
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_OPTIONAL_HPP

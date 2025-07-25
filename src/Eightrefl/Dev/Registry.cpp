@@ -1,4 +1,5 @@
 #ifdef EIGHTREFL_DEV_ENABLE
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Dev/Registry.hpp>
 #include <Eightrefl/Dev/Type.hpp>
 
@@ -24,4 +25,5 @@ REFLECTABLE(eightrefl::registry_t)
     PROPERTY(rtti_all)
     #endif // EIGHTREFL_RTTI_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE

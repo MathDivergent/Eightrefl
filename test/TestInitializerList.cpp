@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/initializer_list.hpp>
@@ -30,3 +31,4 @@ TEST(TestBuiltin, TestInitializerList)
 
     EXPECT("function-size", reflection->function.find("size") != nullptr);
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

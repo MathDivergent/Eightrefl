@@ -24,7 +24,7 @@
 namespace eightrefl
 {
 
-struct meta_t
+struct EIGHTREFL_API meta_t
 {
     std::string const name;
     std::any value;

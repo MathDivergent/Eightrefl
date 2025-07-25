@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_FUNCTIONAL_HPP
 #define EIGHTREFL_STANDARD_FUNCTIONAL_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <functional> // hash
 
 #include <Eightrefl/Reflectable.hpp>
@@ -59,5 +60,6 @@ REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename T>, std::greater<T>)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_BUILTIN_FUNCTIONAL_HPP

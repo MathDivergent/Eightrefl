@@ -24,7 +24,7 @@ namespace eightrefl
 struct type_t;
 struct meta_t;
 
-struct factory_t
+struct EIGHTREFL_API factory_t
 {
     std::string const name;
     std::function<std::any(std::vector<std::any> const& args)> const call = nullptr;

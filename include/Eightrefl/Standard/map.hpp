@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_MAP_HPP
 #define EIGHTREFL_STANDARD_MAP_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <map> // map, multimap
 
 #include <Eightrefl/Reflectable.hpp>
@@ -198,5 +199,6 @@ CONDITIONAL_REFLECTABLE(xxeightrefl_is_any_std_ordered_map<R>::value)
 //  FUNCTION(value_comp)
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_MAP_HPP

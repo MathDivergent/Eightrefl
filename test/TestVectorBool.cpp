@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/vector.hpp>
@@ -94,3 +95,4 @@ TEST(TestBuiltin, TestVectorBool)
     EXPECT("function-flip", reflection->function.find("flip") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

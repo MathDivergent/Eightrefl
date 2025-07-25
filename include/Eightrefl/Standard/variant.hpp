@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_VARIANT_HPP
 #define EIGHTREFL_STANDARD_VARIANT_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <variant> // variant, monostate
 
 #include <Eightrefl/Reflectable.hpp>
@@ -44,5 +45,6 @@ TEMPLATE_REFLECTABLE
     FUNCTION(swap, void(R&))
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_VARIANT_HPP

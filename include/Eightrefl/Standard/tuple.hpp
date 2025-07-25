@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_TUPLE_HPP
 #define EIGHTREFL_STANDARD_TUPLE_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <tuple> // tuple
 
 #include <Eightrefl/Reflectable.hpp>
@@ -39,5 +40,6 @@ TEMPLATE_REFLECTABLE((template <typename... ArgumentTypes>), std::tuple<Argument
     FUNCTION(swap)
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_TUPLE_HPP

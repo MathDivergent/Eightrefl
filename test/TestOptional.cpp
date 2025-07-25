@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/optional.hpp>
@@ -61,3 +62,4 @@ TEST(TestBuiltin, TestOptional)
 //  EXPECT("function-reset", reflection->function.find("reset") != nullptr);
     EXPECT("function-emplace", reflection->function.find("emplace") != nullptr);
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

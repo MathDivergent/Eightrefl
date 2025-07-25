@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/string.hpp>
@@ -123,3 +124,4 @@ TEST(TestBuiltin, TestString)
 
     EXPECT("function-substr", reflection->function.find("substr") != nullptr);
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

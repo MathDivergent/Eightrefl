@@ -1,4 +1,5 @@
 #ifdef EIGHTREFL_DEV_ENABLE
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Dev/Type.hpp>
 #include <Eightrefl/Dev/Reflection.hpp>
 #include <Eightrefl/Dev/Registry.hpp>
@@ -17,4 +18,5 @@ REFLECTABLE(eightrefl::type_t)
     PROPERTY(context)
     PROPERTY(injection)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE

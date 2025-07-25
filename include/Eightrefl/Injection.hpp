@@ -26,7 +26,7 @@ struct property_t;
 struct meta_t;
 struct deleter_t;
 
-struct injectable_t
+struct EIGHTREFL_API injectable_t
 {
     template <typename ReflectableType>
     void type(eightrefl::type_t& type) {}

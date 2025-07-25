@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <EightreflTestingBase.hpp>
 
 #include <Eightrefl/Standard/unique_ptr.hpp>
@@ -39,3 +40,4 @@ TEST(TestBuiltin, TestUniquePtr)
     EXPECT("function-operator->", reflection->function.find("operator->") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 }
+#endif // EIGHTREFL_STANDARD_ENABLE

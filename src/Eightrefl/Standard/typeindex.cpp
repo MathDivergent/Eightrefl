@@ -1,3 +1,4 @@
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #ifdef EIGHTREFL_RTTI_ENABLE
 #include <Eightrefl/Standard/typeindex.hpp>
 
@@ -30,3 +31,4 @@ REFLECTABLE(std::type_index)
     FUNCTION(name)
 REFLECTABLE_INIT()
 #endif // EIGHTREFL_RTTI_ENABLE
+#endif // EIGHTREFL_STANDARD_ENABLE

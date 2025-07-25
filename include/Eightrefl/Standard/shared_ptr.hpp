@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_SHARED_PTR_HPP
 #define EIGHTREFL_STANDARD_SHARED_PTR_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <memory> // shared_ptr
 
 #include <Eightrefl/Reflectable.hpp>
@@ -51,5 +52,6 @@ TEMPLATE_REFLECTABLE(template <typename ElementType>, std::shared_ptr<ElementTyp
 
     FUNCTION(operator bool)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_SHARED_PTR_HPP

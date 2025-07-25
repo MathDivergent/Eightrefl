@@ -1,4 +1,5 @@
 #ifdef EIGHTREFL_DEV_ENABLE
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Dev/Dev.hpp>
 
 #include <Eightrefl/Registry.hpp>
@@ -12,4 +13,5 @@ registry_t* dev()
 }
 
 } // namespace eightrefl
+#endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE

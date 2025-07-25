@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_ARRAY_HPP
 #define EIGHTREFL_STANDARD_ARRAY_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <array> // array
 #include <string> // to_string
 
@@ -73,5 +74,6 @@ TEMPLATE_REFLECTABLE((template <typename ValueType, std::size_t SizeValue>), std
     FUNCTION(swap)
     #endif // EIGHTREFL_FULLY_ENABLE
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_ARRAY_HPP

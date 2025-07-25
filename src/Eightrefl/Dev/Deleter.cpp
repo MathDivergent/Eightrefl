@@ -1,4 +1,5 @@
 #ifdef EIGHTREFL_DEV_ENABLE
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Dev/Deleter.hpp>
 #include <Eightrefl/Dev/Meta.hpp>
 #include <Eightrefl/Dev/Attribute.hpp>
@@ -12,4 +13,5 @@ REFLECTABLE(eightrefl::deleter_t)
     PROPERTY(call)
     PROPERTY(meta)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE

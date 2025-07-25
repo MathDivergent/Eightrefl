@@ -18,7 +18,7 @@ struct property_t;
 struct deleter_t;
 struct meta_t;
 
-struct reflection_t
+struct EIGHTREFL_API reflection_t
 {
     std::string const name;
 

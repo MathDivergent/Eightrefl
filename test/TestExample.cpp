@@ -1,6 +1,8 @@
 #include <EightreflTestingBase.hpp>
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Standard/string.hpp>
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 TEST_SPACE()
 {
@@ -9,7 +11,12 @@ struct TestExampleStruct
 {
     TestExampleStruct() {}
 
-    int Function(const std::string& data) { return -1; }
+    #ifdef EIGHTREFL_STANDARD_ENABLE
+    int Function(std::string const& data) { return -1; }
+    #else
+    int Function(char const* data) { return -1; }
+    #endif // EIGHTREFL_STANDARD_ENABLE
+
     int Property = 0;
 };
 
@@ -42,7 +49,11 @@ TEST(TestExample, TestSimple)
 
     ASSERT("function-overloads", function_overloads != nullptr);
 
+    #ifdef EIGHTREFL_STANDARD_ENABLE
     eightrefl::function_t* function = function_overloads->find("int(std::string const&)");
+    #else
+    eightrefl::function_t* function = function_overloads->find("int(char const*)");
+    #endif // EIGHTREFL_STANDARD_ENABLE
 
     ASSERT("function", function != nullptr);
 
@@ -53,8 +64,13 @@ TEST(TestExample, TestSimple)
     std::any object = factory->call({});
     std::any object_context = type->context(object);
 
+    #ifdef EIGHTREFL_STANDARD_ENABLE
     std::string string = "text";
     std::any string_context = &string;
+    #else
+    char const* string = "text";
+    std::any string_context = const_cast<char*>(string); // safe
+    #endif // EIGHTREFL_STANDARD_ENABLE
 
     std::any result = function->call(object_context, { string_context });
 

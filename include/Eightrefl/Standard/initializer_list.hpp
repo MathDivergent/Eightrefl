@@ -1,6 +1,7 @@
 #ifndef EIGHTREFL_STANDARD_INITIALIZER_LIST_HPP
 #define EIGHTREFL_STANDARD_INITIALIZER_LIST_HPP
 
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <initializer_list> // initializer_list
 
 #include <Eightrefl/Reflectable.hpp>
@@ -32,5 +33,6 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::initializer_list<ValueT
 
     FUNCTION(size)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 
 #endif // EIGHTREFL_STANDARD_INITIALIZER_LIST_HPP

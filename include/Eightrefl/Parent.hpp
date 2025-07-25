@@ -23,7 +23,7 @@ namespace eightrefl
 struct type_t;
 struct meta_t;
 
-struct parent_t
+struct EIGHTREFL_API parent_t
 {
     std::string const name;
     type_t* const type = nullptr;

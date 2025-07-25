@@ -1,4 +1,5 @@
 #ifdef EIGHTREFL_DEV_ENABLE
+#ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Dev/Reflection.hpp>
 #include <Eightrefl/Dev/Parent.hpp>
 #include <Eightrefl/Dev/Factory.hpp>
@@ -18,4 +19,5 @@ REFLECTABLE(eightrefl::reflection_t)
     PROPERTY(property)
     PROPERTY(meta)
 REFLECTABLE_INIT()
+#endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE
