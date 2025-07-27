@@ -1,0 +1,71 @@
+name: Eightrefl-macOS
+
+on:
+  workflow_dispatch:
+    inputs:
+      EIGHTREFL_FULLY_ENABLE:
+        description: "EIGHTREFL_FULLY_ENABLE"
+        required: false
+        default: "ON"
+      EIGHTREFL_RTTI_ENABLE:
+        description: "EIGHTREFL_RTTI_ENABLE"
+        required: false
+        default: "ON"
+      EIGHTREFL_STANDARD_ENABLE:
+        description: "EIGHTREFL_STANDARD_ENABLE"
+        required: false
+        default: "ON"
+      EIGHTREFL_DEV_ENABLE:
+        description: "EIGHTREFL_DEV_ENABLE"
+        required: false
+        default: "ON"
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    env:
+      Eightrefl: ${{ github.workspace }}
+      EIGHTREFL_FULLY_ENABLE: ${{ github.event.inputs.EIGHTREFL_FULLY_ENABLE || 'ON' }}
+      EIGHTREFL_RTTI_ENABLE: ${{ github.event.inputs.EIGHTREFL_RTTI_ENABLE || 'ON' }}
+      EIGHTREFL_STANDARD_ENABLE: ${{ github.event.inputs.EIGHTREFL_STANDARD_ENABLE || 'ON' }}
+      EIGHTREFL_DEV_ENABLE: ${{ github.event.inputs.EIGHTREFL_DEV_ENABLE || 'ON' }}
+
+    steps:
+    - name: "Download project"
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    - name: "Setup macOS (Dev)"
+      run: |
+        cmake --version
+        clang --version
+
+    - name: "Regenerate and Rebuild project"
+      run: |
+        cd ${Eightrefl}
+        rm -rf Intermediate
+        cmake -S . -B Intermediate -G Ninja \
+          -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DEIGHTREFL_FULLY_ENABLE=${EIGHTREFL_FULLY_ENABLE} \
+          -DEIGHTREFL_RTTI_ENABLE=${EIGHTREFL_RTTI_ENABLE} \
+          -DEIGHTREFL_STANDARD_ENABLE=${EIGHTREFL_STANDARD_ENABLE} \
+          -DEIGHTREFL_DEV_ENABLE=${EIGHTREFL_DEV_ENABLE} \
+          -DEIGHTREFL_BUILD_TEST_LIBS=ON
+        cmake --build Intermediate --parallel
+
+    - name: "Package and Upload project"
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ github.workflow }}
+        path: |
+          ${{ env.Eightrefl }}/Binaries
+
+    - name: "Test project"
+      run: |
+        cd "${Eightrefl}/Binaries/EightestLauncher.app/Contents/MacOS"
+        ./EightestLauncher
