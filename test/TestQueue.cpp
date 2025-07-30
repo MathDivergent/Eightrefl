@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/queue.hpp>
 
-TEST(TestBuiltin, TestQueue)
+TEST(TestStandard, TestQueue)
 {
     eightrefl::reflectable<std::queue<int>>();
 

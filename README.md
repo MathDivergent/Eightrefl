@@ -51,6 +51,7 @@ See full list [here](https://github.com/MathDivergent/Eightrefl/tree/master/incl
 - Factory
 - Function
 - Property
+- Bitfield
 - Meta
 
 ### Library features:

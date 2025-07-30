@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/function.hpp>
 
-TEST(TestBuiltin, TestFunction)
+TEST(TestStandard, TestFunction)
 {
     eightrefl::reflectable<std::function<void(int, float)>>();
 

@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/variant.hpp>
 
-TEST(TestBuiltin, TestVariant)
+TEST(TestStandard, TestVariant)
 {
     eightrefl::reflectable<std::variant<int, float, bool>>();
 

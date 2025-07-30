@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/functional.hpp>
 
-TEST(TestBuiltin::TestFunctional, TestHash)
+TEST(TestStandard::TestFunctional, TestHash)
 {
     eightrefl::reflectable<std::hash<int>>();
 
@@ -21,7 +21,7 @@ TEST(TestBuiltin::TestFunctional, TestHash)
     #endif // EIGHTREFL_FULLY_ENABLE
 }
 
-TEST(TestBuiltin::TestFunctional, TestEqualTo)
+TEST(TestStandard::TestFunctional, TestEqualTo)
 {
     eightrefl::reflectable<std::equal_to<int>>();
 
@@ -33,7 +33,7 @@ TEST(TestBuiltin::TestFunctional, TestEqualTo)
     EXPECT("type-context", type->context != nullptr);
 }
 
-TEST(TestBuiltin::TestFunctional, TestLess)
+TEST(TestStandard::TestFunctional, TestLess)
 {
     eightrefl::reflectable<std::less<int>>();
 
@@ -45,7 +45,7 @@ TEST(TestBuiltin::TestFunctional, TestLess)
     EXPECT("type-context", type->context != nullptr);
 }
 
-TEST(TestBuiltin::TestFunctional, TestGreater)
+TEST(TestStandard::TestFunctional, TestGreater)
 {
     eightrefl::reflectable<std::greater<int>>();
 

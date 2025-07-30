@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/tuple.hpp>
 
-TEST(TestBuiltin, TestTuple)
+TEST(TestStandard, TestTuple)
 {
     eightrefl::reflectable<std::tuple<int, float, bool>>();
 

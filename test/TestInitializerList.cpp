@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/initializer_list.hpp>
 
-TEST(TestBuiltin, TestInitializerList)
+TEST(TestStandard, TestInitializerList)
 {
     eightrefl::reflectable<std::initializer_list<int>>();
 

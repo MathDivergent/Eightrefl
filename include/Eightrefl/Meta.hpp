@@ -10,7 +10,7 @@
 #include <Eightrefl/Detail/Macro.hpp> // EIGHTREFL_DEPAREN
 
 // .meta(external_name, meta_expression)
-#define CUSTOM_META(touch_expression, meta_pointer, external_name, ... /*meta_expression*/) \
+#define EIGHTREFL_META(touch_expression, meta_pointer, external_name, ... /*meta_expression*/) \
     { \
         auto xxitem = meta_pointer->find(external_name); \
         if (xxitem == nullptr) xxitem = meta_pointer->add(external_name, { external_name, std::any(__VA_ARGS__) }); \
@@ -18,8 +18,8 @@
         EIGHTREFL_DEPAREN(touch_expression); \
     }
 
-#define META(external_name, ... /*meta_expression*/) CUSTOM_META((xxsubmeta = &xxitem->meta), xxmeta, external_name, __VA_ARGS__)
-#define SUBMETA(external_name, ... /*meta_expression*/) CUSTOM_META((), xxsubmeta, external_name, __VA_ARGS__)
+#define META(external_name, ... /*meta_expression*/) EIGHTREFL_META((xxsubmeta = &xxitem->meta), xxmeta, external_name, __VA_ARGS__)
+#define SUBMETA(external_name, ... /*meta_expression*/) EIGHTREFL_META((), xxsubmeta, external_name, __VA_ARGS__)
 
 namespace eightrefl
 {

@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/vector.hpp>
 
-TEST(TestBuiltin, TestVectorBool)
+TEST(TestStandard, TestVectorBool)
 {
     eightrefl::reflectable<std::vector<bool>>();
 

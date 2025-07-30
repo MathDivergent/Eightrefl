@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/shared_ptr.hpp>
 
-TEST(TestBuiltin, TestSharedPtr)
+TEST(TestStandard, TestSharedPtr)
 {
     eightrefl::reflectable<std::shared_ptr<int>>();
 

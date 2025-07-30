@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/stack.hpp>
 
-TEST(TestBuiltin, TestStack)
+TEST(TestStandard, TestStack)
 {
     eightrefl::reflectable<std::stack<int>>();
 

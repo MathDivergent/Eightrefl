@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/map.hpp>
 
-TEST(TestBuiltin, TestMap)
+TEST(TestStandard, TestMap)
 {
     eightrefl::reflectable<std::map<int, float>>();
 

@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/bitset.hpp>
 
-TEST(TestBuiltin, TestBitset)
+TEST(TestStandard, TestBitset)
 {
     eightrefl::reflectable<std::bitset<128>>();
 

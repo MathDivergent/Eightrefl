@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/vector.hpp>
 
-TEST(TestBuiltin, TestVector)
+TEST(TestStandard, TestVector)
 {
     eightrefl::reflectable<std::vector<int>>();
 

@@ -4,7 +4,7 @@
 
 #include <Eightrefl/Standard/typeinfo.hpp>
 
-TEST(TestBuiltin, TestTypeInfo)
+TEST(TestStandard, TestTypeInfo)
 {
     auto type = eightrefl::standard()->find("std::type_info");
 

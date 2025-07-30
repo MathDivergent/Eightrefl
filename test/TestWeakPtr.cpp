@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/weak_ptr.hpp>
 
-TEST(TestBuiltin, TestWseakPtr)
+TEST(TestStandard, TestWseakPtr)
 {
     eightrefl::reflectable<std::weak_ptr<int>>();
 

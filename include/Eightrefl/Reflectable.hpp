@@ -328,6 +328,26 @@ property_t* find_or_add_property(type_t* type, std::string const& name, GetterTy
     return xxmeta;
 }
 
+template <typename BitfieldType>
+property_t* find_or_add_bitfield(type_t* type, std::string const& name,
+                                 std::function<void(std::any const&, std::any&)> handler_get,
+                                 std::function<void(std::any const&, std::any const&)> handler_set)
+{
+    auto xxmeta = type->property.find(name);
+    if (xxmeta == nullptr) xxmeta = type->property.add
+    (
+        name,
+        {
+            name,
+            find_or_add_type<BitfieldType>(),
+            handler_get,
+            handler_set
+        }
+    );
+
+    return xxmeta;
+}
+
 template <typename DirtyDeleterType>
 deleter_t* find_or_add_deleter(type_t* type)
 {

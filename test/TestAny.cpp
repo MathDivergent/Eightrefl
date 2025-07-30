@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/any.hpp>
 
-TEST(TestBuiltin, TestAny)
+TEST(TestStandard, TestAny)
 {
     auto type = eightrefl::standard()->find("std::any");
 

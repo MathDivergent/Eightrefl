@@ -14,7 +14,7 @@
 #include <Eightrefl/Detail/Macro.hpp> // EIGHTREFL_DEPAREN
 
 // .property<R, variable_type_or_function_type>(external_name, &scope::internal_iname, &scope::ìnternal_oname)
-#define CUSTOM_PROPERTY(scope, external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
+#define EIGHTREFL_PROPERTY(scope, external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
     { \
         using xxaccess = typename eightrefl::meta::access_traits<scope>::template property<__VA_ARGS__>; \
         auto xxpointer = xxaccess::of(&scope::EIGHTREFL_DEPAREN(internal_iname), &scope::EIGHTREFL_DEPAREN(internal_oname)); \
@@ -24,13 +24,24 @@
     }
 
 #define NAMED_PROPERTY(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
-    CUSTOM_PROPERTY(CleanR, external_name, internal_iname, internal_oname, __VA_ARGS__)
+    EIGHTREFL_PROPERTY(CleanR, external_name, internal_iname, internal_oname, __VA_ARGS__)
 
 #define NAMED_FREE_PROPERTY(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
-    CUSTOM_PROPERTY(, external_name, internal_iname, internal_oname, __VA_ARGS__)
+    EIGHTREFL_PROPERTY(, external_name, internal_iname, internal_oname, __VA_ARGS__)
+
+#define NAMED_BITFIELD(external_name, internal_name) \
+    { \
+        using xxbitfield_type = std::decay_t<decltype(std::declval<CleanR>().internal_name)>; \
+        auto xxi = [](std::any const& context, std::any& result) { result = xxbitfield_type(std::any_cast<CleanR*>(context)->internal_name); }; \
+        auto xxo = [](std::any const& context, std::any const& value) { std::any_cast<CleanR*>(context)->internal_name = std::any_cast<xxbitfield_type>(value); }; \
+        auto xxproperty = eightrefl::find_or_add_bitfield<xxbitfield_type>(xxtype, external_name, xxi, xxo); \
+        injection.template property<CleanR, xxbitfield_type, xxbitfield_type>(*xxproperty); \
+        xxmeta = &xxproperty->meta; \
+    }
 
 #define PROPERTY(name, ... /*variable_type_or_function_type*/) NAMED_PROPERTY(EIGHTREFL_TO_STRING(name), name, name, __VA_ARGS__)
 #define FREE_PROPERTY(name, ... /*variable_type_or_function_type*/) NAMED_FREE_PROPERTY(EIGHTREFL_TO_STRING(name), name, name, __VA_ARGS__)
+#define BITFIELD(name) NAMED_BITFIELD(EIGHTREFL_TO_STRING(name), name)
 
 namespace eightrefl
 {
@@ -308,8 +319,8 @@ auto handler_property_context(PropertyType(*property)(void))
     }
 }
 
-template <typename ipropertyterType, typename opropertyterType>
-constexpr auto property_pointer(ipropertyterType iproperty, opropertyterType oproperty)
+template <typename IPropertyType, typename OPropertyType>
+constexpr auto property_pointer(IPropertyType iproperty, OPropertyType oproperty)
 {
     return std::make_pair(iproperty, oproperty);
 }

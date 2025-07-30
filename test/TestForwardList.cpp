@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/forward_list.hpp>
 
-TEST(TestBuiltin, TestForwardList)
+TEST(TestStandard, TestForwardList)
 {
     eightrefl::reflectable<std::forward_list<int>>();
 
