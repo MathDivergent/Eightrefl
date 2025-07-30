@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/array.hpp>
 
-TEST(TestBuiltin, TestArray)
+TEST(TestStandard, TestArray)
 {
     eightrefl::reflectable<std::array<int, 8>>();
 

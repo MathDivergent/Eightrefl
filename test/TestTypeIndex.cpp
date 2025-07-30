@@ -5,7 +5,7 @@
 
 #include <Eightrefl/Standard/typeindex.hpp>
 
-TEST(TestBuiltin, TestTypeIndex)
+TEST(TestStandard, TestTypeIndex)
 {
     auto type = eightrefl::standard()->find("std::type_index");
 

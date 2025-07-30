@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/reference_wrapper.hpp>
 
-TEST(TestBuiltin, TestReferenceWrapper)
+TEST(TestStandard, TestReferenceWrapper)
 {
     eightrefl::reflectable<std::reference_wrapper<int>>();
 

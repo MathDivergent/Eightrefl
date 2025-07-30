@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/set.hpp>
 
-TEST(TestBuiltin, TestSet)
+TEST(TestStandard, TestSet)
 {
     eightrefl::reflectable<std::set<int>>();
 

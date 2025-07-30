@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/list.hpp>
 
-TEST(TestBuiltin, TestList)
+TEST(TestStandard, TestList)
 {
     eightrefl::reflectable<std::list<int>>();
 

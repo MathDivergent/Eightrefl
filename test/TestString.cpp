@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/string.hpp>
 
-TEST(TestBuiltin, TestString)
+TEST(TestStandard, TestString)
 {
     auto type = eightrefl::standard()->find("std::string");
 

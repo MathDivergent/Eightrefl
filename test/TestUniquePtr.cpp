@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/unique_ptr.hpp>
 
-TEST(TestBuiltin, TestUniquePtr)
+TEST(TestStandard, TestUniquePtr)
 {
     eightrefl::reflectable<std::unique_ptr<int>>();
 

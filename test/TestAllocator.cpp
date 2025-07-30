@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/allocator.hpp>
 
-TEST(TestBuiltin, TestAllocator)
+TEST(TestStandard, TestAllocator)
 {
     eightrefl::reflectable<std::allocator<int>>();
 

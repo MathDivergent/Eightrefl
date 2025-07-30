@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/priority_queue.hpp>
 
-TEST(TestBuiltin, TestPriorityQueue)
+TEST(TestStandard, TestPriorityQueue)
 {
     eightrefl::reflectable<std::priority_queue<int>>();
 

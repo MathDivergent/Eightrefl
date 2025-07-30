@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/complex.hpp>
 
-TEST(TestBuiltin, TestComplex)
+TEST(TestStandard, TestComplex)
 {
     eightrefl::reflectable<std::complex<float>>();
 

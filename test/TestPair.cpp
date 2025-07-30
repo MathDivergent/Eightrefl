@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/pair.hpp>
 
-TEST(TestBuiltin, TestPair)
+TEST(TestStandard, TestPair)
 {
     eightrefl::reflectable<std::pair<int, float>>();
 

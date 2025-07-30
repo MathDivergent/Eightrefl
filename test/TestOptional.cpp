@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/optional.hpp>
 
-TEST(TestBuiltin, TestNulloptT)
+TEST(TestStandard, TestNulloptT)
 {
     auto type = eightrefl::standard()->find("std::nullopt_t");
 
@@ -13,7 +13,7 @@ TEST(TestBuiltin, TestNulloptT)
     EXPECT("type-context", type->context != nullptr);
 }
 
-TEST(TestBuiltin, TestOptional)
+TEST(TestStandard, TestOptional)
 {
     eightrefl::reflectable<std::optional<int>>();
 

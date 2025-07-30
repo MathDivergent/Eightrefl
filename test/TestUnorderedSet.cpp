@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/unordered_set.hpp>
 
-TEST(TestBuiltin, TestUnorderedSet)
+TEST(TestStandard, TestUnorderedSet)
 {
     eightrefl::reflectable<std::unordered_set<int>>();
 

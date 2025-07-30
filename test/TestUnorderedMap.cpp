@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/unordered_map.hpp>
 
-TEST(TestBuiltin, TestUnorderedMap)
+TEST(TestStandard, TestUnorderedMap)
 {
     eightrefl::reflectable<std::unordered_map<int, float>>();
 

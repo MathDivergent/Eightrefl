@@ -3,7 +3,7 @@
 
 #include <Eightrefl/Standard/deque.hpp>
 
-TEST(TestBuiltin, TestDeque)
+TEST(TestStandard, TestDeque)
 {
     eightrefl::reflectable<std::deque<int>>();
 
