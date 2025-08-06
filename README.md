@@ -1,13 +1,18 @@
 # Eightrefl - Simple reflection library 
 
-`Eightrefl` is a flexible and extensible C++ library with many features, that will allow you to easily reflects your code.
-The library has a small code base, but enough to use it. 
+![Type](https://img.shields.io/badge/type-engine%20module-%235a6770)
+![Language](https://img.shields.io/badge/language-C%2B%2B-blue)
+![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-red)
+![Tests](https://img.shields.io/badge/tests-automated-yellow)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/license/mit)
+
+`Eightrefl` is a flexible and extensible C++ library with many features, that will allow you to easily reflects your code. The library has a small code base, but enough to use it. Is an external module of the [Eightgine](https://github.com/MathDivergent/Eightgine) (game engine).
 
 Use macros for code generation or read the documentation and write your own code. 
 
 A library implemented purely in C++17.
 
-See last stable library version [here](https://github.com/MathDivergent/Eightrefl/releases).
+See last stable library version 2.4.0 [here](https://github.com/MathDivergent/Eightrefl/releases).
 
 ## Functional: 
 
