@@ -22,7 +22,7 @@ option(EIGHTREFL_BUILD_TEST_LIBS "Build testing libraies by Default" OFF)
 if(PROJECT_IS_TOP_LEVEL)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Binaries")
     if(APPLE)
-        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Binaries/EightestLauncher.app/Contents/Frameworks")
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Frameworks")
     else()
         set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Binaries")
     endif()
@@ -92,7 +92,7 @@ endif()
 # [[Tests]]
 if(EIGHTREFL_BUILD_TEST_LIBS)
     file(GLOB_RECURSE PROJECT_TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/test/*.hpp")
-    add_library(EightreflTests ${PROJECT_LIBS_TYPE} ${PROJECT_TEST_SOURCES})
+    add_library(EightreflTests SHARED ${PROJECT_TEST_SOURCES})
 
     if(PROJECT_IS_TOP_LEVEL)
         # you should manually download Eightest if not
