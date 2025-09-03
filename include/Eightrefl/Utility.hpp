@@ -42,6 +42,7 @@ std::any backward(ValueType&& result)
     }
     else
     {
+        // implicit const/reference qualifiers remove
         return result;
     }
 }

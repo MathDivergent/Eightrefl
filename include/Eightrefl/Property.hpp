@@ -68,9 +68,7 @@ auto handler_property_get_impl(GetterType property)
 {
     return [property](std::any const& context, std::any& value)
     {
-        using property_type = typename meta::property_traits<GetterType>::type;
-
-        value = utility::backward<property_type>
+        value = utility::backward
         (
             (std::any_cast<ReflectableType*>(context)->*property)()
         );
@@ -84,7 +82,7 @@ auto handler_property_get(PropertyType ReflectableType::* property)
 {
     return [property](std::any const& context, std::any& result)
     {
-        result = utility::forward<PropertyType>
+        result = utility::backward
         (
             std::any_cast<ReflectableType*>(context)->*property
         );
@@ -120,7 +118,8 @@ auto handler_property_get(PropertyType* property)
 {
     return [property](std::any const&, std::any& result)
     {
-        result = utility::forward<PropertyType>(*property);
+        // get of free (non-member) property        
+        result = utility::backward(*property);
     };
 }
 
@@ -129,7 +128,7 @@ auto handler_property_get(PropertyType(*property)(void))
 {
     return [property](std::any const&, std::any& result)
     {
-        result = utility::backward<PropertyType>(property());
+        result = utility::backward(property());
     };
 }
 
@@ -139,10 +138,9 @@ namespace detail
 template <typename ReflectableType, typename SetterType>
 auto handler_property_set_impl(SetterType property)
 {
+    using property_type = typename meta::property_traits<SetterType>::type;        
     return [property](std::any const& context, std::any const& value)
     {
-        using property_type = typename meta::property_traits<SetterType>::type;
-
         (std::any_cast<ReflectableType*>(context)->*property)(utility::forward<property_type>(value));
     };
 }
@@ -181,6 +179,7 @@ auto handler_property_set(PropertyType* property)
 {
     return [property](std::any const&, std::any const& value)
     {
+        // set of free (non-member) property
         *property = utility::forward<PropertyType>(value);
     };
 }
@@ -249,6 +248,7 @@ auto handler_property_context_impl(GetterType property)
     }
     else
     {
+        // context to non-reference return type is not allowed
         return nullptr;
     }
 }
@@ -262,6 +262,7 @@ auto handler_property_context(PropertyType ReflectableType::* property)
     {
         return const_cast<typename meta::to_reflectable_object<PropertyType>::type*>
         (
+            // context to member property
             std::addressof(std::any_cast<ReflectableType*>(outer_context)->*property)
         );
     };
@@ -296,6 +297,7 @@ auto handler_property_context(PropertyType* property)
 {
     return [property](std::any const&) -> std::any
     {
+        // context of free (non-member) property
         return const_cast<typename meta::to_reflectable_object<PropertyType>::type*>(property);
     };
 }
@@ -315,6 +317,7 @@ auto handler_property_context(PropertyType(*property)(void))
     }
     else
     {
+        // context to non-reference return type is not allowed
         return nullptr;
     }
 }
