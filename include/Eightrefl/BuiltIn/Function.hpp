@@ -31,7 +31,7 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    ReturnType(ArgumentTypes...)&, eightrefl::clean_of<ReturnType(ArgumentTypes...)>&
+    ReturnType(ArgumentTypes...)&, eightrefl::clean_of<ReturnType>(eightrefl::clean_of<ArgumentTypes>...)&
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -48,7 +48,7 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    ReturnType(ArgumentTypes...) const, eightrefl::clean_of<ReturnType(ArgumentTypes...)> const
+    ReturnType(ArgumentTypes...) const, eightrefl::clean_of<ReturnType>(eightrefl::clean_of<ArgumentTypes>...) const
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -65,7 +65,7 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    ReturnType(ArgumentTypes...) const&, eightrefl::clean_of<ReturnType(ArgumentTypes...)> const&
+    ReturnType(ArgumentTypes...) const&, eightrefl::clean_of<ReturnType>(eightrefl::clean_of<ArgumentTypes>...) const&
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION
