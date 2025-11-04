@@ -8,7 +8,7 @@
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    (ReturnType(ArgumentTypes...)), eightrefl::clean_of<ReturnType>(eightrefl::clean_of<ArgumentTypes>...)
+    ReturnType(ArgumentTypes...), eightrefl::clean_of<ReturnType>(eightrefl::clean_of<ArgumentTypes>...)
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ReturnType>, ReturnType())
@@ -27,10 +27,11 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
+
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    (ReturnType(ArgumentTypes...)&), eightrefl::clean_of<ReturnType(ArgumentTypes...)>&
+    ReturnType(ArgumentTypes...)&, eightrefl::clean_of<ReturnType(ArgumentTypes...)>&
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -43,10 +44,11 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
+
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    (ReturnType(ArgumentTypes...) const), eightrefl::clean_of<ReturnType(ArgumentTypes...)> const
+    ReturnType(ArgumentTypes...) const, eightrefl::clean_of<ReturnType(ArgumentTypes...)> const
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -59,10 +61,11 @@ TEMPLATE_REFLECTABLE_DECLARATION
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
 
+
 TEMPLATE_REFLECTABLE_CLEAN
 (
     (template <typename ReturnType, typename... ArgumentTypes>),
-    (ReturnType(ArgumentTypes...) const&), eightrefl::clean_of<ReturnType(ArgumentTypes...)> const&
+    ReturnType(ArgumentTypes...) const&, eightrefl::clean_of<ReturnType(ArgumentTypes...)> const&
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -74,6 +77,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
     REFLECTABLE_NAME(eightrefl::name_of<ReturnType(ArgumentTypes...)>() + " const&")
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
+
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
@@ -92,6 +96,26 @@ TEMPLATE_REFLECTABLE
 )
 REFLECTABLE_INIT()
 
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename ReturnType, typename... ArgumentTypes>),
+    ReturnType(&)(ArgumentTypes...)
+)
+    REFLECTABLE_REGISTRY(eightrefl::builtin())
+    REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...)>() + ">&")
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
+
+#ifdef EIGHTREFL_MEMBER_ENABLE
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
+    ReturnType(ReflectableType::*)(ArgumentTypes...),
+    eightrefl::clean_of<ReturnType>(ReflectableType::*)(eightrefl::clean_of<ArgumentTypes>...)
+)
+
 TEMPLATE_REFLECTABLE_DECLARATION
 (
     (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
@@ -107,16 +131,90 @@ TEMPLATE_REFLECTABLE
     (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
     ReturnType(ReflectableType::*)(ArgumentTypes...)
 )
+    FACTORY(R())
+    FACTORY(R(R))
 REFLECTABLE_INIT()
+
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
+    ReturnType(ReflectableType::*)(ArgumentTypes...)&,
+    eightrefl::clean_of<ReturnType>(ReflectableType::*)(eightrefl::clean_of<ArgumentTypes>...)&
+)
 
 TEMPLATE_REFLECTABLE_DECLARATION
 (
-    (template <typename ReturnType, typename... ArgumentTypes>),
-    ReturnType(&)(ArgumentTypes...)
+    (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
+    ReturnType(ReflectableType::*)(ArgumentTypes...)&
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
-    REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...)>() + ">&")
+    REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...)&>() + "> " + eightrefl::name_of<ReflectableType>() + "::*")
     BUILTIN_REFLECTABLE()
 REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE
+(
+    (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
+    ReturnType(ReflectableType::*)(ArgumentTypes...)&
+)
+    FACTORY(R())
+    FACTORY(R(R))
+REFLECTABLE_INIT()
+
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
+    ReturnType(ReflectableType::*)(ArgumentTypes...) const,
+    eightrefl::clean_of<ReturnType>(ReflectableType::*)(eightrefl::clean_of<ArgumentTypes>...) const
+)
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
+    ReturnType(ReflectableType::*)(ArgumentTypes...) const
+)
+    REFLECTABLE_REGISTRY(eightrefl::builtin())
+    REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...) const>() + "> " + eightrefl::name_of<ReflectableType>() + "::*")
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE
+(
+    (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
+    ReturnType(ReflectableType::*)(ArgumentTypes...) const
+)
+    FACTORY(R())
+    FACTORY(R(R))
+REFLECTABLE_INIT()
+
+
+TEMPLATE_REFLECTABLE_CLEAN
+(
+    (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
+    ReturnType(ReflectableType::*)(ArgumentTypes...) const&,
+    eightrefl::clean_of<ReturnType>(ReflectableType::*)(eightrefl::clean_of<ArgumentTypes>...) const&
+)
+
+TEMPLATE_REFLECTABLE_DECLARATION
+(
+    (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
+    ReturnType(ReflectableType::*)(ArgumentTypes...) const&
+)
+    REFLECTABLE_REGISTRY(eightrefl::builtin())
+    REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...) const&>() + "> " + eightrefl::name_of<ReflectableType>() + "::*")
+    BUILTIN_REFLECTABLE()
+REFLECTABLE_DECLARATION_INIT()
+
+TEMPLATE_REFLECTABLE
+(
+    (template <typename ReturnType, typename ReflectableType, typename... ArgumentTypes>),
+    ReturnType(ReflectableType::*)(ArgumentTypes...) const&
+)
+    FACTORY(R())
+    FACTORY(R(R))
+REFLECTABLE_INIT()
+#endif // EIGHTREFL_MEMBER_ENABLE
 
 #endif // EIGHTREFL_BUILTIN_FUNCTION_HPP

@@ -12,7 +12,7 @@ Use macros for code generation or read the documentation and write your own code
 
 A library implemented purely in C++17.
 
-See last stable library version 2.5.1 [here](https://github.com/MathDivergent/Eightrefl/releases).
+See last stable library version 2.6.0 [here](https://github.com/MathDivergent/Eightrefl/releases).
 
 ## Functional: 
 
@@ -23,7 +23,7 @@ See last stable library version 2.5.1 [here](https://github.com/MathDivergent/Ei
 - char, wchar_t, char8_t (since C++20), char16_t, char32_t
 - signed char, unsigned char, int, unsigned int, long, unsigned long, long long, unsigned long long, float, double, long double
 - std::size_t, std::ptrdiff_t
-- pointer 
+- pointer, member pointer
 
 ### Reflection declaration (only) of special types:
 - reference, const, const reference
