@@ -1189,31 +1189,62 @@ TEST(TestLibrary, TestPointerDereferenceType)
     ASSERT("type.meta.value", value != nullptr && *value != nullptr && *value == eightrefl::global()->find("TestPointerDereferenceTypeStruct"));
 }
 
-
+#ifdef EIGHTREFL_MEMBER_ENABLE
 TEST_SPACE()
 {
 
-struct TestMemberFunctionPointerStruct
+struct TestMemberPointerStruct
 {
-    void (TestMemberFunctionPointerStruct::*Handler)() = nullptr;
+    void (TestMemberPointerStruct::*Function)() = nullptr;
+    void (TestMemberPointerStruct::*FunctionReference)()& = nullptr;
+    void (TestMemberPointerStruct::*FunctionConst)() const = nullptr;
+    void (TestMemberPointerStruct::*FunctionConstReference)() const& = nullptr;
+    int TestMemberPointerStruct::*Property = nullptr;
 };
 
 } // TEST_SPACE
 
-REFLECTABLE_DECLARATION(TestMemberFunctionPointerStruct)
+REFLECTABLE_DECLARATION(TestMemberPointerStruct)
 REFLECTABLE_DECLARATION_INIT()
 
-REFLECTABLE(TestMemberFunctionPointerStruct)
-    PROPERTY(Handler)
+REFLECTABLE(TestMemberPointerStruct)
+    PROPERTY(Function)
+    PROPERTY(FunctionReference)
+    PROPERTY(FunctionConst)
+    PROPERTY(FunctionConstReference)
+    PROPERTY(Property)
 REFLECTABLE_INIT()
 
-TEST(TestLibrary, TestMemberFunctionPointer)
+TEST(TestLibrary, TestMemberPointer)
 {
-    auto type = eightrefl::global()->find("TestMemberFunctionPointerStruct");
+    auto type = eightrefl::global()->find("TestMemberPointerStruct");
 
     ASSERT("type", type != nullptr);
 
-    auto property = type->property.find("Handler");
+    {
+        auto property = type->property.find("Function");
 
-    EXPECT("type.property", property != nullptr && property->type == eightrefl::builtin()->find("std::type_identity_t<void()> TestMemberFunctionPointerStruct::*"));
+        EXPECT("type.property.function", property != nullptr && property->type == eightrefl::builtin()->find("std::type_identity_t<void()> TestMemberPointerStruct::*"));
+    }
+    {
+        auto property = type->property.find("FunctionReference");
+
+        EXPECT("type.property.function_reference", property != nullptr && property->type == eightrefl::builtin()->find("std::type_identity_t<void()&> TestMemberPointerStruct::*"));
+    }
+    {
+        auto property = type->property.find("FunctionConst");
+
+        EXPECT("type.property.function_const", property != nullptr && property->type == eightrefl::builtin()->find("std::type_identity_t<void() const> TestMemberPointerStruct::*"));
+    }
+    {
+        auto property = type->property.find("FunctionConstReference");
+
+        EXPECT("type.property.function_const_reference", property != nullptr && property->type == eightrefl::builtin()->find("std::type_identity_t<void() const&> TestMemberPointerStruct::*"));
+    }
+    {
+        auto property = type->property.find("Property");
+
+        EXPECT("type.property.property", property != nullptr && property->type == eightrefl::builtin()->find("int TestMemberPointerStruct::*"));
+    }
 }
+#endif // EIGHTREFL_MEMBER_ENABLE

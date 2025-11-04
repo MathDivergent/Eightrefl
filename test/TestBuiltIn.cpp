@@ -157,6 +157,32 @@ TEST(TestBuiltIn, TestUnsignedChar)
     EXPECT("factory-R(R)", type->factory.find("unsigned char(unsigned char)") != nullptr);
 }
 
+TEST(TestBuiltIn, TestShort)
+{
+    auto type = eightrefl::builtin()->find("short");
+
+    ASSERT("type", type != nullptr);
+    EXPECT("type-name", type->name == "short");
+    EXPECT("type-size", type->size == sizeof(short));
+    EXPECT("type-context", type->context != nullptr);
+
+    EXPECT("factory-R()", type->factory.find("short()") != nullptr);
+    EXPECT("factory-R(R)", type->factory.find("short(short)") != nullptr);
+}
+
+TEST(TestBuiltIn, TestUnsignedShort)
+{
+    auto type = eightrefl::builtin()->find("unsigned short");
+
+    ASSERT("type", type != nullptr);
+    EXPECT("type-name", type->name == "unsigned short");
+    EXPECT("type-size", type->size == sizeof(unsigned short));
+    EXPECT("type-context", type->context != nullptr);
+
+    EXPECT("factory-R()", type->factory.find("unsigned short()") != nullptr);
+    EXPECT("factory-R(R)", type->factory.find("unsigned short(unsigned short)") != nullptr);
+}
+
 TEST(TestBuiltIn, TestInt)
 {
     auto type = eightrefl::builtin()->find("int");

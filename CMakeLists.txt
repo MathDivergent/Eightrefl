@@ -15,8 +15,8 @@ option(EIGHTREFL_FULLY_ENABLE "Build fully by Default" OFF)
 option(EIGHTREFL_RTTI_ENABLE "Build with RTTI by Default" OFF)
 option(EIGHTREFL_STANDARD_ENABLE "Build with Standard by Default" OFF)
 option(EIGHTREFL_DEV_ENABLE "Build with Dev by Default" OFF)
+option(EIGHTREFL_MEMBER_ENABLE "Build with R::* support by Default" OFF)
 option(EIGHTREFL_BUILD_TEST_LIBS "Build testing libraies by Default" OFF)
-
 
 # [[Defaults]]
 if(PROJECT_IS_TOP_LEVEL)
@@ -86,6 +86,10 @@ endif()
 if(EIGHTREFL_DEV_ENABLE)
     # we recomend in Release builds only
     target_compile_definitions(Eightrefl PUBLIC "EIGHTREFL_DEV_ENABLE")
+endif()
+
+if(EIGHTREFL_MEMBER_ENABLE)
+    target_compile_definitions(Eightrefl PUBLIC "EIGHTREFL_MEMBER_ENABLE")
 endif()
 
 
