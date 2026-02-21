@@ -70,7 +70,8 @@ jobs:
         name: ${{ github.workflow }}
         path: |
           ${{ env.Eightrefl }}/Binaries
-
+          ${{ env.Eightrefl }}/Frameworks
+  
     - name: "Test project"
       run: |
         cd "${Eightrefl}/Binaries"
