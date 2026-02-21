@@ -40,10 +40,10 @@ struct EIGHTREFL_API registry_t
 
         type = new type_t
         {
-            name,
-            this,
-            type_size<ReflectableType>(),
-            handler_type_context<ReflectableType>()
+            .name = name,
+            .registry = this,
+            .size = type_size<ReflectableType>(),
+            .context = handler_type_context<ReflectableType>()
         };
 
         #ifdef EIGHTREFL_RTTI_ENABLE

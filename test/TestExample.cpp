@@ -12,9 +12,9 @@ struct TestExampleStruct
     TestExampleStruct() {}
 
     #ifdef EIGHTREFL_STANDARD_ENABLE
-    int Function(std::string const& data) { return -1; }
+    int Function([[maybe_unused]] std::string const& data) { return -1; }
     #else
-    int Function(char const* data) { return -1; }
+    int Function([[maybe_unused]] char const* data) { return -1; }
     #endif // EIGHTREFL_STANDARD_ENABLE
 
     int Property = 0;

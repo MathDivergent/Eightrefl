@@ -26,9 +26,9 @@ namespace eightrefl
 
 struct EIGHTREFL_API meta_t
 {
-    std::string const name;
-    std::any value;
-    attribute_t<meta_t> meta;
+    std::string const name{};
+    std::any value{};
+    attribute_t<meta_t> meta{};
 };
 
 } // namespace eightrefl

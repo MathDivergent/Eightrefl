@@ -30,7 +30,7 @@ struct attribute_t
         return item;
     }
 
-    std::unordered_map<std::string, MetaType*> all;
+    std::unordered_map<std::string, MetaType*> all{};
 };
 
 } // namespace eightrefl

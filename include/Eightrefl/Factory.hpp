@@ -26,11 +26,11 @@ struct meta_t;
 
 struct EIGHTREFL_API factory_t
 {
-    std::string const name;
+    std::string const name{};
     std::function<std::any(std::vector<std::any> const& args)> const call = nullptr;
-    std::vector<type_t*> const arguments;
+    std::vector<type_t*> const arguments{};
     type_t* const result = nullptr;
-    attribute_t<meta_t> meta;
+    attribute_t<meta_t> meta{};
 };
 
 namespace detail

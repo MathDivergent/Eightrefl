@@ -60,7 +60,7 @@ struct xxeightrefl<TestWithoutMacroStruct>
     using R = TestWithoutMacroStruct; // not required by library
 
     template <typename InjectionType>
-    static void evaluate(InjectionType&& injection)
+    static void evaluate([[maybe_unused]] InjectionType&& injection)
     {
         auto type = eightrefl::find_or_add_type<R>();
         eightrefl::find_or_add_parent<R, TestWithoutMacroBaseStruct>(type);

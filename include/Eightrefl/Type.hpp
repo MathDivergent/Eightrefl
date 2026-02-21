@@ -28,20 +28,20 @@ struct meta_t;
 
 struct EIGHTREFL_API type_t
 {
-    std::string const name;
+    std::string const name{};
     registry_t* const registry = nullptr;
     std::size_t const size = 0;
     std::function<std::any(std::any& object)> const context = nullptr;
 
-    attribute_t<injection_t> injection;
-    attribute_t<child_t> child;
+    attribute_t<injection_t> injection{};
+    attribute_t<child_t> child{};
 
-    attribute_t<parent_t> parent;
-    attribute_t<factory_t> factory;
-    attribute_t<attribute_t<function_t>> function;
-    attribute_t<property_t> property;
-    attribute_t<deleter_t> deleter;
-    attribute_t<meta_t> meta;
+    attribute_t<parent_t> parent{};
+    attribute_t<factory_t> factory{};
+    attribute_t<attribute_t<function_t>> function{};
+    attribute_t<property_t> property{};
+    attribute_t<deleter_t> deleter{};
+    attribute_t<meta_t> meta{};
 };
 
 template <typename ReflectableType>

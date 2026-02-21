@@ -199,8 +199,8 @@ parent_t* find_or_add_parent(type_t* type)
         (
             xxname,
             {
-                xxtype,
-                handler_parent_cast<ReflectableType, ParentReflectableType>()
+                .type = xxtype,
+                .cast = handler_parent_cast<ReflectableType, ParentReflectableType>()
             }
         );
 
@@ -208,8 +208,8 @@ parent_t* find_or_add_parent(type_t* type)
         (
             type->name,
             {
-                type,
-                handler_child_cast<ParentReflectableType, ReflectableType>()
+                .type = type,
+                .cast = handler_child_cast<ParentReflectableType, ReflectableType>()
             }
         );
     }
@@ -221,13 +221,13 @@ namespace detail
 {
 
 template <typename... ArgumentTypes, typename ReturnType>
-auto function_argument_types(ReturnType(*unused)(ArgumentTypes...))
+auto function_argument_types(ReturnType(*)(ArgumentTypes...))
 {
     return std::vector<type_t*>({ find_or_add_type<ArgumentTypes>()... });
 }
 
 template <typename... ArgumentTypes, typename ReturnType>
-auto function_return_type(ReturnType(*unused)(ArgumentTypes...))
+auto function_return_type(ReturnType(*)(ArgumentTypes...))
 {
     return find_or_add_type<ReturnType>();
 }
@@ -249,10 +249,10 @@ factory_t* find_or_add_factory(type_t* type)
     (
         xxname,
         {
-            xxname,
-            handler_factory_call(pointer{}),
-            detail::function_argument_types(dirty_pointer{}),
-            detail::function_return_type(dirty_pointer{})
+            .name = xxname,
+            .call = handler_factory_call(pointer{}),
+            .arguments = detail::function_argument_types(dirty_pointer{}),
+            .result = detail::function_return_type(dirty_pointer{})
         }
     );
 
@@ -285,11 +285,11 @@ function_t* find_or_add_function(type_t* type, std::string const& name, Function
     (
         xxoverload,
         {
-            xxoverload,
-            handler_function_call(pointer),
-            detail::function_argument_types(dirty_pointer{}),
-            detail::function_return_type(dirty_pointer{}),
-            pointer
+            .name = xxoverload,
+            .call = handler_function_call(pointer),
+            .arguments = detail::function_argument_types(dirty_pointer{}),
+            .result = detail::function_return_type(dirty_pointer{}),
+            .pointer = pointer
         }
     );
 
@@ -316,12 +316,12 @@ property_t* find_or_add_property(type_t* type, std::string const& name, GetterTy
     (
         name,
         {
-            name,
-            find_or_add_type<dirty_type>(),
-            handler_property_get(ipointer),
-            handler_property_set(opointer),
-            handler_property_context(ipointer),
-            property_pointer(ipointer, opointer)
+            .name = name,
+            .type = find_or_add_type<dirty_type>(),
+            .get = handler_property_get(ipointer),
+            .set = handler_property_set(opointer),
+            .context = handler_property_context(ipointer),
+            .pointer = property_pointer(ipointer, opointer)
         }
     );
 
@@ -338,10 +338,10 @@ property_t* find_or_add_bitfield(type_t* type, std::string const& name,
     (
         name,
         {
-            name,
-            find_or_add_type<BitfieldType>(),
-            handler_get,
-            handler_set
+            .name = name,
+            .type = find_or_add_type<BitfieldType>(),
+            .get = handler_get,
+            .set = handler_set
         }
     );
 
@@ -362,8 +362,8 @@ deleter_t* find_or_add_deleter(type_t* type)
     (
         xxname,
         {
-            xxname,
-            handler_deleter_call(pointer{})
+            .name = xxname,
+            .call = handler_deleter_call(pointer{})
         }
     );
 
@@ -390,8 +390,8 @@ injection_t* find_or_add_injection(type_t* type)
     (
         xxtype->name,
         {
-            xxtype,
-            handler_injection_call<ReflectableType, InjectionType>()
+            .type = xxtype,
+            .call = handler_injection_call<ReflectableType, InjectionType>()
         }
     );
 

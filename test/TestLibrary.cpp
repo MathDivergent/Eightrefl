@@ -831,8 +831,8 @@ struct TestObjectContextStruct
     TestObjectContextStruct const* Function5() { return this; }
     TestObjectContextStruct& Function6() { return *this; }
     TestObjectContextStruct const& Function7() { return *this; }
-    TestObjectContextStruct* const Function8() { return this; }
-    TestObjectContextStruct const* const Function9() { return this; }
+    TestObjectContextStruct* /*const*/ Function8() { return this; }
+    TestObjectContextStruct const* /*const*/ Function9() { return this; }
     TestObjectContextStruct Function10() { return *this; }
 
     static void StaticMemberFunction() {}
