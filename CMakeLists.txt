@@ -123,6 +123,8 @@ endif()
 
 # [[Tests][Configurations]]
 if(EIGHTREFL_BUILD_TEST_LIBS)
+    target_compile_options(EightreflTests PRIVATE -Wno-ignored-qualifiers)
+
     if(EIGHTREFL_BUILD_FAST_LIBS)
         target_compile_options(EightreflTests PRIVATE -O3)
     else()
