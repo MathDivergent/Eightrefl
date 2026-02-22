@@ -6,18 +6,18 @@ project(Eightrefl)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Werror")
 
 
 # [[Module][Options]]
 option(EIGHTREFL_BUILD_FAST_LIBS "Build with -O3 by Default" OFF)
 option(EIGHTREFL_BUILD_SHARED_LIBS "Build shared libraies by Default" ON)
 option(EIGHTREFL_FULLY_ENABLE "Build fully by Default" OFF)
-option(EIGHTREFL_RTTI_ENABLE "Build with RTTI by Default" OFF)
+option(EIGHTREFL_RTTI_ENABLE "Build with RTTI by Default" OFF) # сompletely global
 option(EIGHTREFL_STANDARD_ENABLE "Build with Standard by Default" OFF)
 option(EIGHTREFL_DEV_ENABLE "Build with Dev by Default" OFF)
 option(EIGHTREFL_MEMBER_ENABLE "Build with R::* support by Default" OFF)
 option(EIGHTREFL_BUILD_TEST_LIBS "Build testing libraies by Default" OFF)
+option(EIGHTREFL_WARNING_FLAGS_ENABLE "Build with warning checking by Default" ON)
 
 
 # [[Module][Defaults]]
@@ -38,6 +38,10 @@ endif()
 
 if(LINUX OR APPLE)
     set(EIGHTREFL_VISIBILITY_HIDDEN C_VISIBILITY_PRESET hidden CXX_VISIBILITY_PRESET hidden VISIBILITY_INLINES_HIDDEN ON)
+endif()
+
+if(EIGHTREFL_WARNING_FLAGS_ENABLE)
+    set(EIGHTREFL_WARNING_FLAGS "-Wall" "-Wextra" "-Wpedantic" "-Werror")
 endif()
 
 
@@ -61,9 +65,9 @@ target_include_directories(Eightrefl PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include
 
 # [[Module][Configurations]]
 if(EIGHTREFL_BUILD_FAST_LIBS)
-    target_compile_options(Eightrefl PRIVATE -O3)
+    target_compile_options(Eightrefl PRIVATE "-O3")
 else()
-    target_compile_options(Eightrefl PRIVATE -O2)
+    target_compile_options(Eightrefl PRIVATE "-O2")
 endif()
 
 if(EIGHTREFL_BUILD_SHARED_LIBS)
@@ -81,10 +85,10 @@ if(EIGHTREFL_FULLY_ENABLE)
 endif()
 
 if(EIGHTREFL_RTTI_ENABLE)
-    target_compile_options(Eightrefl PUBLIC -frtti)
+    target_compile_options(Eightrefl PUBLIC "-frtti")
     target_compile_definitions(Eightrefl PUBLIC "EIGHTREFL_RTTI_ENABLE")
 else()
-    target_compile_options(Eightrefl PUBLIC -fno-rtti)
+    target_compile_options(Eightrefl PUBLIC "-fno-rtti")
 endif()
 
 if(EIGHTREFL_STANDARD_ENABLE)
@@ -98,6 +102,10 @@ endif()
 
 if(EIGHTREFL_MEMBER_ENABLE)
     target_compile_definitions(Eightrefl PUBLIC "EIGHTREFL_MEMBER_ENABLE")
+endif()
+
+if(EIGHTREFL_WARNING_FLAGS)
+    target_compile_options(Eightrefl PRIVATE ${EIGHTREFL_WARNING_FLAGS})
 endif()
 
 
@@ -123,12 +131,16 @@ endif()
 
 # [[Tests][Configurations]]
 if(EIGHTREFL_BUILD_TEST_LIBS)
-    target_compile_options(EightreflTests PRIVATE -Wno-ignored-qualifiers)
+    if(EIGHTREFL_WARNING_FLAGS)
+        target_compile_options(EightreflTests PRIVATE ${EIGHTREFL_WARNING_FLAGS})
+    endif()
+
+    target_compile_options(EightreflTests PRIVATE "-Wno-ignored-qualifiers")
 
     if(EIGHTREFL_BUILD_FAST_LIBS)
-        target_compile_options(EightreflTests PRIVATE -O3)
+        target_compile_options(EightreflTests PRIVATE "-O3")
     else()
-        target_compile_options(EightreflTests PRIVATE -O2)
+        target_compile_options(EightreflTests PRIVATE "-O2")
     endif()
 
     if(LINUX OR APPLE)

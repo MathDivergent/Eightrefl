@@ -10,9 +10,9 @@
 
 Use macros for code generation or read the documentation and write your own code. 
 
-A library implemented purely in C++17.
+A library implemented purely in C++20.
 
-See last stable library version 2.8.0 [here](https://github.com/MathDivergent/Eightrefl/releases).
+See last stable library version 2.8.1 [here](https://github.com/MathDivergent/Eightrefl/releases).
 
 ## Functional: 
 
