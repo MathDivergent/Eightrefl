@@ -19,10 +19,10 @@ namespace eightrefl
 
 struct EIGHTREFL_API registry_t
 {
-    std::unordered_map<std::string, type_t*> all;
+    std::unordered_map<std::string, type_t*> all{};
 
     #ifdef EIGHTREFL_RTTI_ENABLE
-    std::unordered_map<std::type_index, type_t*> rtti_all;
+    std::unordered_map<std::type_index, type_t*> rtti_all{};
     #endif // EIGHTREFL_RTTI_ENABLE
     registry_t();
     ~registry_t();

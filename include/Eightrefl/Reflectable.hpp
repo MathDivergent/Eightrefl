@@ -29,7 +29,7 @@
 #define REFLECTABLE_DECLARATION(... /*reflectable_type*/) \
     template <> struct xxeightrefl_traits<__VA_ARGS__> { \
         using R = typename ::xxeightrefl_alias<__VA_ARGS__>::R; \
-        static constexpr auto alias = #__VA_ARGS__;
+        [[maybe_unused]] static constexpr auto alias = #__VA_ARGS__;
 
 #define REFLECTABLE_REGISTRY(... /*reflectable_registry_address*/)  static auto registry() { return __VA_ARGS__; }
 #define REFLECTABLE_NAME(... /*reflectable_name_string*/) static auto name() { return __VA_ARGS__; }
@@ -60,8 +60,8 @@
 #define EIGHTREFL_REFLECTABLE_BODY() \
     template <class InjectionType> static void evaluate(InjectionType&& injection) { \
         auto xxtype = eightrefl::find_or_add_type<R>(); \
-        auto xxmeta = &xxtype->meta; (void)xxmeta; \
-        eightrefl::attribute_t<eightrefl::meta_t>* xxsubmeta = nullptr; (void)xxsubmeta; \
+        [[maybe_unused]] auto xxmeta = &xxtype->meta; \
+        [[maybe_unused]] eightrefl::attribute_t<eightrefl::meta_t>* xxsubmeta = nullptr; \
         eightrefl::add_default_injection_set<R>(xxtype); \
         injection.template type<R>(*xxtype); \
 
