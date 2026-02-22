@@ -24,9 +24,9 @@ struct meta_t;
 
 struct EIGHTREFL_API deleter_t
 {
-    std::string const name;
+    std::string const name{};
     std::function<void(std::any const& context)> const call = nullptr;
-    attribute_t<meta_t> meta;
+    attribute_t<meta_t> meta{};
 };
 
 template <typename ReflectableType>

@@ -51,13 +51,13 @@ struct meta_t;
 
 struct EIGHTREFL_API property_t
 {
-    std::string const name;
+    std::string const name{};
     type_t* const type = nullptr;
     std::function<void(std::any const& context, std::any& result)> const get = nullptr;
     std::function<void(std::any const& context, std::any const& value)> const set = nullptr;
     std::function<std::any(std::any const& outer_context)> const context = nullptr;
-    std::pair<std::any, std::any> const pointer;
-    attribute_t<meta_t> meta;
+    std::pair<std::any, std::any> const pointer{};
+    attribute_t<meta_t> meta{};
 };
 
 namespace detail
@@ -157,7 +157,7 @@ auto handler_property_set(PropertyType ReflectableType::* property)
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(PropertyType const ReflectableType::* property)
+auto handler_property_set(PropertyType const ReflectableType::*)
 {
     return nullptr;
 }
@@ -185,7 +185,7 @@ auto handler_property_set(PropertyType* property)
 }
 
 template <typename PropertyType>
-auto handler_property_set(PropertyType const* property)
+auto handler_property_set(PropertyType const*)
 {
     return nullptr;
 }
@@ -200,31 +200,31 @@ auto handler_property_set(void(*property)(PropertyType))
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(PropertyType(ReflectableType::* property)(void) const)
+auto handler_property_set(PropertyType(ReflectableType::*)(void) const)
 {
     return nullptr;
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(PropertyType(ReflectableType::* property)(void) const&)
+auto handler_property_set(PropertyType(ReflectableType::*)(void) const&)
 {
     return nullptr;
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(PropertyType(ReflectableType::* property)(void))
+auto handler_property_set(PropertyType(ReflectableType::*)(void))
 {
     return nullptr;
 }
 
 template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(PropertyType(ReflectableType::* property)(void)&)
+auto handler_property_set(PropertyType(ReflectableType::*)(void)&)
 {
     return nullptr;
 }
 
 template <typename PropertyType>
-auto handler_property_set(PropertyType(*property)(void))
+auto handler_property_set(PropertyType(*)(void))
 {
     return nullptr;
 }
@@ -329,43 +329,43 @@ constexpr auto property_pointer(IPropertyType iproperty, OPropertyType oproperty
 }
 
 template <typename ReflectableType, typename PropertyType>
-constexpr auto property_pointer(PropertyType const ReflectableType::* iproperty, PropertyType const ReflectableType::* oproperty)
+constexpr auto property_pointer(PropertyType const ReflectableType::* iproperty, PropertyType const ReflectableType::*)
 {
     return std::make_pair(iproperty, std::any{});
 }
 
 template <typename ReflectableType, typename PropertyType>
-constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void) const, PropertyType(ReflectableType::* oproperty)(void) const)
+constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void) const, PropertyType(ReflectableType::*)(void) const)
 {
     return std::make_pair(iproperty, std::any{});
 }
 
 template <typename ReflectableType, typename PropertyType>
-constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void) const&, PropertyType(ReflectableType::* oproperty)(void) const&)
+constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void) const&, PropertyType(ReflectableType::*)(void) const&)
 {
     return std::make_pair(iproperty, std::any{});
 }
 
 template <typename ReflectableType, typename PropertyType>
-constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void), PropertyType(ReflectableType::* oproperty)(void))
+constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void), PropertyType(ReflectableType::*)(void))
 {
     return std::make_pair(iproperty, std::any{});
 }
 
 template <typename ReflectableType, typename PropertyType>
-constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void)&, PropertyType(ReflectableType::* oproperty)(void)&)
+constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void)&, PropertyType(ReflectableType::*)(void)&)
 {
     return std::make_pair(iproperty, std::any{});
 }
 
 template <typename PropertyType>
-constexpr auto property_pointer(PropertyType(*iproperty)(void), PropertyType(*oproperty)(void))
+constexpr auto property_pointer(PropertyType(*iproperty)(void), PropertyType(*)(void))
 {
     return std::make_pair(iproperty, std::any{});
 }
 
 template <typename PropertyType>
-constexpr auto property_pointer(PropertyType const* iproperty, PropertyType const* oproperty)
+constexpr auto property_pointer(PropertyType const* iproperty, PropertyType const*)
 {
     return std::make_pair(iproperty, std::any{});
 }

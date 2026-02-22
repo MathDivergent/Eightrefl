@@ -71,7 +71,7 @@ struct TestEnumAsStringInjection : eightrefl::injectable_t
     }
 
     template <typename ReflectableType>
-    void type(eightrefl::type_t& type)
+    void type([[maybe_unused]] eightrefl::type_t& type)
     {
         xxenum_as_string.resize((std::size_t)ReflectableType::Size);
     }

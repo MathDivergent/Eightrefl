@@ -26,7 +26,7 @@ struct EIGHTREFL_API parent_t
 {
     type_t* const type = nullptr;
     std::function<std::any(std::any const& child_context)> const cast = nullptr;
-    attribute_t<meta_t> meta;
+    attribute_t<meta_t> meta{};
 };
 
 template <typename ReflectableType, typename ParentReflectableType>

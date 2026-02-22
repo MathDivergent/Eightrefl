@@ -12,7 +12,7 @@ struct TestMetaStruct : TestParentMetaStruct
 {
     TestMetaStruct() {}
     static int Function() { return 0; }
-    void Function(double value) {}
+    void Function([[maybe_unused]] double value) {}
     float Property = 0.f;
     int Constant = 0;
 
@@ -31,7 +31,7 @@ enum Type : long { Abstract, Internal, Serializable };
 struct TestMetaStructConfigs
 {
     bool const IsVisible = false;
-    float LifeTime = -1,f;
+    float LifeTime = -1.f;
     char const* Name = "UNKNOWN";
 };
 
