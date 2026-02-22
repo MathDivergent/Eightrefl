@@ -131,6 +131,10 @@ endif()
 
 # [[Tests][Configurations]]
 if(EIGHTREFL_BUILD_TEST_LIBS)
+    if(EIGHTREFL_WARNING_FLAGS)
+        target_compile_options(EightreflTests PRIVATE ${EIGHTREFL_WARNING_FLAGS})
+    endif()
+
     target_compile_options(EightreflTests PRIVATE "-Wno-ignored-qualifiers")
 
     if(EIGHTREFL_BUILD_FAST_LIBS)
@@ -141,10 +145,6 @@ if(EIGHTREFL_BUILD_TEST_LIBS)
 
     if(LINUX OR APPLE)
         set_target_properties(EightreflTests PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE INSTALL_RPATH "${EIGHTREFL_RPATH}" ${EIGHTREFL_VISIBILITY_HIDDEN})
-    endif()
-
-    if(EIGHTREFL_WARNING_FLAGS)
-        target_compile_options(EightreflTests PRIVATE ${EIGHTREFL_WARNING_FLAGS})
     endif()
 endif()
 
