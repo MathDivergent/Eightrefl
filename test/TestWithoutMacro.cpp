@@ -41,7 +41,7 @@ template <>
 struct xxeightrefl<TestWithoutMacroBaseStruct>
 {
     template <typename InjectionType>
-    void evaluate(InjectionType& injection)
+    void evaluate(InjectionType&)
     {
         eightrefl::find_or_add_type<TestWithoutMacroBaseStruct>();
     }
