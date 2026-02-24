@@ -40,9 +40,7 @@ if(LINUX OR APPLE)
     set(EIGHTREFL_VISIBILITY_HIDDEN C_VISIBILITY_PRESET hidden CXX_VISIBILITY_PRESET hidden VISIBILITY_INLINES_HIDDEN ON)
 endif()
 
-if(EIGHTREFL_WARNING_FLAGS_ENABLE)
-    set(EIGHTREFL_WARNING_FLAGS "-Wall" "-Wextra" "-Wpedantic" "-Werror")
-endif()
+set(EIGHTREFL_WARNING_FLAGS "-Wall" "-Wextra" "-Wpedantic" "-Werror")
 
 
 # [[Launcher][Defaults]]
@@ -104,7 +102,7 @@ if(EIGHTREFL_MEMBER_ENABLE)
     target_compile_definitions(Eightrefl PUBLIC "EIGHTREFL_MEMBER_ENABLE")
 endif()
 
-if(EIGHTREFL_WARNING_FLAGS)
+if(EIGHTREFL_WARNING_FLAGS_ENABLE)
     target_compile_options(Eightrefl PRIVATE ${EIGHTREFL_WARNING_FLAGS})
 endif()
 
@@ -131,7 +129,7 @@ endif()
 
 # [[Tests][Configurations]]
 if(EIGHTREFL_BUILD_TEST_LIBS)
-    if(EIGHTREFL_WARNING_FLAGS)
+    if(EIGHTREFL_WARNING_FLAGS_ENABLE)
         target_compile_options(EightreflTests PRIVATE ${EIGHTREFL_WARNING_FLAGS})
     endif()
 
