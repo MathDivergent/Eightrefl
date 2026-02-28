@@ -28,7 +28,11 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        image: [macos-15, macos-latest]
+
+    runs-on:  ${{ matrix.image }}
 
     env:
       Eightrefl: ${{ github.workspace }}
@@ -67,7 +71,7 @@ jobs:
     - name: "Package and Upload project"
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.workflow }}
+        name: Eightrefl-${{ matrix.image }}
         path: |
           ${{ env.Eightrefl }}/Binaries
           ${{ env.Eightrefl }}/Frameworks
