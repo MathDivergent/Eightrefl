@@ -19,7 +19,7 @@ struct TestContainerWithIteratorUsing
 
 } // TEST_SPACE
 
-REFLECTABLE_USING(Test_std_int32_t, std::int32_t)
+REFLECTABLE_DIRTY(Test_std_int32_t, std::int32_t)
 
 REFLECTABLE_DECLARATION(Test_std_int32_t)
     REFLECTABLE_NAME("std::int32_t")
@@ -38,7 +38,7 @@ REFLECTABLE_INIT()
 // TEMPLATE_REFLECTABLE(template <typename T>, TestContainerWithIteratorUsing<T>::Iterator)
 // REFLECTABLE_INIT()
 
-TEMPLATE_REFLECTABLE_USING
+TEMPLATE_REFLECTABLE_DIRTY
 (
     template <typename T>, TestContainerWithIteratorUsing_Iterator,
     TestContainerWithIteratorUsing_Iterator<T>, typename TestContainerWithIteratorUsing<T>::Iterator

@@ -7,7 +7,7 @@
 #include <Eightrefl/Standard/Standard.hpp>
 
 #ifdef EIGHTREFL_FULLY_ENABLE
-TEMPLATE_REFLECTABLE_USING
+TEMPLATE_REFLECTABLE_DIRTY
 (
     template <class StdContainerType>, std_const_iterator,
     std_const_iterator<StdContainerType>, typename eightrefl::clean_of<StdContainerType>::const_iterator
@@ -22,7 +22,7 @@ TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_const_iterator<StdCo
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_USING
+TEMPLATE_REFLECTABLE_DIRTY
 (
     template <class StdContainerType>, std_iterator,
     std_iterator<StdContainerType>, typename eightrefl::clean_of<StdContainerType>::iterator
@@ -37,7 +37,7 @@ TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_iterator<StdContaine
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_USING
+TEMPLATE_REFLECTABLE_DIRTY
 (
     template <class StdContainerType>, std_const_reverse_iterator,
     std_const_reverse_iterator<StdContainerType>, typename eightrefl::clean_of<StdContainerType>::const_reverse_iterator
@@ -52,7 +52,7 @@ TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_const_reverse_iterat
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_USING
+TEMPLATE_REFLECTABLE_DIRTY
 (
     template <class StdContainerType>, std_reverse_iterator,
     std_reverse_iterator<StdContainerType>, typename eightrefl::clean_of<StdContainerType>::reverse_iterator
@@ -67,7 +67,7 @@ TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_reverse_iterator<Std
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_USING
+TEMPLATE_REFLECTABLE_DIRTY
 (
     template <class StdContainerType>, std_const_local_iterator,
     std_const_local_iterator<StdContainerType>, typename eightrefl::clean_of<StdContainerType>::const_local_iterator
@@ -82,7 +82,7 @@ TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_const_local_iterator
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_USING
+TEMPLATE_REFLECTABLE_DIRTY
 (
     template <class StdContainerType>, std_local_iterator,
     std_local_iterator<StdContainerType>, typename eightrefl::clean_of<StdContainerType>::local_iterator

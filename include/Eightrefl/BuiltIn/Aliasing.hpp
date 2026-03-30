@@ -7,7 +7,7 @@
 
 #include <Eightrefl/BuiltIn/BuiltIn.hpp>
 
-REFLECTABLE_USING(std_size_t, std::size_t)
+REFLECTABLE_DIRTY(std_size_t, std::size_t)
 
 REFLECTABLE_DECLARATION(std_size_t)
     REFLECTABLE_REGISTRY(eightrefl::builtin())
@@ -16,7 +16,7 @@ REFLECTABLE_DECLARATION(std_size_t)
 REFLECTABLE_DECLARATION_INIT()
 
 
-REFLECTABLE_USING(std_ptrdiff_t, std::ptrdiff_t)
+REFLECTABLE_DIRTY(std_ptrdiff_t, std::ptrdiff_t)
 
 REFLECTABLE_DECLARATION(std_ptrdiff_t)
     REFLECTABLE_REGISTRY(eightrefl::builtin())

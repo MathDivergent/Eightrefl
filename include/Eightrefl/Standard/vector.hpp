@@ -140,7 +140,7 @@ TEMPLATE_REFLECTABLE
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_USING
+TEMPLATE_REFLECTABLE_DIRTY
 (
     template <class StdContainer>, std_vectorbool_reference,
     std_vectorbool_reference<StdContainer>, typename eightrefl::clean_of<StdContainer>::reference
@@ -163,7 +163,7 @@ TEMPLATE_REFLECTABLE(template <class StdContainer>, std_vectorbool_reference<Std
 REFLECTABLE_INIT()
 
 
-TEMPLATE_REFLECTABLE_USING
+TEMPLATE_REFLECTABLE_DIRTY
 (
     template <class StdContainer>, std_vectorbool_const_reference,
     std_vectorbool_const_reference<StdContainer>, typename eightrefl::clean_of<StdContainer>::const_reference

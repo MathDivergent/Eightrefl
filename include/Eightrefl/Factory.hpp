@@ -13,8 +13,8 @@
 #define FACTORY(... /*function_type*/) \
     { \
         using xxtraits = eightrefl::meta::function_traits<__VA_ARGS__>; \
-        auto xxfactory = eightrefl::find_or_add_factory<typename xxtraits::dirty_pointer>(xxtype); \
-        injection.template factory<CleanR, typename xxtraits::pointer>(*xxfactory); \
+        auto xxfactory = eightrefl::find_or_add_factory<typename xxtraits::dirty_type_pointer>(xxtype); \
+        injection.template factory<CleanR, typename xxtraits::type_pointer>(*xxfactory); \
         xxmeta = &xxfactory->meta; \
     }
 
