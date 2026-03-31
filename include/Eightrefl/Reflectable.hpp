@@ -16,20 +16,20 @@
 #include <Eightrefl/Detail/Meta.hpp>
 #include <Eightrefl/Detail/Macro.hpp>
 
-#define TEMPLATE_REFLECTABLE_DECLARATION(object_template_header, ... /*reflectable_type*/) \
-    EIGHTREFL_DEPAREN(object_template_header) struct xxeightrefl_traits<__VA_ARGS__> { \
-        using R = typename ::xxeightrefl_alias<__VA_ARGS__>::R; \
+#define TEMPLATE_REFLECTABLE_DECLARATION(type_template_header, ... /*reflectable_type_template*/) \
+    EIGHTREFL_DEPAREN(type_template_header) struct xxeightrefl_traits<__VA_ARGS__> { \
+        using R = typename ::xxeightrefl_dirty<__VA_ARGS__>::R; \
         LAZY_REFLECTABLE()
 
 #define CONDITIONAL_REFLECTABLE_DECLARATION(... /*reflectable_type_condition*/) \
     template <typename DirtyR> struct xxeightrefl_traits<DirtyR, std::enable_if_t<__VA_ARGS__>> { \
-        using R = typename ::xxeightrefl_alias<DirtyR>::R; \
+        using R = typename ::xxeightrefl_dirty<DirtyR>::R; \
         LAZY_REFLECTABLE()
 
 #define REFLECTABLE_DECLARATION(... /*reflectable_type*/) \
     template <> struct xxeightrefl_traits<__VA_ARGS__> { \
-        using R = typename ::xxeightrefl_alias<__VA_ARGS__>::R; \
-        [[maybe_unused]] static constexpr auto alias = #__VA_ARGS__;
+        using R = typename ::xxeightrefl_dirty<__VA_ARGS__>::R; \
+        [[maybe_unused]] static constexpr auto native_name = #__VA_ARGS__;
 
 #define REFLECTABLE_REGISTRY(... /*reflectable_registry_address*/)  static auto registry() { return __VA_ARGS__; }
 #define REFLECTABLE_NAME(... /*reflectable_name_string*/) static auto name() { return __VA_ARGS__; }
@@ -40,21 +40,21 @@
     };
 
 
-#define TEMPLATE_REFLECTABLE(object_template_header, ... /*reflectable_type*/) \
-    EIGHTREFL_DEPAREN(object_template_header) struct xxeightrefl<__VA_ARGS__> { \
+#define TEMPLATE_REFLECTABLE(type_template_header, ... /*reflectable_type_template*/) \
+    EIGHTREFL_DEPAREN(type_template_header) struct xxeightrefl<__VA_ARGS__> { \
         using R = __VA_ARGS__; \
-        using CleanR = typename ::xxeightrefl_alias<R>::R; \
+        using CleanR = typename ::xxeightrefl_dirty<R>::R; \
         EIGHTREFL_REFLECTABLE_BODY()
 
 #define CONDITIONAL_REFLECTABLE(... /*reflectable_type_condition*/) \
     template <typename R> struct xxeightrefl<R, std::enable_if_t<__VA_ARGS__>> { \
-        using CleanR = typename ::xxeightrefl_alias<R>::R; \
+        using CleanR = typename ::xxeightrefl_dirty<R>::R; \
         EIGHTREFL_REFLECTABLE_BODY()
 
 #define REFLECTABLE(... /*reflectable_type*/) \
     template <> struct xxeightrefl<__VA_ARGS__> { \
         using R = __VA_ARGS__; \
-        using CleanR = typename ::xxeightrefl_alias<R>::R; \
+        using CleanR = typename ::xxeightrefl_dirty<R>::R; \
         EIGHTREFL_REFLECTABLE_BODY()
 
 #define EIGHTREFL_REFLECTABLE_BODY() \
@@ -82,19 +82,19 @@
         REFLECTABLE_DECLARATION(__VA_ARGS__)
 
 
-#define TEMPLATE_REFLECTABLE_CLEAN(object_template_header, object_type, ... /*clean_reflectable_type*/) \
-    EIGHTREFL_DEPAREN(object_template_header) struct xxeightrefl_alias<EIGHTREFL_DEPAREN(object_type)> { using R = __VA_ARGS__; };
+#define TEMPLATE_REFLECTABLE_CLEAN(type_template_header, dirty_type, ... /*clean_reflectable_type_template*/) \
+    EIGHTREFL_DEPAREN(type_template_header) struct xxeightrefl_dirty<EIGHTREFL_DEPAREN(dirty_type)> { using R = __VA_ARGS__; };
 
-#define REFLECTABLE_CLEAN(alias_type, ... /*clean_reflectable_type*/) \
-    template <> struct xxeightrefl_alias<alias_type> { using R = __VA_ARGS__; };
+#define REFLECTABLE_CLEAN(dirty_type, ... /*clean_reflectable_type*/) \
+    template <> struct xxeightrefl_dirty<dirty_type> { using R = __VA_ARGS__; };
 
-#define TEMPLATE_REFLECTABLE_USING(alias_object_template_header, alias_type, alias_object_type, ... /*clean_reflectable_type*/) \
-    EIGHTREFL_DEPAREN(alias_object_template_header) struct alias_type : eightrefl::meta::inherits<__VA_ARGS__> {}; \
-    TEMPLATE_REFLECTABLE_CLEAN(alias_object_template_header, alias_object_type, __VA_ARGS__)
+#define TEMPLATE_REFLECTABLE_DIRTY(dirty_type_template_header, dirty_type, dirty_type_template, ... /*clean_reflectable_type_template*/) \
+    EIGHTREFL_DEPAREN(dirty_type_template_header) struct dirty_type : eightrefl::meta::inherits<__VA_ARGS__> {}; \
+    TEMPLATE_REFLECTABLE_CLEAN(dirty_type_template_header, dirty_type_template, __VA_ARGS__)
 
-#define REFLECTABLE_USING(alias_type, ... /*clean_reflectable_type*/) \
-    struct alias_type : eightrefl::meta::inherits<__VA_ARGS__> {}; \
-    REFLECTABLE_CLEAN(alias_type, __VA_ARGS__)
+#define REFLECTABLE_DIRTY(dirty_type, ... /*clean_reflectable_type*/) \
+    struct dirty_type final : eightrefl::meta::inherits<__VA_ARGS__> {}; \
+    REFLECTABLE_CLEAN(dirty_type, __VA_ARGS__)
 
 
 #define REFLECTABLE_ACCESS() template <typename, typename> friend struct xxeightrefl;
@@ -114,12 +114,27 @@ std::string name_of()
     }
     else
     {
-        return reflectable_traits::alias;
+        return reflectable_traits::native_name;
     }
 }
 
 template <typename ReflectableType>
-using clean_of = typename ::xxeightrefl_alias<ReflectableType>::R;
+registry_t* registry_of()
+{
+    using reflectable_traits = ::xxeightrefl_traits<ReflectableType>;
+    if constexpr (meta::is_custom_registry<ReflectableType>::value)
+    {
+        return reflectable_traits::registry();
+    }
+    else
+    {
+        return global();
+    }
+}
+
+template <typename ReflectableType>
+using clean_of = typename ::xxeightrefl_dirty<ReflectableType>::R;
+
 
 template <typename ReflectableType>
 void reflectable()
@@ -137,6 +152,7 @@ ReflectableType&& reflectable(ReflectableType&& object)
     return std::forward<ReflectableType>(object);
 }
 
+
 template <typename DirtyReflectableType>
 type_t* find_or_add_type()
 {
@@ -152,8 +168,7 @@ type_t* find_or_add_type()
         >
     >::type;
 
-    using reflectable_type = typename ::xxeightrefl_alias<dirty_reflectable_type>::R;
-    using reflectable_traits = ::xxeightrefl_traits<dirty_reflectable_type>;
+    using reflectable_type = typename ::xxeightrefl_dirty<dirty_reflectable_type>::R;
 
     if constexpr (meta::is_lazy<dirty_reflectable_type>::value)
     {
@@ -161,12 +176,7 @@ type_t* find_or_add_type()
     }
 
     auto xxname = name_of<dirty_reflectable_type>();
-    auto xxregistry = global();
-
-    if constexpr (meta::is_custom_registry<dirty_reflectable_type>::value)
-    {
-        xxregistry = reflectable_traits::registry();
-    }
+    auto xxregistry = registry_of<dirty_reflectable_type>();
 
     auto xxtype = xxregistry->all[xxname];
     if (xxtype == nullptr)
@@ -175,13 +185,6 @@ type_t* find_or_add_type()
     }
 
     return xxtype;
-}
-
-template <typename ReflectableType>
-type_t* type_of()
-{
-    static auto type = find_or_add_type<ReflectableType>();
-    return type;
 }
 
 template <typename ReflectableType, typename ParentReflectableType>
@@ -239,8 +242,8 @@ factory_t* find_or_add_factory(type_t* type)
 {
     using function_traits = meta::function_traits<DirtyFactoryType>;
     using dirty_type = typename function_traits::dirty_type;
-    using dirty_pointer = typename function_traits::dirty_pointer;
-    using pointer = typename function_traits::pointer;
+    using dirty_type_pointer = typename function_traits::dirty_type_pointer;
+    using type_pointer = typename function_traits::type_pointer;
 
     auto xxname = name_of<dirty_type>();
 
@@ -250,9 +253,9 @@ factory_t* find_or_add_factory(type_t* type)
         xxname,
         {
             .name = xxname,
-            .call = handler_factory_call(pointer{}),
-            .arguments = detail::function_argument_types(dirty_pointer{}),
-            .result = detail::function_return_type(dirty_pointer{})
+            .call = handler_factory_call(type_pointer{}),
+            .arguments = detail::function_argument_types(dirty_type_pointer{}),
+            .result = detail::function_return_type(dirty_type_pointer{})
         }
     );
 
@@ -273,7 +276,7 @@ function_t* find_or_add_function(type_t* type, std::string const& name, Function
     >;
 
     using dirty_type = typename function_traits::dirty_type;
-    using dirty_pointer = typename function_traits::dirty_pointer;
+    using dirty_type_pointer = typename function_traits::dirty_type_pointer;
 
     auto xxfunction = type->function.find(name);
     if (xxfunction == nullptr) xxfunction = type->function.add(name, {});
@@ -287,8 +290,8 @@ function_t* find_or_add_function(type_t* type, std::string const& name, Function
         {
             .name = xxoverload,
             .call = handler_function_call(pointer),
-            .arguments = detail::function_argument_types(dirty_pointer{}),
-            .result = detail::function_return_type(dirty_pointer{}),
+            .arguments = detail::function_argument_types(dirty_type_pointer{}),
+            .result = detail::function_return_type(dirty_type_pointer{}),
             .pointer = pointer
         }
     );
@@ -296,16 +299,16 @@ function_t* find_or_add_function(type_t* type, std::string const& name, Function
     return xxmeta;
 }
 
-template <typename DirtyPropertyType = void, typename GetterType, typename SetterType>
-property_t* find_or_add_property(type_t* type, std::string const& name, GetterType ipointer, SetterType opointer)
+template <typename DirtyPropertyType = void, typename IPointerType, typename OPointerType>
+property_t* find_or_add_property(type_t* type, std::string const& name, IPointerType ipointer, OPointerType opointer)
 {
     using property_traits = meta::property_traits
     <
         typename std::conditional_t
         <
             std::is_void_v<DirtyPropertyType>,
-            meta::type_identity<GetterType>,
-            meta::mark_dirty<GetterType, DirtyPropertyType>
+            meta::type_identity<IPointerType>,
+            meta::mark_dirty<IPointerType, DirtyPropertyType>
         >::type
     >;
 
@@ -353,7 +356,7 @@ deleter_t* find_or_add_deleter(type_t* type)
 {
     using deleter_traits = meta::deleter_traits<DirtyDeleterType>;
     using dirty_type = typename deleter_traits::dirty_type;
-    using pointer = typename deleter_traits::pointer;
+    using type_pointer = typename deleter_traits::type_pointer;
 
     auto xxname = name_of<dirty_type>();
 
@@ -363,7 +366,7 @@ deleter_t* find_or_add_deleter(type_t* type)
         xxname,
         {
             .name = xxname,
-            .call = handler_deleter_call(pointer{})
+            .call = handler_deleter_call(type_pointer{})
         }
     );
 
@@ -397,6 +400,7 @@ injection_t* find_or_add_injection(type_t* type)
 
     return xxmeta;
 }
+
 
 template <typename ReflectableType,
           std::size_t InjectionIndexValue = 0,

@@ -39,7 +39,7 @@ struct EIGHTREFL_API injectable_t
     template <typename ReflectableType, typename FunctionType>
     void function(eightrefl::function_t&) {}
 
-    template <typename ReflectableType, typename GetterType, typename SetterType>
+    template <typename ReflectableType, typename IPointerType, typename OPointerType>
     void property(eightrefl::property_t&) {}
 
     template <typename ReflectableType, typename FunctionType>

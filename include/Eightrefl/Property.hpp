@@ -63,8 +63,8 @@ struct EIGHTREFL_API property_t
 namespace detail
 {
 
-template <typename ReflectableType, typename GetterType>
-auto handler_property_get_impl(GetterType property)
+template <typename ReflectableType, typename IPointerType>
+auto handler_property_get_impl(IPointerType property)
 {
     return [property](std::any const& context, std::any& value)
     {
@@ -135,10 +135,10 @@ auto handler_property_get(PropertyType(*property)(void))
 namespace detail
 {
 
-template <typename ReflectableType, typename SetterType>
-auto handler_property_set_impl(SetterType property)
+template <typename ReflectableType, typename OPointerType>
+auto handler_property_set_impl(OPointerType property)
 {
-    using property_type = typename meta::property_traits<SetterType>::type;        
+    using property_type = typename meta::property_traits<OPointerType>::type;        
     return [property](std::any const& context, std::any const& value)
     {
         (std::any_cast<ReflectableType*>(context)->*property)(utility::forward<property_type>(value));
@@ -232,10 +232,10 @@ auto handler_property_set(PropertyType(*)(void))
 namespace detail
 {
 
-template <typename ReflectableType, typename GetterType>
-auto handler_property_context_impl(GetterType property)
+template <typename ReflectableType, typename IPointerType>
+auto handler_property_context_impl(IPointerType property)
 {
-    using property_type = typename meta::property_traits<GetterType>::type;
+    using property_type = typename meta::property_traits<IPointerType>::type;
     if constexpr (std::is_reference_v<property_type>)
     {
         return [property](std::any const& outer_context) -> std::any

@@ -16,7 +16,7 @@
 #include <Eightrefl/Standard/Standard.hpp>
 
 #ifdef EIGHTREFL_FULLY_ENABLE
-TEMPLATE_REFLECTABLE_USING
+TEMPLATE_REFLECTABLE_DIRTY
 (
     template <class StdBitsetType>, std_bitset_reference,
     std_bitset_reference<StdBitsetType>, typename eightrefl::clean_of<StdBitsetType>::reference
