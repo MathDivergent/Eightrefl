@@ -6,6 +6,7 @@
 #include <functional> // function
 
 #include <Eightrefl/Attribute.hpp>
+#include <Eightrefl/Meta.hpp>
 #include <Eightrefl/Utility.hpp>
 
 // .deleter<R, function_type>()
@@ -19,8 +20,6 @@
 
 namespace eightrefl
 {
-
-struct meta_t;
 
 struct EIGHTREFL_API deleter_t
 {

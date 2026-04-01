@@ -10,6 +10,9 @@ struct xxeightrefl_dirty { using R = ReflectableType; };
 template <typename ReflectableType, typename enable = void>
 struct xxeightrefl_traits;
 
+template <typename ReflectableType, typename enable = void>
+struct xxeightrefl;
+
 namespace eightrefl
 {
 

@@ -4,8 +4,9 @@
 #include <any> // any
 #include <functional> // function
 
-#include <Eightrefl/Type.hpp>
 #include <Eightrefl/Utility.hpp>
+
+#include <Eightrefl/Detail/Meta.hpp>
 
 #ifndef EIGHTREFL_DEFAULT_INJECTION_COUNT
     #define EIGHTREFL_DEFAULT_INJECTION_COUNT 4

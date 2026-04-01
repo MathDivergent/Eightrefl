@@ -7,6 +7,7 @@
 #include <functional> // function
 
 #include <Eightrefl/Attribute.hpp>
+#include <Eightrefl/Meta.hpp>
 #include <Eightrefl/Utility.hpp>
 
 // .factory<function_type>()
@@ -22,7 +23,6 @@ namespace eightrefl
 {
 
 struct type_t;
-struct meta_t;
 
 struct EIGHTREFL_API factory_t
 {
@@ -41,6 +41,12 @@ auto handler_factory_call_impl(std::index_sequence<ArgumentIndexValues...>)
 {
     return [](std::vector<std::any> const& arguments) -> std::any
     {
+        #ifdef EIGHTREFL_DEBUG_ENABLE
+        if (arguments.size() != sizeof...(ArgumentIndexValues))
+        {
+            throw "The handler_factory_call: number of arguments not valid.";
+        }
+        #endif // EIGHTREFL_DEBUG_ENABLE
         if constexpr (std::is_aggregate_v<ReflectableType>)
         {
             return std::any{ std::in_place_type<ReflectableType>, utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])... };

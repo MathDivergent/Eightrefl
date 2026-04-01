@@ -4,14 +4,7 @@
 #include <cstddef> // size_t
 
 #include <Eightrefl/Registry.hpp>
-#include <Eightrefl/Injection.hpp>
-#include <Eightrefl/Child.hpp>
-#include <Eightrefl/Parent.hpp>
-#include <Eightrefl/Factory.hpp>
-#include <Eightrefl/Function.hpp>
-#include <Eightrefl/Property.hpp>
-#include <Eightrefl/Deleter.hpp>
-#include <Eightrefl/Meta.hpp>
+#include <Eightrefl/Type.hpp>
 
 #include <Eightrefl/Detail/Meta.hpp>
 #include <Eightrefl/Detail/Macro.hpp>
@@ -29,7 +22,7 @@
 #define REFLECTABLE_DECLARATION(... /*reflectable_type*/) \
     template <> struct xxeightrefl_traits<__VA_ARGS__> { \
         using R = typename ::xxeightrefl_dirty<__VA_ARGS__>::R; \
-        [[maybe_unused]] static constexpr auto native_name = #__VA_ARGS__;
+        [[maybe_unused]] static constexpr auto xxnative_name = #__VA_ARGS__;
 
 #define REFLECTABLE_REGISTRY(... /*reflectable_registry_address*/)  static auto registry() { return __VA_ARGS__; }
 #define REFLECTABLE_NAME(... /*reflectable_name_string*/) static auto name() { return __VA_ARGS__; }
@@ -114,7 +107,7 @@ std::string name_of()
     }
     else
     {
-        return reflectable_traits::native_name;
+        return reflectable_traits::xxnative_name;
     }
 }
 

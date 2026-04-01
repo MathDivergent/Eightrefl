@@ -4,33 +4,33 @@
 #include <string> // string
 #include <unordered_map> // unordered_map
 
+#ifndef EIGHTREFL_ATTRIBUTE_RESERVE_SIZE
+    #define EIGHTREFL_ATTRIBUTE_RESERVE_SIZE std::size_t(8)
+#endif // EIGHTREFL_ATTRIBUTE_RESERVE_SIZE
+
 namespace eightrefl
 {
 
-template <class MetaType>
+template <class ElementType>
 struct attribute_t
 {
-    ~attribute_t()
+    attribute_t()
     {
-        for (auto const& [key, item] : all) delete item;
+        all.reserve(EIGHTREFL_ATTRIBUTE_RESERVE_SIZE);
     }
 
-    MetaType* find(std::string const& name) const
+    ElementType* find(std::string const& name)
     {
         auto it = all.find(name);
-        if (it == all.end()) return nullptr;
-
-        return it->second;
+        return it != all.end() ? &it->second : nullptr;
     }
 
-    MetaType* add(std::string const& name, MetaType const& meta)
+    ElementType* add(std::string const& name, ElementType const& meta)
     {
-        auto item = new MetaType(meta);
-        all.emplace(name, item);
-        return item;
+        return &all.emplace(name, meta).first->second;
     }
 
-    std::unordered_map<std::string, MetaType*> all{};
+    std::unordered_map<std::string, ElementType> all{};
 };
 
 } // namespace eightrefl

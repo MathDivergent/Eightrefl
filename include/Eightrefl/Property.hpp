@@ -9,6 +9,7 @@
 #include <type_traits> // is_reference_v
 
 #include <Eightrefl/Attribute.hpp>
+#include <Eightrefl/Meta.hpp>
 #include <Eightrefl/Utility.hpp>
 
 #include <Eightrefl/Detail/Macro.hpp> // EIGHTREFL_DEPAREN
@@ -47,7 +48,6 @@ namespace eightrefl
 {
 
 struct type_t;
-struct meta_t;
 
 struct EIGHTREFL_API property_t
 {

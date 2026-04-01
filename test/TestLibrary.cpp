@@ -359,7 +359,7 @@ bool is_parent_of(eightrefl::type_t const* parent, eightrefl::type_t const* type
     }
     for (auto& [name, search] : type->parent.all)
     {
-        if (is_parent_of(parent, search->type))
+        if (is_parent_of(parent, search.type))
         {
             return true;
         }
@@ -375,7 +375,7 @@ bool is_child_of(eightrefl::type_t const* child, eightrefl::type_t const* type)
     }
     for (auto& [name, search] : type->child.all)
     {
-        if (is_child_of(child, search->type))
+        if (is_child_of(child, search.type))
         {
             return true;
         }
