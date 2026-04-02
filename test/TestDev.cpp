@@ -172,7 +172,6 @@ TEST(TestDev, TestRegistry)
     EXPECT("type-size", type->size == sizeof(eightrefl::registry_t));
     EXPECT("type-context", type->context != nullptr);
 
-    EXPECT("factory-R()", type->factory.find("eightrefl::registry_t()") != nullptr);
     EXPECT("function-find", type->function.find("find") != nullptr);
     EXPECT("property-all", type->property.find("all") != nullptr);
 

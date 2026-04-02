@@ -196,7 +196,7 @@ TEST_SPACE()
 struct TestTypedPropertyStruct
 {
     int& FunctionProperty() { return Property; }
-    void FunctionProperty(int& value) { Property = value; }
+    void FunctionProperty(int& value) { Property = value; } // TODO: check for T const&, T&, T
 
     int& OtherFunctionProperty() { return Property; }
     int const& OtherFunctionProperty() const { return Property; }

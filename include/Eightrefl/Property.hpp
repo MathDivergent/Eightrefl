@@ -6,7 +6,7 @@
 #include <utility> // pair
 #include <functional> // function
 #include <memory> // addressof
-#include <type_traits> // is_reference_v
+#include <type_traits> // is_copy_assignable_v, is_reference_v
 
 #include <Eightrefl/Attribute.hpp>
 #include <Eightrefl/Meta.hpp>
@@ -118,7 +118,7 @@ auto handler_property_get(PropertyType* property)
 {
     return [property](std::any const&, std::any& result)
     {
-        // get of free (non-member) property        
+        // get of free (non-member) property
         result = utility::backward(*property);
     };
 }
@@ -138,7 +138,7 @@ namespace detail
 template <typename ReflectableType, typename OPointerType>
 auto handler_property_set_impl(OPointerType property)
 {
-    using property_type = typename meta::property_traits<OPointerType>::type;        
+    using property_type = typename meta::property_traits<OPointerType>::type;
     return [property](std::any const& context, std::any const& value)
     {
         (std::any_cast<ReflectableType*>(context)->*property)(utility::forward<property_type>(value));
@@ -150,16 +150,17 @@ auto handler_property_set_impl(OPointerType property)
 template <typename ReflectableType, typename PropertyType>
 auto handler_property_set(PropertyType ReflectableType::* property)
 {
-    return [property](std::any const& context, std::any const& value)
+    if constexpr (std::is_copy_assignable_v<PropertyType>)
     {
-        std::any_cast<ReflectableType*>(context)->*property = utility::forward<PropertyType>(value);
-    };
-}
-
-template <typename ReflectableType, typename PropertyType>
-auto handler_property_set(PropertyType const ReflectableType::*)
-{
-    return nullptr;
+        return [property](std::any const& context, std::any const& value)
+        {
+            std::any_cast<ReflectableType*>(context)->*property = utility::forward<PropertyType>(value);
+        };
+    }
+    else
+    {
+        return nullptr;
+    }
 }
 
 template <typename ReflectableType, typename PropertyType>
@@ -177,17 +178,18 @@ auto handler_property_set(void(ReflectableType::* property)(PropertyType)&)
 template <typename PropertyType>
 auto handler_property_set(PropertyType* property)
 {
-    return [property](std::any const&, std::any const& value)
+    if constexpr (std::is_copy_assignable_v<PropertyType>)
     {
-        // set of free (non-member) property
-        *property = utility::forward<PropertyType>(value);
-    };
-}
-
-template <typename PropertyType>
-auto handler_property_set(PropertyType const*)
-{
-    return nullptr;
+        return [property](std::any const&, std::any const& value)
+        {
+            // set of free (non-member) property
+            *property = utility::forward<PropertyType>(value);
+        };
+    }
+    else
+    {
+        return nullptr;
+    }
 }
 
 template <typename PropertyType>
