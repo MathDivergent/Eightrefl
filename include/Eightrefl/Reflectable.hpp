@@ -291,16 +291,17 @@ function_t* find_or_add_function(type_t* type, std::string const& name, Function
     return xxmeta;
 }
 
-template <typename DirtyPropertyType = void, typename IPointerType, typename OPointerType>
+template <typename IDirtyPropertyType = void, /*unused*/ typename ODirtyPropertyType = void,
+          typename IPointerType, typename OPointerType>
 property_t* find_or_add_property(type_t* type, std::string const& name, IPointerType ipointer, OPointerType opointer)
 {
     using property_traits = meta::property_traits
     <
         typename std::conditional_t
         <
-            std::is_void_v<DirtyPropertyType>,
+            std::is_void_v<IDirtyPropertyType>,
             meta::type_identity<IPointerType>,
-            meta::mark_dirty<IPointerType, DirtyPropertyType>
+            meta::mark_dirty<IPointerType, IDirtyPropertyType>
         >::type
     >;
 

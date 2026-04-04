@@ -257,7 +257,7 @@ struct TestFunctionPropertyStruct : TestFieldPropertyStruct
     int ReadonlyNoContext() { return 0; }
     int ReadonlyConstNoContext() const { return 0; }
 
-    // u can also use function template as property
+    // we can also use function template as property
 };
 
 } // TEST_SPACE
@@ -538,5 +538,252 @@ TEST(TestLibrary::TestRegistryProperty, TestFreeFunctionProperty)
         EXPECT("property-readonly_no_context-get", readonly_no_context->get != nullptr);
         EXPECT("property-readonly_no_context-set", readonly_no_context->set == nullptr);
         EXPECT("property-readonly_no_context-context", readonly_no_context->context == nullptr);
+    }
+}
+
+
+TEST_SPACE()
+{
+
+struct TestTypedFieldProperty
+{
+    int Property = 0;
+
+    static int StaticProperty;
+
+    template <typename T, typename... Args>
+    static T Template;
+};
+
+int TestTypedFieldProperty::StaticProperty = 0;
+
+template <typename T, typename... Args>
+T TestTypedFieldProperty::Template = T();
+
+int FreeProperty = 0;
+
+template <typename T, typename... Args>
+T FreeTemplate = T();
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestTypedFieldProperty)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestTypedFieldProperty)
+    PROPERTY(Property, int)
+    PROPERTY(StaticProperty, int)
+    PROPERTY(Template<int>, int)
+    PROPERTY((Template<int, float>), int)
+
+    FREE_PROPERTY(FreeProperty, int)
+    FREE_PROPERTY(FreeTemplate<int>, int)
+    FREE_PROPERTY((FreeTemplate<int, float>), int)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary::TestRegistryProperty, TestTypedFieldProperty)
+{
+    auto type = eightrefl::global()->find("TestTypedFieldProperty");
+
+    ASSERT("type", type != nullptr);
+
+    {
+        auto property = type->property.find("Property");
+
+        ASSERT("property", property != nullptr);
+        EXPECT("property-get", property->get != nullptr);
+        EXPECT("property-set", property->set != nullptr);
+        EXPECT("property-context", property->context != nullptr);
+    }
+    {
+        auto static_property = type->property.find("StaticProperty");
+
+        ASSERT("static_property", static_property != nullptr);
+        EXPECT("static_property-get", static_property->get != nullptr);
+        EXPECT("static_property-set", static_property->set != nullptr);
+        EXPECT("static_property-context", static_property->context != nullptr);
+    }
+    {
+        auto template_with_arg = type->property.find("Template<int>");
+
+        ASSERT("template_with_arg", template_with_arg != nullptr);
+        EXPECT("template_with_arg-get", template_with_arg->get != nullptr);
+        EXPECT("template_with_arg-set", template_with_arg->set != nullptr);
+        EXPECT("template_with_arg-context", template_with_arg->context != nullptr);
+    }
+    {
+        auto template_with_args = type->property.find("Template<int, float>");
+
+        ASSERT("template_with_args", template_with_args != nullptr);
+        EXPECT("template_with_args-get", template_with_args->get != nullptr);
+        EXPECT("template_with_args-set", template_with_args->set != nullptr);
+        EXPECT("template_with_args-context", template_with_args->context != nullptr);
+    }
+
+    {
+        auto free_property = type->property.find("FreeProperty");
+
+        ASSERT("free_property", free_property != nullptr);
+        EXPECT("free_property-get", free_property->get != nullptr);
+        EXPECT("free_property-set", free_property->set != nullptr);
+        EXPECT("free_property-context", free_property->context != nullptr);
+    }
+    {
+        auto free_template_with_arg = type->property.find("FreeTemplate<int>");
+
+        ASSERT("free_template_with_arg", free_template_with_arg != nullptr);
+        EXPECT("free_template_with_arg-get", free_template_with_arg->get != nullptr);
+        EXPECT("free_template_with_arg-set", free_template_with_arg->set != nullptr);
+        EXPECT("free_template_with_arg-context", free_template_with_arg->context != nullptr);
+    }
+    {
+        auto free_template_with_args = type->property.find("FreeTemplate<int, float>");
+
+        ASSERT("free_template_with_args", free_template_with_args != nullptr);
+        EXPECT("free_template_with_args-get", free_template_with_args->get != nullptr);
+        EXPECT("free_template_with_args-set", free_template_with_args->set != nullptr);
+        EXPECT("free_template_with_args-context", free_template_with_args->context != nullptr);
+    }
+}
+
+
+TEST_SPACE()
+{
+
+// we can mix property type with cv-quialifiers: int const&, int&, int const, int
+struct TestTypedFunctionProperty : TestTypedFieldProperty
+{
+    static int Static() { return StaticProperty; } static void Static(int value) { StaticProperty = value; }
+
+    int ICostQualifiedAndONoQuilified() const { return Property; } void ICostQualifiedAndONoQuilified(int value) { Property = value; }
+    int ICostQualifiedAndORefQuilified() const { return Property; } void ICostQualifiedAndORefQuilified(int value)& { Property = value; }
+
+    int ICostRefQualifiedAndONoQuilified() const& { return Property; } void ICostRefQualifiedAndONoQuilified(int value) { Property = value; }
+    int ICostRefQualifiedAndORefQuilified() const& { return Property; } void ICostRefQualifiedAndORefQuilified(int value)& { Property = value; }
+
+    int INoQualifiedAndONoQualified() { return Property; } void INoQualifiedAndONoQualified(int value) { Property = value; }
+    int INoQualifiedAndORefQualified() { return Property; } void INoQualifiedAndORefQualified(int value)& { Property = value; }
+
+    int IRefQualifiedAndONoQualified()& { return Property; } void IRefQualifiedAndONoQualified(int value) { Property = value; }
+    int IRefQualifiedAndORefQualified()& { return Property; } void IRefQualifiedAndORefQualified(int value)& { Property = value; }
+
+    // we can also use function template as property
+};
+
+int Free() { return 0; } void Free(int) {}
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestTypedFunctionProperty)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestTypedFunctionProperty)
+    PROPERTY(Static, int(), void(int))
+
+    PROPERTY(ICostQualifiedAndONoQuilified, int() const, void(int))
+    PROPERTY(ICostQualifiedAndORefQuilified, int() const, void(int)&)
+
+    PROPERTY(ICostRefQualifiedAndONoQuilified, int() const&, void(int))
+    PROPERTY(ICostRefQualifiedAndORefQuilified, int() const&, void(int)&)
+
+    PROPERTY(INoQualifiedAndONoQualified, int(), void(int))
+    PROPERTY(INoQualifiedAndORefQualified, int(), void(int)&)
+
+    PROPERTY(IRefQualifiedAndONoQualified, int()&, void(int))
+    PROPERTY(IRefQualifiedAndORefQualified, int()&, void(int)&)
+
+    FREE_PROPERTY(Free, int(), void(int))
+REFLECTABLE_INIT()
+
+TEST(TestLibrary::TestRegistryProperty, TestTypedFunctionProperty)
+{
+    auto type = eightrefl::global()->find("TestTypedFunctionProperty");
+
+    ASSERT("type", type != nullptr);
+
+    {
+        auto static_ = type->property.find("Static");
+
+        ASSERT("static", static_ != nullptr);
+        EXPECT("static-get", static_->get != nullptr);
+        EXPECT("static-set", static_->set != nullptr);
+        EXPECT("static-context", static_->context == nullptr);
+    }
+
+    {
+        auto icost_qualified_and_ono_quilified = type->property.find("ICostQualifiedAndONoQuilified");
+
+        ASSERT("icost_qualified_and_ono_quilified", icost_qualified_and_ono_quilified != nullptr);
+        EXPECT("icost_qualified_and_ono_quilified-get", icost_qualified_and_ono_quilified->get != nullptr);
+        EXPECT("icost_qualified_and_ono_quilified-set", icost_qualified_and_ono_quilified->set != nullptr);
+        EXPECT("icost_qualified_and_ono_quilified-context", icost_qualified_and_ono_quilified->context == nullptr);
+    }
+    {
+        auto icost_qualified_and_oref_quilified = type->property.find("ICostQualifiedAndORefQuilified");
+
+        ASSERT("icost_qualified_and_oref_quilified", icost_qualified_and_oref_quilified != nullptr);
+        EXPECT("icost_qualified_and_oref_quilified-get", icost_qualified_and_oref_quilified->get != nullptr);
+        EXPECT("icost_qualified_and_oref_quilified-set", icost_qualified_and_oref_quilified->set != nullptr);
+        EXPECT("icost_qualified_and_oref_quilified-context", icost_qualified_and_oref_quilified->context == nullptr);
+    }
+
+    {
+        auto icostref_qualified_and_ono_quilified = type->property.find("ICostRefQualifiedAndONoQuilified");
+
+        ASSERT("icostref_qualified_and_ono_quilified", icostref_qualified_and_ono_quilified != nullptr);
+        EXPECT("icostref_qualified_and_ono_quilified-get", icostref_qualified_and_ono_quilified->get != nullptr);
+        EXPECT("icostref_qualified_and_ono_quilified-set", icostref_qualified_and_ono_quilified->set != nullptr);
+        EXPECT("icostref_qualified_and_ono_quilified-context", icostref_qualified_and_ono_quilified->context == nullptr);
+    }
+    {
+        auto icostref_qualified_and_oref_quilified = type->property.find("ICostRefQualifiedAndORefQuilified");
+
+        ASSERT("icostref_qualified_and_oref_quilified", icostref_qualified_and_oref_quilified != nullptr);
+        EXPECT("icostref_qualified_and_oref_quilified-get", icostref_qualified_and_oref_quilified->get != nullptr);
+        EXPECT("icostref_qualified_and_oref_quilified-set", icostref_qualified_and_oref_quilified->set != nullptr);
+        EXPECT("icostref_qualified_and_oref_quilified-context", icostref_qualified_and_oref_quilified->context == nullptr);
+    }
+
+    {
+        auto ino_qualified_and_ono_quilified = type->property.find("INoQualifiedAndONoQualified");
+
+        ASSERT("ino_qualified_and_ono_quilified", ino_qualified_and_ono_quilified != nullptr);
+        EXPECT("ino_qualified_and_ono_quilified-get", ino_qualified_and_ono_quilified->get != nullptr);
+        EXPECT("ino_qualified_and_ono_quilified-set", ino_qualified_and_ono_quilified->set != nullptr);
+        EXPECT("ino_qualified_and_ono_quilified-context", ino_qualified_and_ono_quilified->context == nullptr);
+    }
+    {
+        auto ino_qualified_and_oref_quilified = type->property.find("INoQualifiedAndORefQualified");
+
+        ASSERT("ino_qualified_and_oref_quilified", ino_qualified_and_oref_quilified != nullptr);
+        EXPECT("ino_qualified_and_oref_quilified-get", ino_qualified_and_oref_quilified->get != nullptr);
+        EXPECT("ino_qualified_and_oref_quilified-set", ino_qualified_and_oref_quilified->set != nullptr);
+        EXPECT("ino_qualified_and_oref_quilified-context", ino_qualified_and_oref_quilified->context == nullptr);
+    }
+
+    {
+        auto iref_qualified_and_ono_quilified = type->property.find("IRefQualifiedAndONoQualified");
+
+        ASSERT("iref_qualified_and_ono_quilified", iref_qualified_and_ono_quilified != nullptr);
+        EXPECT("iref_qualified_and_ono_quilified-get", iref_qualified_and_ono_quilified->get != nullptr);
+        EXPECT("iref_qualified_and_ono_quilified-set", iref_qualified_and_ono_quilified->set != nullptr);
+        EXPECT("iref_qualified_and_ono_quilified-context", iref_qualified_and_ono_quilified->context == nullptr);
+    }
+    {
+        auto iref_qualified_and_oref_quilified = type->property.find("IRefQualifiedAndORefQualified");
+
+        ASSERT("iref_qualified_and_oref_quilified", iref_qualified_and_oref_quilified != nullptr);
+        EXPECT("iref_qualified_and_oref_quilified-get", iref_qualified_and_oref_quilified->get != nullptr);
+        EXPECT("iref_qualified_and_oref_quilified-set", iref_qualified_and_oref_quilified->set != nullptr);
+        EXPECT("iref_qualified_and_oref_quilified-context", iref_qualified_and_oref_quilified->context == nullptr);
+    }
+
+    {
+        auto free_ = type->property.find("Free");
+
+        ASSERT("free", free_ != nullptr);
+        EXPECT("free-get", free_->get != nullptr);
+        EXPECT("free-set", free_->set != nullptr);
+        EXPECT("free-context", free_->context == nullptr);
     }
 }

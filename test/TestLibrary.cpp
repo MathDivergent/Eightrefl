@@ -195,9 +195,8 @@ TEST_SPACE()
 
 struct TestTypedPropertyStruct
 {
-    int& FunctionProperty() { return Property; }
-    void FunctionProperty(int& value) { Property = value; }
-    // void FunctionProperty(int value) { Property = value; }
+    int const& FunctionProperty() { return Property; }
+    void FunctionProperty(int value) { Property = value; }
 
     int& OtherFunctionProperty() { return Property; }
     int const& OtherFunctionProperty() const { return Property; }
@@ -215,8 +214,7 @@ REFLECTABLE_DECLARATION(TestTypedPropertyStruct)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestTypedPropertyStruct)
-    // PROPERTY(FunctionProperty, int&(), void(int))
-    PROPERTY(FunctionProperty, int&())
+    PROPERTY(FunctionProperty, int const&(), void(int))
     PROPERTY(OtherFunctionProperty, int const&() const)
     PROPERTY(TemplateFunctionProperty<char>, char())
     PROPERTY(Property, int)

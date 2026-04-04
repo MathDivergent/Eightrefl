@@ -343,6 +343,15 @@ struct access_traits<>
         }
     };
 
+    template <typename IPropertyType, typename OPropertyType>
+    struct property<IPropertyType(), void(OPropertyType)>
+    {
+        static constexpr auto of(typename ::xxeightrefl_dirty<IPropertyType>::R(*iproperty)(void), void(*oproperty)(typename ::xxeightrefl_dirty<OPropertyType>::R))
+        {
+            return std::make_pair(iproperty, oproperty);
+        }
+    };
+
     template <typename PropertyType>
     struct property<PropertyType>
     {
@@ -484,6 +493,26 @@ struct access_traits<ClassType>
         }
     };
 
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType() const, void(ODirtyPropertyType)>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void) const, void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R))
+        {
+            return function_data(iproperty, oproperty);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType() const, void(ODirtyPropertyType)&>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void) const, void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R)&)
+        {
+            return function_data(iproperty, oproperty);
+        }
+    };
+
     template <typename DirtyPropertyType>
     struct property<DirtyPropertyType() const&>
     {
@@ -505,6 +534,26 @@ struct access_traits<ClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const&, typename type_identity<PropertyType(ParentClassType::*)(void) const&>::type)
         {
             return function_data(iproperty, nullptr);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType() const&, void(ODirtyPropertyType)>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void) const&, void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R))
+        {
+            return function_data(iproperty, oproperty);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType() const&, void(ODirtyPropertyType)&>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void) const&, void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R)&)
+        {
+            return function_data(iproperty, oproperty);
         }
     };
 
@@ -542,6 +591,34 @@ struct access_traits<ClassType>
         }
     };
 
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType(), void(ODirtyPropertyType)>
+    {
+        using IPropertyType = typename ::xxeightrefl_dirty<IDirtyPropertyType>::R;
+        using OPropertyType = typename ::xxeightrefl_dirty<ODirtyPropertyType>::R;
+
+        template <typename ParentClassType>
+        static constexpr auto of(IPropertyType(ParentClassType::* iproperty)(void), void(ParentClassType::* oproperty)(OPropertyType))
+        {
+            return function_data(iproperty, oproperty);
+        }
+
+        static constexpr auto of(IPropertyType(*iproperty)(void), void(*oproperty)(OPropertyType))
+        {
+            return std::make_pair(iproperty, oproperty);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType(), void(ODirtyPropertyType)&>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void), void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R)&)
+        {
+            return function_data(iproperty, oproperty);
+        }
+    };
+
     template <typename DirtyPropertyType>
     struct property<DirtyPropertyType()&>
     {
@@ -563,6 +640,26 @@ struct access_traits<ClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void)&, typename type_identity<PropertyType(ParentClassType::*)(void)&>::type)
         {
             return function_data(iproperty, nullptr);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType()&, void(ODirtyPropertyType)>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void)&, void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R))
+        {
+            return function_data(iproperty, oproperty);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType()&, void(ODirtyPropertyType)&>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void)&, void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R)&)
+        {
+            return function_data(iproperty, oproperty);
         }
     };
 
