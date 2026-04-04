@@ -128,7 +128,7 @@ CONDITIONAL_REFLECTABLE(xxeightrefl_is_any_std_ordered_map<R>::value)
     FACTORY(R(std::initializer_list<typename R::value_type>))
     #endif // EIGHTREFL_FULLY_ENABLE
 
-    FUNCTION(operator=, R&(R const&))
+    if constexpr (std::is_copy_assignable_v<typename R::mapped_type>) FUNCTION(operator=, R&(R const&))
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))
