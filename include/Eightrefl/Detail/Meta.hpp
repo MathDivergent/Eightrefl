@@ -384,6 +384,12 @@ struct access_traits<ClassType>
         return std::make_pair(detail::function_ptr_impl<ClassType>(iproperty), detail::function_ptr_impl<ClassType>(oproperty));
     }
 
+    template <typename IPointerType>
+    static constexpr auto function_data(IPointerType iproperty, std::nullptr_t)
+    {
+        return std::make_pair(detail::function_ptr_impl<ClassType>(iproperty), nullptr);
+    }
+
     template <typename FunctionType>
     static constexpr auto function_data(FunctionType function)
     {
@@ -474,7 +480,7 @@ struct access_traits<ClassType>
         template <typename ParentClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const, typename type_identity<PropertyType(ParentClassType::*)(void) const>::type)
         {
-            return function_data(iproperty, iproperty);
+            return function_data(iproperty, nullptr);
         }
     };
 
@@ -498,7 +504,7 @@ struct access_traits<ClassType>
         template <typename ParentClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const&, typename type_identity<PropertyType(ParentClassType::*)(void) const&>::type)
         {
-            return function_data(iproperty, iproperty);
+            return function_data(iproperty, nullptr);
         }
     };
 
@@ -522,7 +528,7 @@ struct access_traits<ClassType>
         template <typename ParentClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void), typename type_identity<PropertyType(ParentClassType::*)(void)>::type)
         {
-            return function_data(iproperty, iproperty);
+            return function_data(iproperty, nullptr);
         }
 
         static constexpr auto of(PropertyType(*iproperty)(void), void(*oproperty)(PropertyType))
@@ -532,7 +538,7 @@ struct access_traits<ClassType>
 
         static constexpr auto of(PropertyType(*iproperty)(void), typename type_identity<PropertyType(*)(void)>::type)
         {
-            return std::make_pair(iproperty, iproperty);
+            return std::make_pair(iproperty, nullptr);
         }
     };
 
@@ -556,7 +562,7 @@ struct access_traits<ClassType>
         template <typename ParentClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void)&, typename type_identity<PropertyType(ParentClassType::*)(void)&>::type)
         {
-            return function_data(iproperty, iproperty);
+            return function_data(iproperty, nullptr);
         }
     };
 
