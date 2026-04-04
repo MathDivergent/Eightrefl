@@ -1,4 +1,4 @@
-// #include <Eightrefl/BuiltIn/Void.hpp>
+#include <Eightrefl/BuiltIn/Void.hpp>
 
-// REFLECTABLE(void)
-// REFLECTABLE_INIT()
+REFLECTABLE(void)
+REFLECTABLE_INIT()
