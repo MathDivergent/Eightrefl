@@ -12,12 +12,12 @@
 #define TEMPLATE_REFLECTABLE_DECLARATION(type_template_header, ... /*reflectable_type_template*/) \
     EIGHTREFL_DEPAREN(type_template_header) struct xxeightrefl_traits<__VA_ARGS__> { \
         using R = typename ::xxeightrefl_dirty<__VA_ARGS__>::R; \
-        LAZY_REFLECTABLE()
+        REFLECTABLE_LAZY_EVALUATE()
 
 #define CONDITIONAL_REFLECTABLE_DECLARATION(... /*reflectable_type_condition*/) \
     template <typename DirtyR> struct xxeightrefl_traits<DirtyR, std::enable_if_t<__VA_ARGS__>> { \
         using R = typename ::xxeightrefl_dirty<DirtyR>::R; \
-        LAZY_REFLECTABLE()
+        REFLECTABLE_LAZY_EVALUATE()
 
 #define REFLECTABLE_DECLARATION(... /*reflectable_type*/) \
     template <> struct xxeightrefl_traits<__VA_ARGS__> { \
@@ -26,8 +26,7 @@
 
 #define REFLECTABLE_REGISTRY(... /*reflectable_registry_address*/)  static auto registry() { return __VA_ARGS__; }
 #define REFLECTABLE_NAME(... /*reflectable_name_string*/) static auto name() { return __VA_ARGS__; }
-#define LAZY_REFLECTABLE() struct lazy;
-#define BUILTIN_REFLECTABLE() struct builtin;
+#define REFLECTABLE_LAZY_EVALUATE() struct xxlazy_evaluate;
 
 #define REFLECTABLE_DECLARATION_INIT() \
     };
@@ -100,7 +99,7 @@ template <typename ReflectableType>
 std::string name_of()
 {
     using reflectable_traits = ::xxeightrefl_traits<ReflectableType>;
-    if constexpr (meta::is_custom_name<ReflectableType>::value)
+    if constexpr (::xxeightrefl_traits_has_reflectable_name<ReflectableType>::value)
     {
         return reflectable_traits::name();
     }
@@ -114,7 +113,7 @@ template <typename ReflectableType>
 registry_t* registry_of()
 {
     using reflectable_traits = ::xxeightrefl_traits<ReflectableType>;
-    if constexpr (meta::is_custom_registry<ReflectableType>::value)
+    if constexpr (::xxeightrefl_traits_has_reflectable_registry<ReflectableType>::value)
     {
         return reflectable_traits::registry();
     }
@@ -162,7 +161,7 @@ type_t* find_or_add_type()
 
     using reflectable_type = typename ::xxeightrefl_dirty<dirty_reflectable_type>::R;
 
-    if constexpr (meta::is_lazy<dirty_reflectable_type>::value)
+    if constexpr (::xxeightrefl_traits_has_reflectable_lazy_evaluate<dirty_reflectable_type>::value)
     {
         reflectable<dirty_reflectable_type>();
     }

@@ -36,6 +36,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::unordered_map<KeyType, ValueType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::unordered_map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -44,7 +45,12 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::unordered_map<KeyType, ValueType, HasherType>
 )
     REFLECTABLE_REGISTRY(eightrefl::standard())
-    REFLECTABLE_NAME("std::unordered_map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<HasherType>() + ">")
+    REFLECTABLE_NAME
+    (
+        "std::unordered_map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
+                              + eightrefl::name_of<HasherType>() + ">"
+    )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -58,6 +64,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
         "std::unordered_map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
                               + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<HasherType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -68,9 +75,11 @@ TEMPLATE_REFLECTABLE_DECLARATION
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME
     (
-        "std::unordered_map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<HasherType>() + ", "
-                              + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<AllocatorType>() + ">"
+        "std::unordered_map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
+                              + eightrefl::name_of<HasherType>() + ", " + eightrefl::name_of<ComparatorType>() + ", "
+                              + eightrefl::name_of<AllocatorType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 
@@ -84,6 +93,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::unordered_multimap<KeyType, ValueType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::unordered_multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -92,7 +102,12 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::unordered_multimap<KeyType, ValueType, HasherType>
 )
     REFLECTABLE_REGISTRY(eightrefl::standard())
-    REFLECTABLE_NAME("std::unordered_multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<HasherType>() + ">")
+    REFLECTABLE_NAME
+    (
+        "std::unordered_multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>()
+                                   + ", " + eightrefl::name_of<HasherType>() + ">"
+    )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -106,6 +121,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
         "std::unordered_multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
                                    + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<HasherType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -116,9 +132,11 @@ TEMPLATE_REFLECTABLE_DECLARATION
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME
     (
-        "std::unordered_multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<HasherType>() + ", "
-                                   + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<AllocatorType>() + ">"
+        "std::unordered_multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
+                                   + eightrefl::name_of<HasherType>() + ", " + eightrefl::name_of<ComparatorType>() + ", "
+                                   + eightrefl::name_of<AllocatorType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 

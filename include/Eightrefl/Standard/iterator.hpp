@@ -16,6 +16,7 @@ TEMPLATE_REFLECTABLE_DIRTY
 TEMPLATE_REFLECTABLE_DECLARATION(template <class StdContainerType>, std_const_iterator<StdContainerType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME(eightrefl::name_of<StdContainerType>() + "::const_iterator")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_const_iterator<StdContainerType>)
@@ -31,6 +32,7 @@ TEMPLATE_REFLECTABLE_DIRTY
 TEMPLATE_REFLECTABLE_DECLARATION(template <class StdContainerType>, std_iterator<StdContainerType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME(eightrefl::name_of<StdContainerType>() + "::iterator")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_iterator<StdContainerType>)
@@ -46,6 +48,7 @@ TEMPLATE_REFLECTABLE_DIRTY
 TEMPLATE_REFLECTABLE_DECLARATION(template <class StdContainerType>, std_const_reverse_iterator<StdContainerType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME(eightrefl::name_of<StdContainerType>() + "::const_reverse_iterator")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_const_reverse_iterator<StdContainerType>)
@@ -61,6 +64,7 @@ TEMPLATE_REFLECTABLE_DIRTY
 TEMPLATE_REFLECTABLE_DECLARATION(template <class StdContainerType>, std_reverse_iterator<StdContainerType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME(eightrefl::name_of<StdContainerType>() + "::reverse_iterator")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_reverse_iterator<StdContainerType>)
@@ -76,6 +80,7 @@ TEMPLATE_REFLECTABLE_DIRTY
 TEMPLATE_REFLECTABLE_DECLARATION(template <class StdContainerType>, std_const_local_iterator<StdContainerType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME(eightrefl::name_of<StdContainerType>() + "::const_local_iterator")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_const_local_iterator<StdContainerType>)
@@ -91,6 +96,7 @@ TEMPLATE_REFLECTABLE_DIRTY
 TEMPLATE_REFLECTABLE_DECLARATION(template <class StdContainerType>, std_local_iterator<StdContainerType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME(eightrefl::name_of<StdContainerType>() + "::local_iterator")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdContainerType>, std_local_iterator<StdContainerType>)

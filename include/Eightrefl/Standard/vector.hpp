@@ -30,6 +30,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::vector<ValueType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::vector<" + eightrefl::name_of<ValueType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -38,6 +39,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::vector<" + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<AllocatorType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE
@@ -149,6 +151,7 @@ TEMPLATE_REFLECTABLE_DIRTY
 TEMPLATE_REFLECTABLE_DECLARATION(template <class StdContainer>, std_vectorbool_reference<StdContainer>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME(eightrefl::name_of<StdContainer>() + "::reference")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdContainer>, std_vectorbool_reference<StdContainer>)
@@ -172,6 +175,7 @@ TEMPLATE_REFLECTABLE_DIRTY
 TEMPLATE_REFLECTABLE_DECLARATION(template <class StdContainer>, std_vectorbool_const_reference<StdContainer>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME(eightrefl::name_of<StdContainer>() + "::const_reference")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdContainer>, std_vectorbool_const_reference<StdContainer>)

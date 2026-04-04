@@ -35,6 +35,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::map<KeyType, ValueType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME( "std::map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -45,8 +46,10 @@ TEMPLATE_REFLECTABLE_DECLARATION
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME
     (
-        "std::map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<ComparatorType>() + ">"
+        "std::map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
+                    + eightrefl::name_of<ComparatorType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -60,6 +63,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
         "std::map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
                     + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<AllocatorType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 
@@ -73,6 +77,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::multimap<KeyType, ValueType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME( "std::multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -83,8 +88,10 @@ TEMPLATE_REFLECTABLE_DECLARATION
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME
     (
-        "std::multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<ComparatorType>() + ">"
+        "std::multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
+                         + eightrefl::name_of<ComparatorType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -98,6 +105,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
         "std::multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
                          + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<AllocatorType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 

@@ -13,6 +13,19 @@ struct xxeightrefl_traits;
 template <typename ReflectableType, typename enable = void>
 struct xxeightrefl;
 
+template <typename, typename enable = void> struct xxeightrefl_traits_has_reflectable_name : std::false_type {};
+template <typename ReflectableType>
+struct xxeightrefl_traits_has_reflectable_name<ReflectableType, std::void_t<decltype(&::xxeightrefl_traits<ReflectableType>::name)>> : std::true_type {};
+
+template <typename, typename enable = void> struct xxeightrefl_traits_has_reflectable_registry : std::false_type {};
+template <typename ReflectableType>
+struct xxeightrefl_traits_has_reflectable_registry<ReflectableType, std::void_t<decltype(&::xxeightrefl_traits<ReflectableType>::registry)>> : std::true_type {};
+
+template <typename, typename enable = void> struct xxeightrefl_traits_has_reflectable_lazy_evaluate : std::false_type {};
+template <typename ReflectableType>
+struct xxeightrefl_traits_has_reflectable_lazy_evaluate<ReflectableType, std::void_t<typename ::xxeightrefl_traits<ReflectableType>::xxlazy_evaluate>> : std::true_type {};
+
+
 namespace eightrefl
 {
 
@@ -50,22 +63,6 @@ struct to_reflectable_object { using type = std::remove_const_t<ObjectType>; };
 
 template <typename, typename enable = void> struct is_complete : std::false_type {};
 template <typename Type> struct is_complete<Type, std::void_t<decltype(sizeof(Type))>> : std::true_type {};
-
-template <typename, typename enable = void> struct is_custom_name : std::false_type {};
-template <typename ReflectableType>
-struct is_custom_name<ReflectableType, std::void_t<decltype(&::xxeightrefl_traits<ReflectableType>::name)>> : std::true_type {};
-
-template <typename, typename enable = void> struct is_custom_registry : std::false_type {};
-template <typename ReflectableType>
-struct is_custom_registry<ReflectableType, std::void_t<decltype(&::xxeightrefl_traits<ReflectableType>::registry)>> : std::true_type {};
-
-template <typename, typename enable = void> struct is_lazy : std::false_type {};
-template <typename ReflectableType>
-struct is_lazy<ReflectableType, std::void_t<typename ::xxeightrefl_traits<ReflectableType>::lazy>> : std::true_type {};
-
-template <typename, typename enable = void> struct is_builtin : std::false_type {};
-template <typename ReflectableType>
-struct is_builtin<ReflectableType, std::void_t<typename ::xxeightrefl_traits<ReflectableType>::biiltin>> : std::true_type {};
 
 template <typename MemberPointerType, typename DirtyMemberPointerType>
 struct mark_dirty;

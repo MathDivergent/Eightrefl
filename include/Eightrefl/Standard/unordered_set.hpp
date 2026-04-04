@@ -34,6 +34,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::unordered_set<KeyType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::unordered_set<" + eightrefl::name_of<KeyType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -43,6 +44,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::unordered_set<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<HasherType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -53,8 +55,10 @@ TEMPLATE_REFLECTABLE_DECLARATION
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME
     (
-        "std::unordered_set<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<HasherType>() + ">"
+        "std::unordered_set<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ComparatorType>()
+                              + ", " + eightrefl::name_of<HasherType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -68,6 +72,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
         "std::unordered_set<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<HasherType>() + ", "
                               + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<AllocatorType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 
@@ -81,6 +86,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::unordered_multiset<KeyType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::unordered_multiset<" + eightrefl::name_of<KeyType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -90,6 +96,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::unordered_set<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<HasherType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -100,8 +107,10 @@ TEMPLATE_REFLECTABLE_DECLARATION
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME
     (
-        "std::unordered_multiset<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<HasherType>() + ">"
+        "std::unordered_multiset<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ComparatorType>()
+                                   + ", " + eightrefl::name_of<HasherType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -115,6 +124,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
         "std::unordered_multiset<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<HasherType>() + ", "
                                    + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<AllocatorType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 

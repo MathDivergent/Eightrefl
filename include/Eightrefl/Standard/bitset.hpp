@@ -25,6 +25,7 @@ TEMPLATE_REFLECTABLE_DIRTY
 TEMPLATE_REFLECTABLE_DECLARATION(template <class StdBitsetType>, std_bitset_reference<StdBitsetType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME(eightrefl::name_of<StdBitsetType>() + "::reference")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdBitsetType>, std_bitset_reference<StdBitsetType>)
@@ -47,6 +48,7 @@ REFLECTABLE_INIT()
 TEMPLATE_REFLECTABLE_DECLARATION(template <std::size_t SizeValue>, std::bitset<SizeValue>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::bitset<" + std::to_string(SizeValue) + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <std::size_t SizeValue>, std::bitset<SizeValue>)

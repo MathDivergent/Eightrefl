@@ -19,7 +19,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ElementType, std::size_t SizeValue>), ElementType[SizeValue])
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME(eightrefl::name_of<ElementType>() + "[" + std::to_string(SizeValue) + "]")
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 #endif // EIGHTREFL_BUILTIN_STATIC_ARRAY_HPP

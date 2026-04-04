@@ -19,6 +19,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::reference_wrapper<ValueType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::reference_wrapper<" + eightrefl::name_of<ValueType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename ValueType>, std::reference_wrapper<ValueType>)
