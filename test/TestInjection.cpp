@@ -1,5 +1,9 @@
 #include <EightreflTestingBase.hpp>
 
+// will reflect injection to all types below
+// for correct registry you must add injection before all reflectable types you want
+REFLECTABLE_INJECTION_KEY(3, struct TestToStringInjection)
+
 TEST_SPACE()
 {
 
@@ -34,9 +38,7 @@ struct TestToStringInjection : eightrefl::injectable_t
     }
 };
 
-// will reflect injection to all types
-// for correct registry u must add injection before all library includes
-REFLECTABLE_INJECTION_DECLARATION(0, TestToStringInjection)
+REFLECTABLE_DECLARATION(TestToStringInjection)
 REFLECTABLE_DECLARATION_INIT()
 
 TEST(TestLibrary, TestDefaultInjection)

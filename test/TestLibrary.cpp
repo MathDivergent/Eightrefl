@@ -1182,6 +1182,8 @@ TEST(TestLibrary, TestPointerDereferenceType)
 
     ASSERT("type", type != nullptr);
 
+    eightrefl::find_or_add_meta(type->meta, "*", eightrefl::registry_of<TestPointerDereferenceTypeStruct>()->find(eightrefl::name_of<TestPointerDereferenceTypeStruct>()));
+
     auto meta = type->meta.find("*");
     ASSERT("type.meta", meta != nullptr);
 

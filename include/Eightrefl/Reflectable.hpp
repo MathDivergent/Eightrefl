@@ -53,7 +53,7 @@
     template <class InjectionType> static void evaluate(InjectionType&& injection) { \
         auto xxtype = eightrefl::find_or_add_type<R>(); \
         [[maybe_unused]] auto xxmeta = &xxtype->meta; \
-        eightrefl::add_default_injection_set<R>(xxtype); \
+        eightrefl::add_injections_using_keys<R>(xxtype); \
         injection.template type<R>(*xxtype); \
 
 #ifdef EIGHTREFL_DISABLE_REFLECTION_FIXTURE
@@ -68,10 +68,8 @@
 #endif // EIGHTREFL_DISABLE_REFLECTION_FIXTURE
 
 
-#define REFLECTABLE_INJECTION_DECLARATION(injection_index, ... /*reflectable_type*/) \
-    template <> struct xxeightrefl_injection<injection_index> { using R = __VA_ARGS__; }; \
-        REFLECTABLE_DECLARATION(__VA_ARGS__)
-
+#define REFLECTABLE_INJECTION_KEY(injection_key, ... /*reflectable_type*/) \
+    template <> struct xxeightrefl_injection_traits<injection_key> { using R = __VA_ARGS__; }; \
 
 #define TEMPLATE_REFLECTABLE_CLEAN(type_template_header, dirty_type, ... /*clean_reflectable_type_template*/) \
     EIGHTREFL_DEPAREN(type_template_header) struct xxeightrefl_dirty<EIGHTREFL_DEPAREN(dirty_type)> { using R = __VA_ARGS__; };
@@ -394,18 +392,16 @@ injection_t* find_or_add_injection(type_t* type)
 }
 
 
-template <typename ReflectableType,
-          std::size_t InjectionIndexValue = 0,
-          std::size_t DefaultInjectionCountValue = EIGHTREFL_DEFAULT_INJECTION_COUNT>
-void add_default_injection_set(type_t* type)
+template <typename ReflectableType, std::size_t InjectionKeyValue = 0>
+void add_injections_using_keys(type_t* type)
 {
-    using reflectable_traits = ::xxeightrefl_injection<InjectionIndexValue>;
-    if constexpr (meta::is_complete<reflectable_traits>::value)
+    using injection_traits = ::xxeightrefl_injection_traits<InjectionKeyValue>;
+    if constexpr (meta::is_complete<injection_traits>::value)
     {
-        find_or_add_injection<ReflectableType, typename reflectable_traits::R>(type);
-        if constexpr (InjectionIndexValue < DefaultInjectionCountValue)
+        find_or_add_injection<ReflectableType, typename injection_traits::R>(type);
+        if constexpr (InjectionKeyValue < xxeighrefl_injection_traits_max_key)
         {
-            add_default_injection_set<ReflectableType, InjectionIndexValue + 1>(type);
+            add_injections_using_keys<ReflectableType, InjectionKeyValue + 1>(type);
         }
     }
 }
