@@ -11,7 +11,7 @@
 // default allocator for unordered_map, unordered_multimap
 #include <Eightrefl/Standard/allocator.hpp>
 
-#ifndef EIGHTREFL_FULLY_ENABLE
+#ifdef EIGHTREFL_FULLY_ENABLE
 // as function argument type
 #include <Eightrefl/Standard/initializer_list.hpp>
 #include <Eightrefl/Standard/iterator.hpp>
