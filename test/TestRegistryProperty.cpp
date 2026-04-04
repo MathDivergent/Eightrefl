@@ -4,10 +4,28 @@
 TEST_SPACE()
 {
 
+struct TestPropertyReadonlyStruct
+{
+    TestPropertyReadonlyStruct& operator=(TestPropertyReadonlyStruct const&) = delete;
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestPropertyReadonlyStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestPropertyReadonlyStruct)
+REFLECTABLE_INIT()
+
+
+TEST_SPACE()
+{
+
 struct TestFieldPropertyStruct
 {
     int Property = 0;
     int const Readonly = 0;
+    TestPropertyReadonlyStruct ReadonlyStruct;
     int& Reference;
 };
 
@@ -19,6 +37,7 @@ REFLECTABLE_DECLARATION_INIT()
 REFLECTABLE(TestFieldPropertyStruct)
     PROPERTY(Property)
     PROPERTY(Readonly)
+    PROPERTY(ReadonlyStruct)
 //  PROPERTY(Reference) // unsupported!
 REFLECTABLE_INIT()
 
@@ -44,6 +63,14 @@ TEST(TestLibrary::TestRegistryProperty, TestFieldProperty)
         EXPECT("property-readonly-set", readonly->set == nullptr);
         EXPECT("property-readonly-context", readonly->context != nullptr);
     }
+    {
+        auto readonly_struct = type->property.find("ReadonlyStruct");
+
+        ASSERT("property-readonly_struct", readonly_struct != nullptr);
+        EXPECT("property-readonly_struct-get", readonly_struct->get != nullptr);
+        EXPECT("property-readonly_struct-set", readonly_struct->set == nullptr);
+        EXPECT("property-readonly_struct-context", readonly_struct->context != nullptr);
+    }
 }
 
 
@@ -54,6 +81,7 @@ struct TestStaticFieldPropertyStruct
 {
     static int Property;
     static int const Readonly;
+    static TestPropertyReadonlyStruct ReadonlyStruct;
 
     template <typename T, typename... Args>
     static T Template;
@@ -61,6 +89,7 @@ struct TestStaticFieldPropertyStruct
 
 int TestStaticFieldPropertyStruct::Property = 0;
 int const TestStaticFieldPropertyStruct::Readonly = 0;
+TestPropertyReadonlyStruct TestStaticFieldPropertyStruct::ReadonlyStruct;
 
 template <typename T, typename... Args>
 T TestStaticFieldPropertyStruct::Template = T();
@@ -73,6 +102,7 @@ REFLECTABLE_DECLARATION_INIT()
 REFLECTABLE(TestStaticFieldPropertyStruct)
     PROPERTY(Property)
     PROPERTY(Readonly)
+    PROPERTY(ReadonlyStruct)
     PROPERTY(Template<int>)
     PROPERTY((Template<int, bool>))
 REFLECTABLE_INIT()
@@ -100,6 +130,14 @@ TEST(TestLibrary::TestRegistryProperty, TestStaticFieldProperty)
         EXPECT("property-readonly-context", readonly->context != nullptr);
     }
     {
+        auto readonly_struct = type->property.find("ReadonlyStruct");
+
+        ASSERT("property-readonly_struct", readonly_struct != nullptr);
+        EXPECT("property-readonly_struct-get", readonly_struct->get != nullptr);
+        EXPECT("property-readonly_struct-set", readonly_struct->set == nullptr);
+        EXPECT("property-readonly_struct-context", readonly_struct->context != nullptr);
+    }
+    {
         auto template_with_arg = type->property.find("Template<int>");
 
         ASSERT("property-template_with_arg", template_with_arg != nullptr);
@@ -125,6 +163,7 @@ struct TestFreeFieldPropertyStruct {};
 
 int Property = 0;
 int const Readonly = 0;
+TestPropertyReadonlyStruct ReadonlyStruct;
 int& Reference = Property;
 
 template <typename T, typename... Args>
@@ -138,6 +177,7 @@ REFLECTABLE_DECLARATION_INIT()
 REFLECTABLE(TestFreeFieldPropertyStruct)
     FREE_PROPERTY(Property)
     FREE_PROPERTY(Readonly)
+    FREE_PROPERTY(ReadonlyStruct)
     FREE_PROPERTY(Reference)
     FREE_PROPERTY(Template<int>)
     FREE_PROPERTY((Template<int, bool>))
@@ -164,6 +204,14 @@ TEST(TestLibrary::TestRegistryProperty, TestFreeFieldProperty)
         EXPECT("property-readonly-get", readonly->get != nullptr);
         EXPECT("property-readonly-set", readonly->set == nullptr);
         EXPECT("property-readonly-context", readonly->context != nullptr);
+    }
+    {
+        auto readonly_struct = type->property.find("ReadonlyStruct");
+
+        ASSERT("property-readonly_struct", readonly_struct != nullptr);
+        EXPECT("property-readonly_struct-get", readonly_struct->get != nullptr);
+        EXPECT("property-readonly_struct-set", readonly_struct->set == nullptr);
+        EXPECT("property-readonly_struct-context", readonly_struct->context != nullptr);
     }
     {
         auto reference = type->property.find("Reference");
