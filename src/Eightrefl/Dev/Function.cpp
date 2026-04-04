@@ -16,7 +16,7 @@ REFLECTABLE(eightrefl::function_t)
     PROPERTY(arguments)
     PROPERTY(result)
     PROPERTY(pointer)
-    // PROPERTY(meta)
+    PROPERTY(meta)
 REFLECTABLE_INIT()
 #endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE

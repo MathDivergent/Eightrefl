@@ -54,7 +54,6 @@
     template <class InjectionType> static void evaluate(InjectionType&& injection) { \
         auto xxtype = eightrefl::find_or_add_type<R>(); \
         [[maybe_unused]] auto xxmeta = &xxtype->meta; \
-        [[maybe_unused]] eightrefl::attribute_t<eightrefl::meta_t>* xxsubmeta = nullptr; \
         eightrefl::add_default_injection_set<R>(xxtype); \
         injection.template type<R>(*xxtype); \
 

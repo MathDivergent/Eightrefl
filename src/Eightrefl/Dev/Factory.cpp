@@ -15,7 +15,7 @@ REFLECTABLE(eightrefl::factory_t)
     PROPERTY(call)
     PROPERTY(arguments)
     PROPERTY(result)
-    // PROPERTY(meta)
+    PROPERTY(meta)
 REFLECTABLE_INIT()
 #endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE

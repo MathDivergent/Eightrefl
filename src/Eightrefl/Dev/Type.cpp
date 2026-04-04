@@ -32,7 +32,7 @@ REFLECTABLE(eightrefl::type_t)
     PROPERTY(function)
     PROPERTY(property)
     PROPERTY(deleter)
-    // PROPERTY(meta)
+    PROPERTY(meta)
 REFLECTABLE_INIT()
 #endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE

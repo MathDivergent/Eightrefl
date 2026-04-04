@@ -122,7 +122,6 @@ TEST(TestDev, TestMeta)
 
     EXPECT("property-name", type->property.find("name") != nullptr);
     EXPECT("property-value", type->property.find("value") != nullptr);
-    EXPECT("property-meta", type->property.find("meta") != nullptr);
 }
 
 TEST(TestDev, TestInjection)
