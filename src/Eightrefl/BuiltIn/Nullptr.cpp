@@ -1,4 +1,4 @@
-#include <Eightrefl/BuiltIn/Nullptr.hpp>
+// #include <Eightrefl/BuiltIn/Nullptr.hpp>
 
-REFLECTABLE(std::nullptr_t)
-REFLECTABLE_INIT()
+// REFLECTABLE(std::nullptr_t)
+// REFLECTABLE_INIT()
