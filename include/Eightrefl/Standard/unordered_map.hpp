@@ -11,14 +11,14 @@
 // default allocator for unordered_map, unordered_multimap
 #include <Eightrefl/Standard/allocator.hpp>
 
-#ifndef EIGHTREFL_CORE_MININAL
+#ifndef EIGHTREFL_FULLY_ENABLE
 // as function argument type
 #include <Eightrefl/Standard/initializer_list.hpp>
 #include <Eightrefl/Standard/iterator.hpp>
 
 // as value type
 #include <Eightrefl/Standard/pair.hpp>
-#endif // EIGHTREFL_CORE_MININAL
+#endif // EIGHTREFL_FULLY_ENABLE
 
 // hash - as hasher
 // equal_to - as comparator
@@ -171,7 +171,7 @@ CONDITIONAL_REFLECTABLE(xxeightrefl_is_any_std_unordered_map<R>::value)
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     FUNCTION(max_size)
-    #endif // EIGHTREFL_CORE_MININAL
+    #endif // EIGHTREFL_FULLY_ENABLE
 
     FUNCTION(clear)
 
