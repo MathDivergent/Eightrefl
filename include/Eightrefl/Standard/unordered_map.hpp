@@ -154,7 +154,7 @@ CONDITIONAL_REFLECTABLE(xxeightrefl_is_any_std_unordered_map<R>::value)
     #endif // EIGHTREFL_FULLY_ENABLE
 
     FACTORY(R(R const&))
-    FUNCTION(operator=, R&(R const&))
+    if constexpr (std::is_copy_assignable_v<typename R::mapped_type>) FUNCTION(operator=, R&(R const&))
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     FUNCTION(get_allocator)
