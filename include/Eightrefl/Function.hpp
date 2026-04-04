@@ -37,7 +37,7 @@ struct type_t;
 struct EIGHTREFL_API function_t
 {
     std::string const name{};
-    std::function<std::any(std::any const& context, std::vector<std::any> const& args)> const call = nullptr;
+    std::function<std::any(std::any const& context, std::vector<std::any> const& arguments)> const call = nullptr;
     std::vector<type_t*> const arguments{};
     type_t* const result = nullptr;
     std::any const pointer{};
