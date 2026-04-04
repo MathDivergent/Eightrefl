@@ -11,7 +11,7 @@
 REFLECTABLE(eightrefl::deleter_t)
     PROPERTY(name)
     PROPERTY(call)
-    PROPERTY(meta)
+    // PROPERTY(meta)
 REFLECTABLE_INIT()
 #endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE

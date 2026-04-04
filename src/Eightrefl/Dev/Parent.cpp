@@ -11,7 +11,7 @@
 REFLECTABLE(eightrefl::parent_t)
     PROPERTY(type)
     PROPERTY(cast)
-    PROPERTY(meta)
+    // PROPERTY(meta)
 REFLECTABLE_INIT()
 #endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE
