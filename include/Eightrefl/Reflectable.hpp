@@ -395,14 +395,15 @@ injection_t* find_or_add_injection(type_t* type)
 template <typename ReflectableType, std::size_t InjectionKeyValue = 0>
 void add_injections_using_keys(type_t* type)
 {
-    using injection_traits = ::xxeightrefl_injection_traits<InjectionKeyValue>;
-    if constexpr (meta::is_complete<injection_traits>::value)
+    if constexpr (InjectionKeyValue < xxeighrefl_injection_traits_max_key)
     {
-        find_or_add_injection<ReflectableType, typename injection_traits::R>(type);
-        if constexpr (InjectionKeyValue < xxeighrefl_injection_traits_max_key)
+        using injection_traits = ::xxeightrefl_injection_traits<InjectionKeyValue>;
+        if constexpr (meta::is_complete<injection_traits>::value)
         {
-            add_injections_using_keys<ReflectableType, InjectionKeyValue + 1>(type);
+            find_or_add_injection<ReflectableType, typename injection_traits::R>(type);
         }
+
+        add_injections_using_keys<ReflectableType, InjectionKeyValue + 1>(type);
     }
 }
 
