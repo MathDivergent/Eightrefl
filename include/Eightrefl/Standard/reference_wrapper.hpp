@@ -28,7 +28,7 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::reference_wrapper<Value
     FUNCTION(operator=, R&(R const&))
 
     #ifdef EIGHTREFL_FULLY_ENABLE
-    NAMED_FUNCTION(("operator " + eightrefl::name_of<ValueType&>()), operator eightrefl::clean_of<ValueType>&)
+    FUNCTION_AS(("operator " + eightrefl::name_of<ValueType&>()), operator eightrefl::clean_of<ValueType>&)
     #endif // EIGHTREFL_FULLY_ENABLE
 
     FUNCTION(get)

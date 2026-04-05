@@ -3,7 +3,9 @@
 
 #include <Eightrefl/Detail/Meta.hpp>
 
-#define REFLECTABLE_BUILTIN() struct xxbuiltin;
+#define REFLECTABLE_BUILTIN() \
+    struct xxbuiltin;
+
 
 template <typename, typename enable = void> struct xxeightrefl_traits_has_reflectable_builtin : std::false_type {};
 template <typename ReflectableType>

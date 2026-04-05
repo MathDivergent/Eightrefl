@@ -145,7 +145,7 @@ TEST(TestLibrary::TestRegistryFunction, TestStaticFunction)
 TEST_SPACE()
 {
 
-struct TestFreeFunctionStruct {};
+struct TestExternalFunctionStruct {};
 
 void Function() {}
 void Overload() {}
@@ -159,22 +159,22 @@ void Template(T) {}
 
 } // TEST_SPACE
 
-REFLECTABLE_DECLARATION(TestFreeFunctionStruct)
+REFLECTABLE_DECLARATION(TestExternalFunctionStruct)
 REFLECTABLE_DECLARATION_INIT()
 
-REFLECTABLE(TestFreeFunctionStruct)
-    FREE_FUNCTION(Function)
-    FREE_FUNCTION(Overload, void())
-    FREE_FUNCTION(Overload, void(int))
-    FREE_FUNCTION(Template, void(float))
-    FREE_FUNCTION(Template<int>, void())
-    FREE_FUNCTION(Template<int>, void(float))
-    FREE_FUNCTION((Template<int, bool>), void(float))
+REFLECTABLE(TestExternalFunctionStruct)
+    FUNCTION_EXTERNAL(Function)
+    FUNCTION_EXTERNAL(Overload, void())
+    FUNCTION_EXTERNAL(Overload, void(int))
+    FUNCTION_EXTERNAL(Template, void(float))
+    FUNCTION_EXTERNAL(Template<int>, void())
+    FUNCTION_EXTERNAL(Template<int>, void(float))
+    FUNCTION_EXTERNAL((Template<int, bool>), void(float))
 REFLECTABLE_INIT()
 
-TEST(TestLibrary::TestRegistryFunction, TestFreeFunction)
+TEST(TestLibrary::TestRegistryFunction, TestExternalFunction)
 {
-    auto type = eightrefl::global()->find("TestFreeFunctionStruct");
+    auto type = eightrefl::global()->find("TestExternalFunctionStruct");
 
     ASSERT("type", type != nullptr);
 

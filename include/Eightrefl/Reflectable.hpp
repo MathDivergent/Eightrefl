@@ -24,9 +24,14 @@
         using R = typename ::xxeightrefl_dirty<__VA_ARGS__>::R; \
         [[maybe_unused]] static constexpr auto xxnative_name = #__VA_ARGS__;
 
-#define REFLECTABLE_REGISTRY(... /*reflectable_registry_address*/)  static auto registry() { return __VA_ARGS__; }
-#define REFLECTABLE_NAME(... /*reflectable_name_string*/) static auto name() { return __VA_ARGS__; }
-#define REFLECTABLE_LAZY_EVALUATE() struct xxlazy_evaluate;
+#define REFLECTABLE_REGISTRY(... /*reflectable_registry_address*/) \
+    static auto registry() { return __VA_ARGS__; }
+
+#define REFLECTABLE_NAME(... /*reflectable_name_string*/) \
+    static auto name() { return __VA_ARGS__; }
+
+#define REFLECTABLE_LAZY_EVALUATE() \
+    struct xxlazy_evaluate;
 
 #define REFLECTABLE_DECLARATION_INIT() \
     };
@@ -86,7 +91,8 @@
     REFLECTABLE_CLEAN(dirty_type, __VA_ARGS__)
 
 
-#define REFLECTABLE_ACCESS() template <typename, typename> friend struct xxeightrefl;
+#define REFLECTABLE_ACCESS() \
+    template <typename, typename> friend struct xxeightrefl;
 
 
 namespace eightrefl
@@ -288,7 +294,7 @@ function_t* find_or_add_function(type_t* type, std::string const& name, Function
     return xxmeta;
 }
 
-template <typename IDirtyPropertyType = void, /*unused*/ typename ODirtyPropertyType = void,
+template <typename IDirtyPropertyType = void, typename ODirtyPropertyType = void /*unused*/,
           typename IPointerType, typename OPointerType>
 property_t* find_or_add_property(type_t* type, std::string const& name, IPointerType ipointer, OPointerType opointer)
 {

@@ -4,7 +4,9 @@
 #ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Detail/Meta.hpp>
 
-#define REFLECTABLE_STANDARD() struct xxstandard;
+#define REFLECTABLE_STANDARD() \
+    struct xxstandard;
+
 
 template <typename, typename enable = void> struct xxeightrefl_traits_has_reflectable_standard : std::false_type {};
 template <typename ReflectableType>

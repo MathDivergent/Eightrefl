@@ -159,7 +159,7 @@ TEST(TestLibrary::TestRegistryProperty, TestStaticFieldProperty)
 TEST_SPACE()
 {
 
-struct TestFreeFieldPropertyStruct {};
+struct TestExternalFieldPropertyStruct {};
 
 int Property = 0;
 int const Readonly = 0;
@@ -171,21 +171,21 @@ T Template = T();
 
 } // TEST_SPACE
 
-REFLECTABLE_DECLARATION(TestFreeFieldPropertyStruct)
+REFLECTABLE_DECLARATION(TestExternalFieldPropertyStruct)
 REFLECTABLE_DECLARATION_INIT()
 
-REFLECTABLE(TestFreeFieldPropertyStruct)
-    FREE_PROPERTY(Property)
-    FREE_PROPERTY(Readonly)
-    FREE_PROPERTY(ReadonlyStruct)
-    FREE_PROPERTY(Reference)
-    FREE_PROPERTY(Template<int>)
-    FREE_PROPERTY((Template<int, bool>))
+REFLECTABLE(TestExternalFieldPropertyStruct)
+    PROPERTY_EXTERNAL(Property)
+    PROPERTY_EXTERNAL(Readonly)
+    PROPERTY_EXTERNAL(ReadonlyStruct)
+    PROPERTY_EXTERNAL(Reference)
+    PROPERTY_EXTERNAL(Template<int>)
+    PROPERTY_EXTERNAL((Template<int, bool>))
 REFLECTABLE_INIT()
 
-TEST(TestLibrary::TestRegistryProperty, TestFreeFieldProperty)
+TEST(TestLibrary::TestRegistryProperty, TestExternalFieldProperty)
 {
-    auto type = eightrefl::global()->find("TestFreeFieldPropertyStruct");
+    auto type = eightrefl::global()->find("TestExternalFieldPropertyStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -459,7 +459,7 @@ TEST(TestLibrary::TestRegistryProperty, TestStaticFunctionProperty)
 TEST_SPACE()
 {
 
-struct TestFreeFunctionPropertyStruct {};
+struct TestExternalFunctionPropertyStruct {};
 
 int& WithContext() { return Property; } void WithContext(int& value) { Property = value; }
 int const& WithConstContext() { return Property; } void WithConstContext(int const& value) { Property = value; }
@@ -471,22 +471,22 @@ int ReadonlyNoContext() { return 0; }
 
 } // TEST_SPACE
 
-REFLECTABLE_DECLARATION(TestFreeFunctionPropertyStruct)
+REFLECTABLE_DECLARATION(TestExternalFunctionPropertyStruct)
 REFLECTABLE_DECLARATION_INIT()
 
-REFLECTABLE(TestFreeFunctionPropertyStruct)
-    FREE_PROPERTY(WithContext)
-    FREE_PROPERTY(WithConstContext)
-    FREE_PROPERTY(NoContext)
+REFLECTABLE(TestExternalFunctionPropertyStruct)
+    PROPERTY_EXTERNAL(WithContext)
+    PROPERTY_EXTERNAL(WithConstContext)
+    PROPERTY_EXTERNAL(NoContext)
 
-    FREE_PROPERTY(ReadonlyWithContext)
-    FREE_PROPERTY(ReadonlyWithConstContext)
-    FREE_PROPERTY(ReadonlyNoContext)
+    PROPERTY_EXTERNAL(ReadonlyWithContext)
+    PROPERTY_EXTERNAL(ReadonlyWithConstContext)
+    PROPERTY_EXTERNAL(ReadonlyNoContext)
 REFLECTABLE_INIT()
 
-TEST(TestLibrary::TestRegistryProperty, TestFreeFunctionProperty)
+TEST(TestLibrary::TestRegistryProperty, TestExternalFunctionProperty)
 {
-    auto type = eightrefl::global()->find("TestFreeFunctionPropertyStruct");
+    auto type = eightrefl::global()->find("TestExternalFunctionPropertyStruct");
 
     ASSERT("type", type != nullptr);
 
@@ -560,10 +560,10 @@ int TestTypedFieldProperty::StaticProperty = 0;
 template <typename T, typename... Args>
 T TestTypedFieldProperty::Template = T();
 
-int FreeProperty = 0;
+int ExternalProperty = 0;
 
 template <typename T, typename... Args>
-T FreeTemplate = T();
+T ExternalTemplate = T();
 
 } // TEST_SPACE
 
@@ -576,9 +576,9 @@ REFLECTABLE(TestTypedFieldProperty)
     PROPERTY(Template<int>, int)
     PROPERTY((Template<int, float>), int)
 
-    FREE_PROPERTY(FreeProperty, int)
-    FREE_PROPERTY(FreeTemplate<int>, int)
-    FREE_PROPERTY((FreeTemplate<int, float>), int)
+    PROPERTY_EXTERNAL(ExternalProperty, int)
+    PROPERTY_EXTERNAL(ExternalTemplate<int>, int)
+    PROPERTY_EXTERNAL((ExternalTemplate<int, float>), int)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryProperty, TestTypedFieldProperty)
@@ -621,28 +621,28 @@ TEST(TestLibrary::TestRegistryProperty, TestTypedFieldProperty)
     }
 
     {
-        auto free_property = type->property.find("FreeProperty");
+        auto external_property = type->property.find("ExternalProperty");
 
-        ASSERT("free_property", free_property != nullptr);
-        EXPECT("free_property-get", free_property->get != nullptr);
-        EXPECT("free_property-set", free_property->set != nullptr);
-        EXPECT("free_property-context", free_property->context != nullptr);
+        ASSERT("external_property", external_property != nullptr);
+        EXPECT("external_property-get", external_property->get != nullptr);
+        EXPECT("external_property-set", external_property->set != nullptr);
+        EXPECT("external_property-context", external_property->context != nullptr);
     }
     {
-        auto free_template_with_arg = type->property.find("FreeTemplate<int>");
+        auto external_template_with_arg = type->property.find("ExternalTemplate<int>");
 
-        ASSERT("free_template_with_arg", free_template_with_arg != nullptr);
-        EXPECT("free_template_with_arg-get", free_template_with_arg->get != nullptr);
-        EXPECT("free_template_with_arg-set", free_template_with_arg->set != nullptr);
-        EXPECT("free_template_with_arg-context", free_template_with_arg->context != nullptr);
+        ASSERT("external_template_with_arg", external_template_with_arg != nullptr);
+        EXPECT("external_template_with_arg-get", external_template_with_arg->get != nullptr);
+        EXPECT("external_template_with_arg-set", external_template_with_arg->set != nullptr);
+        EXPECT("external_template_with_arg-context", external_template_with_arg->context != nullptr);
     }
     {
-        auto free_template_with_args = type->property.find("FreeTemplate<int, float>");
+        auto external_template_with_args = type->property.find("ExternalTemplate<int, float>");
 
-        ASSERT("free_template_with_args", free_template_with_args != nullptr);
-        EXPECT("free_template_with_args-get", free_template_with_args->get != nullptr);
-        EXPECT("free_template_with_args-set", free_template_with_args->set != nullptr);
-        EXPECT("free_template_with_args-context", free_template_with_args->context != nullptr);
+        ASSERT("external_template_with_args", external_template_with_args != nullptr);
+        EXPECT("external_template_with_args-get", external_template_with_args->get != nullptr);
+        EXPECT("external_template_with_args-set", external_template_with_args->set != nullptr);
+        EXPECT("external_template_with_args-context", external_template_with_args->context != nullptr);
     }
 }
 
@@ -650,7 +650,7 @@ TEST(TestLibrary::TestRegistryProperty, TestTypedFieldProperty)
 TEST_SPACE()
 {
 
-// we can mix property type with cv-quialifiers: int const&, int&, int const, int
+// we can mix property get/set type and mix it with cv-quialifiers: T const&, T&, T const, T
 struct TestTypedFunctionProperty : TestTypedFieldProperty
 {
     static int Static() { return StaticProperty; } static void Static(int value) { StaticProperty = value; }
@@ -667,10 +667,14 @@ struct TestTypedFunctionProperty : TestTypedFieldProperty
     int IRefQualifiedAndONoQualified()& { return Property; } void IRefQualifiedAndONoQualified(int value) { Property = value; }
     int IRefQualifiedAndORefQualified()& { return Property; } void IRefQualifiedAndORefQualified(int value)& { Property = value; }
 
+    static int IStatic() { return StaticProperty; } static void OStatic(int value) { StaticProperty = value; }
+    int INoQualified() { return Property; } void ONoQualified(int value) { Property = value; }
+
     // we can also use function template as property
 };
 
-int Free() { return 0; } void Free(int) {}
+int External() { return 0; } void External(int) {}
+int IExternal() { return Property; } void OExternal(int) {}
 
 } // TEST_SPACE
 
@@ -692,7 +696,11 @@ REFLECTABLE(TestTypedFunctionProperty)
     PROPERTY(IRefQualifiedAndONoQualified, int()&, void(int))
     PROPERTY(IRefQualifiedAndORefQualified, int()&, void(int)&)
 
-    FREE_PROPERTY(Free, int(), void(int))
+    PROPERTY_EXTERNAL(External, int(), void(int))
+
+    PROPERTY_AS("NoQualified", INoQualified, ONoQualified, int(), void(int))
+    PROPERTY_AS("OtherStatic", IStatic, OStatic, int(), void(int))
+    PROPERTY_EXTERNAL_AS("OtherExternal", IExternal, OExternal, int(), void(int))
 REFLECTABLE_INIT()
 
 TEST(TestLibrary::TestRegistryProperty, TestTypedFunctionProperty)
@@ -779,11 +787,36 @@ TEST(TestLibrary::TestRegistryProperty, TestTypedFunctionProperty)
     }
 
     {
-        auto free_ = type->property.find("Free");
+        auto external_ = type->property.find("External");
 
-        ASSERT("free", free_ != nullptr);
-        EXPECT("free-get", free_->get != nullptr);
-        EXPECT("free-set", free_->set != nullptr);
-        EXPECT("free-context", free_->context == nullptr);
+        ASSERT("external", external_ != nullptr);
+        EXPECT("external-get", external_->get != nullptr);
+        EXPECT("external-set", external_->set != nullptr);
+        EXPECT("external-context", external_->context == nullptr);
+    }
+
+    {
+        auto no_qualified = type->property.find("NoQualified");
+
+        ASSERT("no_qualified", no_qualified != nullptr);
+        EXPECT("no_qualified-get", no_qualified->get != nullptr);
+        EXPECT("no_qualified-set", no_qualified->set != nullptr);
+        EXPECT("no_qualified-context", no_qualified->context == nullptr);
+    }
+    {
+        auto other_static = type->property.find("OtherStatic");
+
+        ASSERT("other_static", other_static != nullptr);
+        EXPECT("other_static-get", other_static->get != nullptr);
+        EXPECT("other_static-set", other_static->set != nullptr);
+        EXPECT("other_static-context", other_static->context == nullptr);
+    }
+    {
+        auto other_external = type->property.find("OtherExternal");
+
+        ASSERT("other_external", other_external != nullptr);
+        EXPECT("other_external-get", other_external->get != nullptr);
+        EXPECT("other_external-set", other_external->set != nullptr);
+        EXPECT("other_external-context", other_external->context == nullptr);
     }
 }

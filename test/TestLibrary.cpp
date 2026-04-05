@@ -289,8 +289,8 @@ REFLECTABLE_DECLARATION_INIT()
 // without macro using we can put function get and variable set to one or inverse,
 // just if u want max flexibility, please, use no macro version
 REFLECTABLE(TestNamedPropertyStruct)
-    NAMED_PROPERTY("IsActivated", IsActivated, Activate)
-    NAMED_PROPERTY("Flag", bIsActivated, bIsActivatedBuffer)
+    PROPERTY_AS("IsActivated", IsActivated, Activate)
+    PROPERTY_AS("Flag", bIsActivated, bIsActivatedBuffer)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestNamedProperty)
@@ -865,7 +865,7 @@ REFLECTABLE(TestObjectContextStruct)
     FUNCTION(Function10)
 
     FUNCTION(StaticMemberFunction)
-    FREE_FUNCTION(NonMemberFunction)
+    FUNCTION_EXTERNAL(NonMemberFunction)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestTypeContext)
