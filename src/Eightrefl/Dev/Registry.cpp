@@ -12,7 +12,6 @@
 #include <Eightrefl/Standard/unordered_map.hpp>
 
 REFLECTABLE(eightrefl::registry_t)
-    FACTORY(eightrefl::registry_t())
     FUNCTION(find, eightrefl::type_t*(std::string const&) const)
 
     #ifdef EIGHTREFL_RTTI_ENABLE

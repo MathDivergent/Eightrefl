@@ -195,8 +195,8 @@ TEST_SPACE()
 
 struct TestTypedPropertyStruct
 {
-    int& FunctionProperty() { return Property; }
-    void FunctionProperty(int& value) { Property = value; }
+    int const& FunctionProperty() { return Property; }
+    void FunctionProperty(int value) { Property = value; }
 
     int& OtherFunctionProperty() { return Property; }
     int const& OtherFunctionProperty() const { return Property; }
@@ -214,7 +214,7 @@ REFLECTABLE_DECLARATION(TestTypedPropertyStruct)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestTypedPropertyStruct)
-    PROPERTY(FunctionProperty, int&())
+    PROPERTY(FunctionProperty, int const&(), void(int))
     PROPERTY(OtherFunctionProperty, int const&() const)
     PROPERTY(TemplateFunctionProperty<char>, char())
     PROPERTY(Property, int)
@@ -359,7 +359,7 @@ bool is_parent_of(eightrefl::type_t const* parent, eightrefl::type_t const* type
     }
     for (auto& [name, search] : type->parent.all)
     {
-        if (is_parent_of(parent, search->type))
+        if (is_parent_of(parent, search.type))
         {
             return true;
         }
@@ -375,7 +375,7 @@ bool is_child_of(eightrefl::type_t const* child, eightrefl::type_t const* type)
     }
     for (auto& [name, search] : type->child.all)
     {
-        if (is_child_of(child, search->type))
+        if (is_child_of(child, search.type))
         {
             return true;
         }
@@ -1181,6 +1181,8 @@ TEST(TestLibrary, TestPointerDereferenceType)
     auto type = eightrefl::builtin()->find("TestPointerDereferenceTypeStruct*");
 
     ASSERT("type", type != nullptr);
+
+    eightrefl::find_or_add_meta(type->meta, "*", eightrefl::registry_of<TestPointerDereferenceTypeStruct>()->find(eightrefl::name_of<TestPointerDereferenceTypeStruct>()));
 
     auto meta = type->meta.find("*");
     ASSERT("type.meta", meta != nullptr);

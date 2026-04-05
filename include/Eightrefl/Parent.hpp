@@ -5,6 +5,7 @@
 #include <functional> // function
 
 #include <Eightrefl/Attribute.hpp>
+#include <Eightrefl/Meta.hpp>
 
 #include <Eightrefl/Detail/Meta.hpp>
 
@@ -20,7 +21,6 @@ namespace eightrefl
 {
 
 struct type_t;
-struct meta_t;
 
 struct EIGHTREFL_API parent_t
 {

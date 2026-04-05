@@ -4,15 +4,18 @@
 #include <any> // any
 #include <functional> // function
 
-#include <Eightrefl/Type.hpp>
 #include <Eightrefl/Utility.hpp>
 
-#ifndef EIGHTREFL_DEFAULT_INJECTION_COUNT
-    #define EIGHTREFL_DEFAULT_INJECTION_COUNT 4
-#endif // EIGHTREFL_INJECTION_MAX_KEY_SIZE
+#include <Eightrefl/Detail/Meta.hpp>
 
-template <std::size_t InjectionIndexValue>
-struct xxeightrefl_injection;
+#ifndef EIGHTREFL_INJECTION_TRAITS_MAX_KEY_VALUE
+    #define EIGHTREFL_INJECTION_TRAITS_MAX_KEY_VALUE 4
+#endif // EIGHTREFL_INJECTION_TRAITS_MAX_KEY_VALUE
+
+template <std::size_t InjectionKeyValue>
+struct xxeightrefl_injection_traits;
+
+static constexpr auto xxeighrefl_injection_traits_max_key = std::size_t(EIGHTREFL_INJECTION_TRAITS_MAX_KEY_VALUE);
 
 namespace eightrefl
 {
@@ -39,7 +42,7 @@ struct EIGHTREFL_API injectable_t
     template <typename ReflectableType, typename FunctionType>
     void function(eightrefl::function_t&) {}
 
-    template <typename ReflectableType, typename GetterType, typename SetterType>
+    template <typename ReflectableType, typename IPointerType, typename OPointerType>
     void property(eightrefl::property_t&) {}
 
     template <typename ReflectableType, typename FunctionType>

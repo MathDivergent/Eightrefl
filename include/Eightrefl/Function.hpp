@@ -9,6 +9,7 @@
 #include <functional> // function
 
 #include <Eightrefl/Attribute.hpp>
+#include <Eightrefl/Meta.hpp>
 #include <Eightrefl/Utility.hpp>
 
 #include <Eightrefl/Detail/Macro.hpp> // EIGHTREFL_DEPAREN
@@ -32,12 +33,11 @@ namespace eightrefl
 {
 
 struct type_t;
-struct meta_t;
 
 struct EIGHTREFL_API function_t
 {
     std::string const name{};
-    std::function<std::any(std::any const& context, std::vector<std::any> const& args)> const call = nullptr;
+    std::function<std::any(std::any const& context, std::vector<std::any> const& arguments)> const call = nullptr;
     std::vector<type_t*> const arguments{};
     type_t* const result = nullptr;
     std::any const pointer{};
@@ -53,6 +53,12 @@ auto handler_member_function_call_impl(FunctionType function, std::index_sequenc
 {
     return [function](std::any const& context, std::vector<std::any> const& arguments) -> std::any
     {
+        #ifdef EIGHTREFL_DEBUG_ENABLE
+        if (arguments.size() != sizeof...(ArgumentIndexValues))
+        {
+            throw "The handler_member_function_call: number of arguments not valid.";
+        }
+        #endif // EIGHTREFL_DEBUG_ENABLE
         auto reflectable = std::any_cast<ReflectableType*>(context);
         if constexpr (std::is_void_v<ReturnType>)
         {
@@ -74,6 +80,12 @@ auto handler_free_function_call_impl(ReturnType(*function)(ArgumentTypes...), st
 {
     return [function](std::any const&, std::vector<std::any> const& arguments) -> std::any
     {
+        #ifdef EIGHTREFL_DEBUG_ENABLE
+        if (arguments.size() != sizeof...(ArgumentIndexValues))
+        {
+            throw "The handler_free_function_call: number of arguments not valid.";
+        }
+        #endif // EIGHTREFL_DEBUG_ENABLE
         if constexpr (std::is_void_v<ReturnType>)
         {
             function(utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])...);
