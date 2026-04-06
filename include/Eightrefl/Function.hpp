@@ -30,11 +30,11 @@
 #define FUNCTION(name, ... /*function_type*/) \
     FUNCTION_AS(EIGHTREFL_TO_STRING(name), name, __VA_ARGS__)
 
-#define FUNCTION_EXTERNAL_AS(external_name, internal_name, ... /*function_type*/) \
+#define EXTERNAL_FUNCTION_AS(external_name, internal_name, ... /*function_type*/) \
     EIGHTREFL_FUNCTION_IMPL(, external_name, internal_name, __VA_ARGS__)
 
-#define FUNCTION_EXTERNAL(name, ... /*function_type*/) \
-    FUNCTION_EXTERNAL_AS(EIGHTREFL_TO_STRING(name), name, __VA_ARGS__)
+#define EXTERNAL_FUNCTION(name, ... /*function_type*/) \
+    EXTERNAL_FUNCTION_AS(EIGHTREFL_TO_STRING(name), name, __VA_ARGS__)
 
 
 namespace eightrefl

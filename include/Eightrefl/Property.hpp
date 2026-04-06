@@ -30,11 +30,11 @@
 #define PROPERTY(name, ... /*variable_type_or_function_type*/) \
     PROPERTY_AS(EIGHTREFL_TO_STRING(name), name, name, __VA_ARGS__)
 
-#define PROPERTY_EXTERNAL_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
+#define EXTERNAL_PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
     EIGHTREFL_PROPERTY_IMPL(, external_name, internal_iname, internal_oname, __VA_ARGS__)
 
-#define PROPERTY_EXTERNAL(name, ... /*variable_type_or_function_type*/) \
-    PROPERTY_EXTERNAL_AS(EIGHTREFL_TO_STRING(name), name, name, __VA_ARGS__)
+#define EXTERNAL_PROPERTY(name, ... /*variable_type_or_function_type*/) \
+    EXTERNAL_PROPERTY_AS(EIGHTREFL_TO_STRING(name), name, name, __VA_ARGS__)
 
 
 #define BITFIELD_AS(external_name, internal_name) \

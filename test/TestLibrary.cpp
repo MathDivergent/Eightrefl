@@ -865,7 +865,7 @@ REFLECTABLE(TestObjectContextStruct)
     FUNCTION(Function10)
 
     FUNCTION(StaticMemberFunction)
-    FUNCTION_EXTERNAL(NonMemberFunction)
+    EXTERNAL_FUNCTION(NonMemberFunction)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestTypeContext)
