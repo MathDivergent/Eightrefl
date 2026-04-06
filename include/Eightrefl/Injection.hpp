@@ -1,6 +1,8 @@
 #ifndef EIGHTREFL_INJECTION_HPP
 #define EIGHTREFL_INJECTION_HPP
 
+#include <cstddef> // size_t
+
 #include <any> // any
 #include <functional> // function
 

@@ -218,13 +218,13 @@ parent_t* find_or_add_parent(type_t* type)
 namespace detail
 {
 
-template <typename... ArgumentTypes, typename ReturnType>
+template <typename ReturnType, typename... ArgumentTypes>
 auto function_argument_types(ReturnType(*)(ArgumentTypes...))
 {
     return std::vector<type_t*>({ find_or_add_type<ArgumentTypes>()... });
 }
 
-template <typename... ArgumentTypes, typename ReturnType>
+template <typename ReturnType, typename... ArgumentTypes>
 auto function_return_type(ReturnType(*)(ArgumentTypes...))
 {
     return find_or_add_type<ReturnType>();

@@ -289,7 +289,7 @@ constexpr auto function_ptr_impl(ReturnType(ParentReflectableType::* function)(A
 }
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
-constexpr auto function_ptr_impl(ReturnType(*function)(ArgumentTypes...))
+constexpr auto function_ptr_impl(ReturnType(* function)(ArgumentTypes...))
 {
     return function;
 }
@@ -319,7 +319,7 @@ struct access_traits<>
     struct property
     {
         template <typename PropertyType>
-        static constexpr auto of(PropertyType(*iproperty)(void), void(*oproperty)(PropertyType))
+        static constexpr auto of(PropertyType(* iproperty)(void), void(* oproperty)(PropertyType))
         {
             return std::make_pair(iproperty, oproperty);
         }
@@ -334,7 +334,7 @@ struct access_traits<>
     template <typename PropertyType>
     struct property<PropertyType()>
     {
-        static constexpr auto of(typename ::xxeightrefl_dirty<PropertyType>::R(*iproperty)(void), void(*oproperty)(typename ::xxeightrefl_dirty<PropertyType>::R))
+        static constexpr auto of(typename ::xxeightrefl_dirty<PropertyType>::R(* iproperty)(void), void(* oproperty)(typename ::xxeightrefl_dirty<PropertyType>::R))
         {
             return std::make_pair(iproperty, oproperty);
         }
@@ -343,7 +343,7 @@ struct access_traits<>
     template <typename IPropertyType, typename OPropertyType>
     struct property<IPropertyType(), void(OPropertyType)>
     {
-        static constexpr auto of(typename ::xxeightrefl_dirty<IPropertyType>::R(*iproperty)(void), void(*oproperty)(typename ::xxeightrefl_dirty<OPropertyType>::R))
+        static constexpr auto of(typename ::xxeightrefl_dirty<IPropertyType>::R(* iproperty)(void), void(* oproperty)(typename ::xxeightrefl_dirty<OPropertyType>::R))
         {
             return std::make_pair(iproperty, oproperty);
         }
@@ -362,16 +362,16 @@ struct access_traits<>
     struct function
     {
         template <typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType(*function)(ArgumentTypes...)) { return function; }
+        static constexpr auto of(ReturnType(* function)(ArgumentTypes...)) { return function; }
     };
 
     template <typename ReturnType, typename... ArgumentTypes>
     struct function<ReturnType(ArgumentTypes...)>
     {
-        static constexpr auto of(typename ::xxeightrefl_dirty<ReturnType>::R(*function)(typename ::xxeightrefl_dirty<ArgumentTypes>::R...)) { return function; }
+        static constexpr auto of(typename ::xxeightrefl_dirty<ReturnType>::R(* function)(typename ::xxeightrefl_dirty<ArgumentTypes>::R...)) { return function; }
 
         template <typename OtherReturnType, typename... OtherArgumentTypes>
-        static constexpr auto of(OtherReturnType(*function)(OtherArgumentTypes...)) { return function; }
+        static constexpr auto of(OtherReturnType(* function)(OtherArgumentTypes...)) { return function; }
     };
 };
 
@@ -460,7 +460,7 @@ struct access_traits<ClassType>
         }
 
         template <typename PropertyType>
-        static constexpr auto of(PropertyType(*iproperty)(void), void(*oproperty)(PropertyType)) { return std::make_pair(iproperty, oproperty); }
+        static constexpr auto of(PropertyType(* iproperty)(void), void(* oproperty)(PropertyType)) { return std::make_pair(iproperty, oproperty); }
 
         template <typename PropertyType>
         static constexpr auto of(PropertyType* iproperty, PropertyType* oproperty) { return std::make_pair(iproperty, oproperty); }
@@ -577,12 +577,12 @@ struct access_traits<ClassType>
             return function_data(iproperty, nullptr);
         }
 
-        static constexpr auto of(PropertyType(*iproperty)(void), void(*oproperty)(PropertyType))
+        static constexpr auto of(PropertyType(* iproperty)(void), void(* oproperty)(PropertyType))
         {
             return std::make_pair(iproperty, oproperty);
         }
 
-        static constexpr auto of(PropertyType(*iproperty)(void), typename type_identity<PropertyType(*)(void)>::type)
+        static constexpr auto of(PropertyType(* iproperty)(void), typename type_identity<PropertyType(*)(void)>::type)
         {
             return std::make_pair(iproperty, nullptr);
         }
@@ -600,7 +600,7 @@ struct access_traits<ClassType>
             return function_data(iproperty, oproperty);
         }
 
-        static constexpr auto of(IPropertyType(*iproperty)(void), void(*oproperty)(OPropertyType))
+        static constexpr auto of(IPropertyType(* iproperty)(void), void(* oproperty)(OPropertyType))
         {
             return std::make_pair(iproperty, oproperty);
         }
@@ -698,7 +698,7 @@ struct access_traits<ClassType>
         static constexpr auto of(ReturnType(ParentClassType::* function)(ArgumentTypes...)&) { return function_data(function); }
 
         template <typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType(*function)(ArgumentTypes...)) { return function; }
+        static constexpr auto of(ReturnType(* function)(ArgumentTypes...)) { return function; }
     };
 
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
@@ -736,7 +736,7 @@ struct access_traits<ClassType>
             return function_data(function);
         }
 
-        static constexpr auto of(typename ::xxeightrefl_dirty<DirtyReturnType>::R(*function)(typename ::xxeightrefl_dirty<DirtyArgumentTypes>::R...)) { return function; }
+        static constexpr auto of(typename ::xxeightrefl_dirty<DirtyReturnType>::R(* function)(typename ::xxeightrefl_dirty<DirtyArgumentTypes>::R...)) { return function; }
     };
 
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
