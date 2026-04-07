@@ -9,7 +9,6 @@
 REFLECTABLE(eightrefl::meta_t)
     PROPERTY(name)
     PROPERTY(value)
-    PROPERTY(meta)
 REFLECTABLE_INIT()
 #endif // EIGHTREFL_STANDARD_ENABLE
 #endif // EIGHTREFL_DEV_ENABLE

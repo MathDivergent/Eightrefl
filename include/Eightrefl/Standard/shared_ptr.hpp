@@ -18,11 +18,13 @@ TEMPLATE_REFLECTABLE_CLEAN
 
 REFLECTABLE_DECLARATION(std::shared_ptr<void>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ElementType>, std::shared_ptr<ElementType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::shared_ptr<" + eightrefl::name_of<ElementType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename ElementType>, std::shared_ptr<ElementType>)

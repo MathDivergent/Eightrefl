@@ -195,8 +195,8 @@ TEST_SPACE()
 
 struct TestTypedPropertyStruct
 {
-    int& FunctionProperty() { return Property; }
-    void FunctionProperty(int& value) { Property = value; }
+    int const& FunctionProperty() { return Property; }
+    void FunctionProperty(int value) { Property = value; }
 
     int& OtherFunctionProperty() { return Property; }
     int const& OtherFunctionProperty() const { return Property; }
@@ -214,7 +214,7 @@ REFLECTABLE_DECLARATION(TestTypedPropertyStruct)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestTypedPropertyStruct)
-    PROPERTY(FunctionProperty, int&())
+    PROPERTY(FunctionProperty, int const&(), void(int))
     PROPERTY(OtherFunctionProperty, int const&() const)
     PROPERTY(TemplateFunctionProperty<char>, char())
     PROPERTY(Property, int)
@@ -289,8 +289,8 @@ REFLECTABLE_DECLARATION_INIT()
 // without macro using we can put function get and variable set to one or inverse,
 // just if u want max flexibility, please, use no macro version
 REFLECTABLE(TestNamedPropertyStruct)
-    NAMED_PROPERTY("IsActivated", IsActivated, Activate)
-    NAMED_PROPERTY("Flag", bIsActivated, bIsActivatedBuffer)
+    PROPERTY_AS("IsActivated", IsActivated, Activate)
+    PROPERTY_AS("Flag", bIsActivated, bIsActivatedBuffer)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestNamedProperty)
@@ -359,7 +359,7 @@ bool is_parent_of(eightrefl::type_t const* parent, eightrefl::type_t const* type
     }
     for (auto& [name, search] : type->parent.all)
     {
-        if (is_parent_of(parent, search->type))
+        if (is_parent_of(parent, search.type))
         {
             return true;
         }
@@ -375,7 +375,7 @@ bool is_child_of(eightrefl::type_t const* child, eightrefl::type_t const* type)
     }
     for (auto& [name, search] : type->child.all)
     {
-        if (is_child_of(child, search->type))
+        if (is_child_of(child, search.type))
         {
             return true;
         }
@@ -865,7 +865,7 @@ REFLECTABLE(TestObjectContextStruct)
     FUNCTION(Function10)
 
     FUNCTION(StaticMemberFunction)
-    FREE_FUNCTION(NonMemberFunction)
+    EXTERNAL_FUNCTION(NonMemberFunction)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestTypeContext)
@@ -1181,6 +1181,8 @@ TEST(TestLibrary, TestPointerDereferenceType)
     auto type = eightrefl::builtin()->find("TestPointerDereferenceTypeStruct*");
 
     ASSERT("type", type != nullptr);
+
+    eightrefl::find_or_add_meta(type->meta, "*", eightrefl::registry_of<TestPointerDereferenceTypeStruct>()->find(eightrefl::name_of<TestPointerDereferenceTypeStruct>()));
 
     auto meta = type->meta.find("*");
     ASSERT("type.meta", meta != nullptr);

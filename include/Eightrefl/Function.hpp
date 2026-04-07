@@ -9,12 +9,13 @@
 #include <functional> // function
 
 #include <Eightrefl/Attribute.hpp>
+#include <Eightrefl/Meta.hpp>
 #include <Eightrefl/Utility.hpp>
 
 #include <Eightrefl/Detail/Macro.hpp> // EIGHTREFL_DEPAREN
 
 // .function<R, function_type>(external_name, &scope::internal_name)
-#define EIGHTREFL_FUNCTION(scope, external_name, internal_name, ... /*function_type*/) \
+#define EIGHTREFL_FUNCTION_IMPL(scope, external_name, internal_name, ... /*function_type*/) \
     { \
         using xxaccess = typename eightrefl::meta::access_traits<scope>::template function<__VA_ARGS__>; \
         auto xxpointer = xxaccess::of(&scope::EIGHTREFL_DEPAREN(internal_name)); \
@@ -23,21 +24,28 @@
         xxmeta = &xxfunction->meta; \
     }
 
-#define NAMED_FUNCTION(external_name, internal_name, ... /*function_type*/) EIGHTREFL_FUNCTION(CleanR, external_name, internal_name, __VA_ARGS__)
-#define NAMED_FREE_FUNCTION(external_name, internal_name, ... /*function_type*/) EIGHTREFL_FUNCTION(, external_name, internal_name, __VA_ARGS__)
-#define FUNCTION(name, ... /*function_type*/) NAMED_FUNCTION(EIGHTREFL_TO_STRING(name), name, __VA_ARGS__)
-#define FREE_FUNCTION(name, ... /*function_type*/) NAMED_FREE_FUNCTION(EIGHTREFL_TO_STRING(name), name, __VA_ARGS__)
+#define FUNCTION_AS(external_name, internal_name, ... /*function_type*/) \
+    EIGHTREFL_FUNCTION_IMPL(CleanR, external_name, internal_name, __VA_ARGS__)
+
+#define FUNCTION(name, ... /*function_type*/) \
+    FUNCTION_AS(EIGHTREFL_TO_STRING(name), name, __VA_ARGS__)
+
+#define EXTERNAL_FUNCTION_AS(external_name, internal_name, ... /*function_type*/) \
+    EIGHTREFL_FUNCTION_IMPL(, external_name, internal_name, __VA_ARGS__)
+
+#define EXTERNAL_FUNCTION(name, ... /*function_type*/) \
+    EXTERNAL_FUNCTION_AS(EIGHTREFL_TO_STRING(name), name, __VA_ARGS__)
+
 
 namespace eightrefl
 {
 
 struct type_t;
-struct meta_t;
 
 struct EIGHTREFL_API function_t
 {
     std::string const name{};
-    std::function<std::any(std::any const& context, std::vector<std::any> const& args)> const call = nullptr;
+    std::function<std::any(std::any const& context, std::vector<std::any> const& arguments)> const call = nullptr;
     std::vector<type_t*> const arguments{};
     type_t* const result = nullptr;
     std::any const pointer{};
@@ -53,6 +61,12 @@ auto handler_member_function_call_impl(FunctionType function, std::index_sequenc
 {
     return [function](std::any const& context, std::vector<std::any> const& arguments) -> std::any
     {
+        #ifdef EIGHTREFL_DEBUG_ENABLE
+        if (arguments.size() != sizeof...(ArgumentTypes))
+        {
+            throw "The handler_member_function_call: number of arguments not valid.";
+        }
+        #endif // EIGHTREFL_DEBUG_ENABLE
         auto reflectable = std::any_cast<ReflectableType*>(context);
         if constexpr (std::is_void_v<ReturnType>)
         {
@@ -70,10 +84,16 @@ auto handler_member_function_call_impl(FunctionType function, std::index_sequenc
 }
 
 template <typename ReturnType, typename... ArgumentTypes, std::size_t... ArgumentIndexValues>
-auto handler_free_function_call_impl(ReturnType(*function)(ArgumentTypes...), std::index_sequence<ArgumentIndexValues...>)
+auto handler_external_function_call_impl(ReturnType(* function)(ArgumentTypes...), std::index_sequence<ArgumentIndexValues...>)
 {
     return [function](std::any const&, std::vector<std::any> const& arguments) -> std::any
     {
+        #ifdef EIGHTREFL_DEBUG_ENABLE
+        if (arguments.size() != sizeof...(ArgumentTypes))
+        {
+            throw "The handler_external_function_call: number of arguments not valid.";
+        }
+        #endif // EIGHTREFL_DEBUG_ENABLE
         if constexpr (std::is_void_v<ReturnType>)
         {
             function(utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])...);
@@ -128,9 +148,9 @@ auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes
 }
 
 template <typename ReturnType, typename... ArgumentTypes>
-auto handler_function_call(ReturnType(*function)(ArgumentTypes...))
+auto handler_function_call(ReturnType(* function)(ArgumentTypes...))
 {
-    return detail::handler_free_function_call_impl(function, std::index_sequence_for<ArgumentTypes...>{});
+    return detail::handler_external_function_call_impl(function, std::index_sequence_for<ArgumentTypes...>{});
 }
 
 } // namespace eightrefl

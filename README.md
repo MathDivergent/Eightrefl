@@ -12,7 +12,7 @@ Use macros for code generation or read the documentation and write your own code
 
 A library implemented purely in C++20.
 
-See last stable library version 2.9.0 [here](https://github.com/MathDivergent/Eightrefl/releases).
+See last stable library version 3.0.0 [here](https://github.com/MathDivergent/Eightrefl/releases).
 
 ## Functional: 
 
@@ -30,7 +30,7 @@ See last stable library version 2.9.0 [here](https://github.com/MathDivergent/Ei
 - static array
 - function 
 
-See full list [here](https://github.com/MathDivergent/Eightrefl/tree/master/include/Eightrefl/BuiltIn). 
+See full list [here](https://github.com/MathDivergent/Eightrefl/tree/main/include/Eightrefl/BuiltIn). 
 
 ### Reflection of standard library types:
 - C++11:
@@ -45,7 +45,7 @@ See full list [here](https://github.com/MathDivergent/Eightrefl/tree/master/incl
 - C++20:
   - Compare: partial_ordering, weak_ordering, strong_ordering 
 
-See full list [here](https://github.com/MathDivergent/Eightrefl/tree/master/include/Eightrefl/Standard). 
+See full list [here](https://github.com/MathDivergent/Eightrefl/tree/main/include/Eightrefl/Standard). 
 
 ### Reflection of custom types:
 - struct, class, union
@@ -61,17 +61,17 @@ See full list [here](https://github.com/MathDivergent/Eightrefl/tree/master/incl
 
 ### Library features:
 - General:
-  - [Reflectable injection](https://github.com/MathDivergent/Eightrefl/blob/master/test/TestInjection.cpp)
-  - [Registry splitting](https://github.com/MathDivergent/Eightrefl/blob/master/src/Eightrefl/Standard/any.cpp)
-  - [Reflectable using](https://github.com/MathDivergent/Eightrefl/blob/master/test/TestUsing.cpp)
+  - [Reflectable injection](https://github.com/MathDivergent/Eightrefl/blob/main/test/TestInjection.cpp)
+  - [Registry splitting](https://github.com/MathDivergent/Eightrefl/blob/main/src/Eightrefl/Standard/any.cpp)
+  - [Reflectable dirty](https://github.com/MathDivergent/Eightrefl/blob/main/test/TestDirty.cpp)
 - Builtin:
-  - [Template reflection](https://github.com/MathDivergent/Eightrefl/blob/master/include/Eightrefl/Standard/stack.hpp)
-  - [Conditional reflection](https://github.com/MathDivergent/Eightrefl/blob/master/include/Eightrefl/Standard/set.hpp)
-  - [Reflectable naming](https://github.com/MathDivergent/Eightrefl/blob/master/include/Eightrefl/BuiltIn/Aliasing.hpp)
-  - [Simple without macro](https://github.com/MathDivergent/Eightrefl/blob/master/test/TestWithoutMacro.cpp)
-  - [Reflection meta](https://github.com/MathDivergent/Eightrefl/blob/master/test/TestMeta.cpp)
+  - [Template reflection](https://github.com/MathDivergent/Eightrefl/blob/main/include/Eightrefl/Standard/stack.hpp)
+  - [Conditional reflection](https://github.com/MathDivergent/Eightrefl/blob/main/include/Eightrefl/Standard/set.hpp)
+  - [Reflectable naming](https://github.com/MathDivergent/Eightrefl/blob/main/include/Eightrefl/BuiltIn/Dirty.hpp)
+  - [Simple without macro](https://github.com/MathDivergent/Eightrefl/blob/main/test/TestWithoutMacro.cpp)
+  - [Reflection meta](https://github.com/MathDivergent/Eightrefl/blob/main/test/TestMeta.cpp)
 ## Auto Tests:
-See library testing [here](https://github.com/MathDivergent/Eightrefl/tree/master/test). 
+See library testing [here](https://github.com/MathDivergent/Eightrefl/tree/main/test). 
 
 ## License:
 This library is an open source project licensed under: [MIT](https://opensource.org/licenses/MIT).

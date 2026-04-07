@@ -14,7 +14,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ReturnType>, ReturnType())
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME(eightrefl::name_of<ReturnType>() + "()")
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -24,7 +24,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME(eightrefl::name_of<ReturnType>() + "(" + ( eightrefl::name_of<ArgumentType>() + ... + (", " + eightrefl::name_of<ArgumentTypes>()) ) + ")")
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 
@@ -41,7 +41,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME(eightrefl::name_of<ReturnType(ArgumentTypes...)>() + "&")
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 
@@ -58,7 +58,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME(eightrefl::name_of<ReturnType(ArgumentTypes...)>() + " const")
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 
@@ -75,7 +75,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME(eightrefl::name_of<ReturnType(ArgumentTypes...)>() + " const&")
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 
@@ -86,7 +86,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...)>() + ">*")
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE
@@ -104,7 +104,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...)>() + ">&")
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 
@@ -123,7 +123,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...)>() + "> " + eightrefl::name_of<ReflectableType>() + "::*")
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE
@@ -150,7 +150,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...)&>() + "> " + eightrefl::name_of<ReflectableType>() + "::*")
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE
@@ -177,7 +177,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...) const>() + "> " + eightrefl::name_of<ReflectableType>() + "::*")
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE
@@ -204,7 +204,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::builtin())
     REFLECTABLE_NAME("std::type_identity_t<" + eightrefl::name_of<ReturnType(ArgumentTypes...) const&>() + "> " + eightrefl::name_of<ReflectableType>() + "::*")
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE

@@ -5,10 +5,26 @@
 #include <utility> // pair
 
 template <typename ReflectableType, typename enable = void>
-struct xxeightrefl_alias { using R = ReflectableType; };
+struct xxeightrefl_dirty { using R = ReflectableType; };
 
 template <typename ReflectableType, typename enable = void>
 struct xxeightrefl_traits;
+
+template <typename ReflectableType, typename enable = void>
+struct xxeightrefl;
+
+template <typename, typename enable = void> struct xxeightrefl_traits_has_reflectable_name : std::false_type {};
+template <typename ReflectableType>
+struct xxeightrefl_traits_has_reflectable_name<ReflectableType, std::void_t<decltype(&::xxeightrefl_traits<ReflectableType>::name)>> : std::true_type {};
+
+template <typename, typename enable = void> struct xxeightrefl_traits_has_reflectable_registry : std::false_type {};
+template <typename ReflectableType>
+struct xxeightrefl_traits_has_reflectable_registry<ReflectableType, std::void_t<decltype(&::xxeightrefl_traits<ReflectableType>::registry)>> : std::true_type {};
+
+template <typename, typename enable = void> struct xxeightrefl_traits_has_reflectable_lazy_evaluate : std::false_type {};
+template <typename ReflectableType>
+struct xxeightrefl_traits_has_reflectable_lazy_evaluate<ReflectableType, std::void_t<typename ::xxeightrefl_traits<ReflectableType>::xxlazy_evaluate>> : std::true_type {};
+
 
 namespace eightrefl
 {
@@ -47,22 +63,6 @@ struct to_reflectable_object { using type = std::remove_const_t<ObjectType>; };
 
 template <typename, typename enable = void> struct is_complete : std::false_type {};
 template <typename Type> struct is_complete<Type, std::void_t<decltype(sizeof(Type))>> : std::true_type {};
-
-template <typename, typename enable = void> struct is_custom_name : std::false_type {};
-template <typename ReflectableType>
-struct is_custom_name<ReflectableType, std::void_t<decltype(&::xxeightrefl_traits<ReflectableType>::name)>> : std::true_type {};
-
-template <typename, typename enable = void> struct is_custom_registry : std::false_type {};
-template <typename ReflectableType>
-struct is_custom_registry<ReflectableType, std::void_t<decltype(&::xxeightrefl_traits<ReflectableType>::registry)>> : std::true_type {};
-
-template <typename, typename enable = void> struct is_lazy : std::false_type {};
-template <typename ReflectableType>
-struct is_lazy<ReflectableType, std::void_t<typename ::xxeightrefl_traits<ReflectableType>::lazy>> : std::true_type {};
-
-template <typename, typename enable = void> struct is_builtin : std::false_type {};
-template <typename ReflectableType>
-struct is_builtin<ReflectableType, std::void_t<typename ::xxeightrefl_traits<ReflectableType>::biiltin>> : std::true_type {};
 
 template <typename MemberPointerType, typename DirtyMemberPointerType>
 struct mark_dirty;
@@ -160,40 +160,40 @@ template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(ArgumentTypes...) const>
 {
     using dirty_type = ReturnType(ArgumentTypes...) const;
-    using dirty_pointer = ReturnType(*)(ArgumentTypes...);
+    using dirty_type_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using type = typename ::xxeightrefl_alias<ReturnType>::R(typename ::xxeightrefl_alias<ArgumentTypes>::R...) const;
-    using pointer = typename ::xxeightrefl_alias<ReturnType>::R(*)(typename ::xxeightrefl_alias<ArgumentTypes>::R...);
+    using type = typename ::xxeightrefl_dirty<ReturnType>::R(typename ::xxeightrefl_dirty<ArgumentTypes>::R...) const;
+    using type_pointer = typename ::xxeightrefl_dirty<ReturnType>::R(*)(typename ::xxeightrefl_dirty<ArgumentTypes>::R...);
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(ArgumentTypes...) const&>
 {
     using dirty_type = ReturnType(ArgumentTypes...) const&;
-    using dirty_pointer = ReturnType(*)(ArgumentTypes...);
+    using dirty_type_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using type = typename ::xxeightrefl_alias<ReturnType>::R(typename ::xxeightrefl_alias<ArgumentTypes>::R...) const&;
-    using pointer = typename ::xxeightrefl_alias<ReturnType>::R(*)(typename ::xxeightrefl_alias<ArgumentTypes>::R...);
+    using type = typename ::xxeightrefl_dirty<ReturnType>::R(typename ::xxeightrefl_dirty<ArgumentTypes>::R...) const&;
+    using type_pointer = typename ::xxeightrefl_dirty<ReturnType>::R(*)(typename ::xxeightrefl_dirty<ArgumentTypes>::R...);
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(ArgumentTypes...)>
 {
     using dirty_type = ReturnType(ArgumentTypes...);
-    using dirty_pointer = ReturnType(*)(ArgumentTypes...);
+    using dirty_type_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using type = typename ::xxeightrefl_alias<ReturnType>::R(typename ::xxeightrefl_alias<ArgumentTypes>::R...);
-    using pointer = typename ::xxeightrefl_alias<ReturnType>::R(*)(typename ::xxeightrefl_alias<ArgumentTypes>::R...);
+    using type = typename ::xxeightrefl_dirty<ReturnType>::R(typename ::xxeightrefl_dirty<ArgumentTypes>::R...);
+    using type_pointer = typename ::xxeightrefl_dirty<ReturnType>::R(*)(typename ::xxeightrefl_dirty<ArgumentTypes>::R...);
 };
 
 template <typename ReturnType, typename... ArgumentTypes>
 struct function_traits<ReturnType(ArgumentTypes...)&>
 {
     using dirty_type = ReturnType(ArgumentTypes...)&;
-    using dirty_pointer = ReturnType(*)(ArgumentTypes...);
+    using dirty_type_pointer = ReturnType(*)(ArgumentTypes...);
 
-    using type = typename ::xxeightrefl_alias<ReturnType>::R(typename ::xxeightrefl_alias<ArgumentTypes>::R...)&;
-    using pointer = typename ::xxeightrefl_alias<ReturnType>::R(*)(typename ::xxeightrefl_alias<ArgumentTypes>::R...);
+    using type = typename ::xxeightrefl_dirty<ReturnType>::R(typename ::xxeightrefl_dirty<ArgumentTypes>::R...)&;
+    using type_pointer = typename ::xxeightrefl_dirty<ReturnType>::R(*)(typename ::xxeightrefl_dirty<ArgumentTypes>::R...);
 };
 
 template <class ClassType, typename ReturnType, typename... ArgumentTypes>
@@ -223,10 +223,10 @@ template <typename ReturnType, typename ReflectableType>
 struct deleter_traits<ReturnType(ReflectableType)>
 {
     using dirty_type = ReturnType(ReflectableType);
-    using dirty_pointer = ReturnType(*)(ReflectableType);
+    using dirty_type_pointer = ReturnType(*)(ReflectableType);
 
-    using type = typename ::xxeightrefl_alias<ReturnType>::R(typename ::xxeightrefl_alias<ReflectableType>::R);
-    using pointer = typename ::xxeightrefl_alias<ReturnType>::R(*)(typename ::xxeightrefl_alias<ReflectableType>::R);
+    using type = typename ::xxeightrefl_dirty<ReturnType>::R(typename ::xxeightrefl_dirty<ReflectableType>::R);
+    using type_pointer = typename ::xxeightrefl_dirty<ReturnType>::R(*)(typename ::xxeightrefl_dirty<ReflectableType>::R);
 };
 
 template <typename ReturnType, typename ReflectableType>
@@ -289,7 +289,7 @@ constexpr auto function_ptr_impl(ReturnType(ParentReflectableType::* function)(A
 }
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
-constexpr auto function_ptr_impl(ReturnType(*function)(ArgumentTypes...))
+constexpr auto function_ptr_impl(ReturnType(* function)(ArgumentTypes...))
 {
     return function;
 }
@@ -319,7 +319,7 @@ struct access_traits<>
     struct property
     {
         template <typename PropertyType>
-        static constexpr auto of(PropertyType(*iproperty)(void), void(*oproperty)(PropertyType))
+        static constexpr auto of(PropertyType(* iproperty)(void), void(* oproperty)(PropertyType))
         {
             return std::make_pair(iproperty, oproperty);
         }
@@ -334,7 +334,16 @@ struct access_traits<>
     template <typename PropertyType>
     struct property<PropertyType()>
     {
-        static constexpr auto of(typename ::xxeightrefl_alias<PropertyType>::R(*iproperty)(void), void(*oproperty)(typename ::xxeightrefl_alias<PropertyType>::R))
+        static constexpr auto of(typename ::xxeightrefl_dirty<PropertyType>::R(* iproperty)(void), void(* oproperty)(typename ::xxeightrefl_dirty<PropertyType>::R))
+        {
+            return std::make_pair(iproperty, oproperty);
+        }
+    };
+
+    template <typename IPropertyType, typename OPropertyType>
+    struct property<IPropertyType(), void(OPropertyType)>
+    {
+        static constexpr auto of(typename ::xxeightrefl_dirty<IPropertyType>::R(* iproperty)(void), void(* oproperty)(typename ::xxeightrefl_dirty<OPropertyType>::R))
         {
             return std::make_pair(iproperty, oproperty);
         }
@@ -343,7 +352,7 @@ struct access_traits<>
     template <typename PropertyType>
     struct property<PropertyType>
     {
-        static constexpr auto of(typename ::xxeightrefl_alias<PropertyType>::R* iproperty, typename ::xxeightrefl_alias<PropertyType>::R* oproperty)
+        static constexpr auto of(typename ::xxeightrefl_dirty<PropertyType>::R* iproperty, typename ::xxeightrefl_dirty<PropertyType>::R* oproperty)
         {
             return std::make_pair(iproperty, oproperty);
         }
@@ -353,32 +362,38 @@ struct access_traits<>
     struct function
     {
         template <typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType(*function)(ArgumentTypes...)) { return function; }
+        static constexpr auto of(ReturnType(* function)(ArgumentTypes...)) { return function; }
     };
 
     template <typename ReturnType, typename... ArgumentTypes>
     struct function<ReturnType(ArgumentTypes...)>
     {
-        static constexpr auto of(typename ::xxeightrefl_alias<ReturnType>::R(*function)(typename ::xxeightrefl_alias<ArgumentTypes>::R...)) { return function; }
+        static constexpr auto of(typename ::xxeightrefl_dirty<ReturnType>::R(* function)(typename ::xxeightrefl_dirty<ArgumentTypes>::R...)) { return function; }
 
         template <typename OtherReturnType, typename... OtherArgumentTypes>
-        static constexpr auto of(OtherReturnType(*function)(OtherArgumentTypes...)) { return function; }
+        static constexpr auto of(OtherReturnType(* function)(OtherArgumentTypes...)) { return function; }
     };
 };
 
 template <class ClassType>
 struct access_traits<ClassType>
 {
-    template <typename GetterType, typename SetterType>
-    static constexpr auto property_data(GetterType iproperty, SetterType oproperty)
+    template <typename IPointerType, typename OPointerType>
+    static constexpr auto property_data(IPointerType iproperty, OPointerType oproperty)
     {
         return std::make_pair(detail::property_ptr_impl<ClassType>(iproperty), detail::property_ptr_impl<ClassType>(oproperty));
     }
 
-    template <typename GetterType, typename SetterType>
-    static constexpr auto function_data(GetterType iproperty, SetterType oproperty)
+    template <typename IPointerType, typename OPointerType>
+    static constexpr auto function_data(IPointerType iproperty, OPointerType oproperty)
     {
         return std::make_pair(detail::function_ptr_impl<ClassType>(iproperty), detail::function_ptr_impl<ClassType>(oproperty));
+    }
+
+    template <typename IPointerType>
+    static constexpr auto function_data(IPointerType iproperty, std::nullptr_t)
+    {
+        return std::make_pair(detail::function_ptr_impl<ClassType>(iproperty), nullptr);
     }
 
     template <typename FunctionType>
@@ -445,7 +460,7 @@ struct access_traits<ClassType>
         }
 
         template <typename PropertyType>
-        static constexpr auto of(PropertyType(*iproperty)(void), void(*oproperty)(PropertyType)) { return std::make_pair(iproperty, oproperty); }
+        static constexpr auto of(PropertyType(* iproperty)(void), void(* oproperty)(PropertyType)) { return std::make_pair(iproperty, oproperty); }
 
         template <typename PropertyType>
         static constexpr auto of(PropertyType* iproperty, PropertyType* oproperty) { return std::make_pair(iproperty, oproperty); }
@@ -454,7 +469,7 @@ struct access_traits<ClassType>
     template <typename DirtyPropertyType>
     struct property<DirtyPropertyType() const>
     {
-        using PropertyType = typename ::xxeightrefl_alias<DirtyPropertyType>::R;
+        using PropertyType = typename ::xxeightrefl_dirty<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const, void(ParentClassType::* oproperty)(PropertyType))
@@ -471,14 +486,34 @@ struct access_traits<ClassType>
         template <typename ParentClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const, typename type_identity<PropertyType(ParentClassType::*)(void) const>::type)
         {
-            return function_data(iproperty, iproperty);
+            return function_data(iproperty, nullptr);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType() const, void(ODirtyPropertyType)>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void) const, void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R))
+        {
+            return function_data(iproperty, oproperty);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType() const, void(ODirtyPropertyType)&>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void) const, void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R)&)
+        {
+            return function_data(iproperty, oproperty);
         }
     };
 
     template <typename DirtyPropertyType>
     struct property<DirtyPropertyType() const&>
     {
-        using PropertyType = typename ::xxeightrefl_alias<DirtyPropertyType>::R;
+        using PropertyType = typename ::xxeightrefl_dirty<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const&, void(ParentClassType::* oproperty)(PropertyType))
@@ -495,14 +530,34 @@ struct access_traits<ClassType>
         template <typename ParentClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const&, typename type_identity<PropertyType(ParentClassType::*)(void) const&>::type)
         {
-            return function_data(iproperty, iproperty);
+            return function_data(iproperty, nullptr);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType() const&, void(ODirtyPropertyType)>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void) const&, void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R))
+        {
+            return function_data(iproperty, oproperty);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType() const&, void(ODirtyPropertyType)&>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void) const&, void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R)&)
+        {
+            return function_data(iproperty, oproperty);
         }
     };
 
     template <typename DirtyPropertyType>
     struct property<DirtyPropertyType()>
     {
-        using PropertyType = typename ::xxeightrefl_alias<DirtyPropertyType>::R;
+        using PropertyType = typename ::xxeightrefl_dirty<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void), void(ParentClassType::* oproperty)(PropertyType))
@@ -519,24 +574,52 @@ struct access_traits<ClassType>
         template <typename ParentClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void), typename type_identity<PropertyType(ParentClassType::*)(void)>::type)
         {
-            return function_data(iproperty, iproperty);
+            return function_data(iproperty, nullptr);
         }
 
-        static constexpr auto of(PropertyType(*iproperty)(void), void(*oproperty)(PropertyType))
+        static constexpr auto of(PropertyType(* iproperty)(void), void(* oproperty)(PropertyType))
         {
             return std::make_pair(iproperty, oproperty);
         }
 
-        static constexpr auto of(PropertyType(*iproperty)(void), typename type_identity<PropertyType(*)(void)>::type)
+        static constexpr auto of(PropertyType(* iproperty)(void), typename type_identity<PropertyType(*)(void)>::type)
         {
-            return std::make_pair(iproperty, iproperty);
+            return std::make_pair(iproperty, nullptr);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType(), void(ODirtyPropertyType)>
+    {
+        using IPropertyType = typename ::xxeightrefl_dirty<IDirtyPropertyType>::R;
+        using OPropertyType = typename ::xxeightrefl_dirty<ODirtyPropertyType>::R;
+
+        template <typename ParentClassType>
+        static constexpr auto of(IPropertyType(ParentClassType::* iproperty)(void), void(ParentClassType::* oproperty)(OPropertyType))
+        {
+            return function_data(iproperty, oproperty);
+        }
+
+        static constexpr auto of(IPropertyType(* iproperty)(void), void(* oproperty)(OPropertyType))
+        {
+            return std::make_pair(iproperty, oproperty);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType(), void(ODirtyPropertyType)&>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void), void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R)&)
+        {
+            return function_data(iproperty, oproperty);
         }
     };
 
     template <typename DirtyPropertyType>
     struct property<DirtyPropertyType()&>
     {
-        using PropertyType = typename ::xxeightrefl_alias<DirtyPropertyType>::R;
+        using PropertyType = typename ::xxeightrefl_dirty<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void)&, void(ParentClassType::* oproperty)(PropertyType))
@@ -553,14 +636,34 @@ struct access_traits<ClassType>
         template <typename ParentClassType>
         static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void)&, typename type_identity<PropertyType(ParentClassType::*)(void)&>::type)
         {
-            return function_data(iproperty, iproperty);
+            return function_data(iproperty, nullptr);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType()&, void(ODirtyPropertyType)>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void)&, void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R))
+        {
+            return function_data(iproperty, oproperty);
+        }
+    };
+
+    template <typename IDirtyPropertyType, typename ODirtyPropertyType>
+    struct property<IDirtyPropertyType()&, void(ODirtyPropertyType)&>
+    {
+        template <typename ParentClassType>
+        static constexpr auto of(typename ::xxeightrefl_dirty<IDirtyPropertyType>::R(ParentClassType::* iproperty)(void)&, void(ParentClassType::* oproperty)(typename ::xxeightrefl_dirty<ODirtyPropertyType>::R)&)
+        {
+            return function_data(iproperty, oproperty);
         }
     };
 
     template <typename DirtyPropertyType>
     struct property<DirtyPropertyType>
     {
-        using PropertyType = typename ::xxeightrefl_alias<DirtyPropertyType>::R;
+        using PropertyType = typename ::xxeightrefl_dirty<DirtyPropertyType>::R;
 
         template <typename ParentClassType>
         static constexpr auto of(PropertyType ParentClassType::* iproperty, PropertyType ParentClassType::* oproperty)
@@ -595,16 +698,16 @@ struct access_traits<ClassType>
         static constexpr auto of(ReturnType(ParentClassType::* function)(ArgumentTypes...)&) { return function_data(function); }
 
         template <typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType(*function)(ArgumentTypes...)) { return function; }
+        static constexpr auto of(ReturnType(* function)(ArgumentTypes...)) { return function; }
     };
 
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
     struct function<DirtyReturnType(DirtyArgumentTypes...) const>
     {
-        static constexpr auto of(typename ::xxeightrefl_alias<DirtyReturnType>::R(ClassType::* function)(typename ::xxeightrefl_alias<DirtyArgumentTypes>::R...) const) { return function; }
+        static constexpr auto of(typename ::xxeightrefl_dirty<DirtyReturnType>::R(ClassType::* function)(typename ::xxeightrefl_dirty<DirtyArgumentTypes>::R...) const) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(typename ::xxeightrefl_alias<DirtyReturnType>::R(ParentClassType::* function)(typename ::xxeightrefl_alias<DirtyArgumentTypes>::R...) const)
+        static constexpr auto of(typename ::xxeightrefl_dirty<DirtyReturnType>::R(ParentClassType::* function)(typename ::xxeightrefl_dirty<DirtyArgumentTypes>::R...) const)
         {
             return function_data(function);
         }
@@ -613,10 +716,10 @@ struct access_traits<ClassType>
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
     struct function<DirtyReturnType(DirtyArgumentTypes...) const&>
     {
-        static constexpr auto of(typename ::xxeightrefl_alias<DirtyReturnType>::R(ClassType::* function)(typename ::xxeightrefl_alias<DirtyArgumentTypes>::R...) const&) { return function; }
+        static constexpr auto of(typename ::xxeightrefl_dirty<DirtyReturnType>::R(ClassType::* function)(typename ::xxeightrefl_dirty<DirtyArgumentTypes>::R...) const&) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(typename ::xxeightrefl_alias<DirtyReturnType>::R(ParentClassType::* function)(typename ::xxeightrefl_alias<DirtyArgumentTypes>::R...) const&)
+        static constexpr auto of(typename ::xxeightrefl_dirty<DirtyReturnType>::R(ParentClassType::* function)(typename ::xxeightrefl_dirty<DirtyArgumentTypes>::R...) const&)
         {
             return function_data(function);
         }
@@ -625,24 +728,24 @@ struct access_traits<ClassType>
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
     struct function<DirtyReturnType(DirtyArgumentTypes...)>
     {
-        static constexpr auto of(typename ::xxeightrefl_alias<DirtyReturnType>::R(ClassType::* function)(typename ::xxeightrefl_alias<DirtyArgumentTypes>::R...)) { return function; }
+        static constexpr auto of(typename ::xxeightrefl_dirty<DirtyReturnType>::R(ClassType::* function)(typename ::xxeightrefl_dirty<DirtyArgumentTypes>::R...)) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(typename ::xxeightrefl_alias<DirtyReturnType>::R(ParentClassType::* function)(typename ::xxeightrefl_alias<DirtyArgumentTypes>::R...))
+        static constexpr auto of(typename ::xxeightrefl_dirty<DirtyReturnType>::R(ParentClassType::* function)(typename ::xxeightrefl_dirty<DirtyArgumentTypes>::R...))
         {
             return function_data(function);
         }
 
-        static constexpr auto of(typename ::xxeightrefl_alias<DirtyReturnType>::R(*function)(typename ::xxeightrefl_alias<DirtyArgumentTypes>::R...)) { return function; }
+        static constexpr auto of(typename ::xxeightrefl_dirty<DirtyReturnType>::R(* function)(typename ::xxeightrefl_dirty<DirtyArgumentTypes>::R...)) { return function; }
     };
 
     template <typename DirtyReturnType, typename... DirtyArgumentTypes>
     struct function<DirtyReturnType(DirtyArgumentTypes...)&>
     {
-        static constexpr auto of(typename ::xxeightrefl_alias<DirtyReturnType>::R(ClassType::* function)(typename ::xxeightrefl_alias<DirtyArgumentTypes>::R...)&) { return function; }
+        static constexpr auto of(typename ::xxeightrefl_dirty<DirtyReturnType>::R(ClassType::* function)(typename ::xxeightrefl_dirty<DirtyArgumentTypes>::R...)&) { return function; }
 
         template <class ParentClassType>
-        static constexpr auto of(typename ::xxeightrefl_alias<DirtyReturnType>::R(ParentClassType::* function)(typename ::xxeightrefl_alias<DirtyArgumentTypes>::R...)&)
+        static constexpr auto of(typename ::xxeightrefl_dirty<DirtyReturnType>::R(ParentClassType::* function)(typename ::xxeightrefl_dirty<DirtyArgumentTypes>::R...)&)
         {
             return function_data(function);
         }
