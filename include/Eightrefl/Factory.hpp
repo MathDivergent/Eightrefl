@@ -42,7 +42,7 @@ auto handler_factory_call_impl(std::index_sequence<ArgumentIndexValues...>)
     return [](std::vector<std::any> const& arguments) -> std::any
     {
         #ifdef EIGHTREFL_DEBUG_ENABLE
-        if (arguments.size() != sizeof...(ArgumentIndexValues))
+        if (arguments.size() != sizeof...(ArgumentTypes))
         {
             throw "The handler_factory_call: number of arguments not valid.";
         }

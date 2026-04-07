@@ -62,7 +62,7 @@ auto handler_member_function_call_impl(FunctionType function, std::index_sequenc
     return [function](std::any const& context, std::vector<std::any> const& arguments) -> std::any
     {
         #ifdef EIGHTREFL_DEBUG_ENABLE
-        if (arguments.size() != sizeof...(ArgumentIndexValues))
+        if (arguments.size() != sizeof...(ArgumentTypes))
         {
             throw "The handler_member_function_call: number of arguments not valid.";
         }
@@ -89,7 +89,7 @@ auto handler_external_function_call_impl(ReturnType(* function)(ArgumentTypes...
     return [function](std::any const&, std::vector<std::any> const& arguments) -> std::any
     {
         #ifdef EIGHTREFL_DEBUG_ENABLE
-        if (arguments.size() != sizeof...(ArgumentIndexValues))
+        if (arguments.size() != sizeof...(ArgumentTypes))
         {
             throw "The handler_external_function_call: number of arguments not valid.";
         }

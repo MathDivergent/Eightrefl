@@ -787,12 +787,12 @@ TEST(TestLibrary::TestRegistryProperty, TestTypedFunctionProperty)
     }
 
     {
-        auto external_ = type->property.find("External");
+        auto external = type->property.find("External");
 
-        ASSERT("external", external_ != nullptr);
-        EXPECT("external-get", external_->get != nullptr);
-        EXPECT("external-set", external_->set != nullptr);
-        EXPECT("external-context", external_->context == nullptr);
+        ASSERT("external", external != nullptr);
+        EXPECT("external-get", external->get != nullptr);
+        EXPECT("external-set", external->set != nullptr);
+        EXPECT("external-context", external->context == nullptr);
     }
 
     {

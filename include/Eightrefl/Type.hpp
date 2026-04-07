@@ -18,8 +18,6 @@
 #include <Eightrefl/Deleter.hpp>
 #include <Eightrefl/Meta.hpp>
 
-#include <Eightrefl/Detail/Meta.hpp>
-
 namespace eightrefl
 {
 

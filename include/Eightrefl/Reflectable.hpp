@@ -103,6 +103,13 @@ template <typename ReflectableType>
 std::string name_of()
 {
     using reflectable_traits = ::xxeightrefl_traits<ReflectableType>;
+
+    static_assert
+    (
+        meta::is_complete<reflectable_traits>::value,
+        "name_of: reflection declaration for this type not found"
+    );
+
     if constexpr (::xxeightrefl_traits_has_reflectable_name<ReflectableType>::value)
     {
         return reflectable_traits::name();
@@ -117,6 +124,13 @@ template <typename ReflectableType>
 registry_t* registry_of()
 {
     using reflectable_traits = ::xxeightrefl_traits<ReflectableType>;
+
+    static_assert
+    (
+        meta::is_complete<reflectable_traits>::value,
+        "registry_of: reflection declaration for this type not found"
+    );
+
     if constexpr (::xxeightrefl_traits_has_reflectable_registry<ReflectableType>::value)
     {
         return reflectable_traits::registry();
@@ -185,7 +199,11 @@ type_t* find_or_add_type()
 template <typename ReflectableType, typename ParentReflectableType>
 parent_t* find_or_add_parent(type_t* type)
 {
-    static_assert(std::is_base_of_v<ParentReflectableType, ReflectableType>);
+    static_assert
+    (
+        std::is_base_of_v<ParentReflectableType, ReflectableType>,
+        "find_or_add_parent: ReflectableType must derive from ParentReflectableType"
+    );
 
     auto xxname = name_of<ParentReflectableType>();
 
@@ -380,7 +398,11 @@ meta_t* find_or_add_meta(attribute_t<meta_t>& meta, std::string const& name, Met
 template <typename ReflectableType, class InjectionType>
 injection_t* find_or_add_injection(type_t* type)
 {
-    static_assert(std::is_base_of_v<injectable_t, InjectionType>);
+    static_assert
+    (
+        std::is_base_of_v<injectable_t, InjectionType>,
+        "find_or_add_injection: InjectionType must derive from injectable_t"
+    );
 
     auto xxtype = find_or_add_type<InjectionType>();
 
