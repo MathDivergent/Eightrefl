@@ -1,4 +1,3 @@
-// TODO: provide tests for is_copy_assignable == false
 #include <EightreflTestingBase.hpp>
 
 TEST_SPACE()
