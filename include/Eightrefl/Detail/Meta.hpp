@@ -1,7 +1,7 @@
 #ifndef EIGHTREFL_DETAIL_META_HPP
 #define EIGHTREFL_DETAIL_META_HPP
 
-#include <type_traits> // conjunction, disjunction, false_type, true_type, void_t
+#include <type_traits> // conjunction, disjunction, false_type, true_type, void_t, type_identity
 #include <utility> // pair
 
 template <typename ReflectableType, typename enable = void>
@@ -38,18 +38,12 @@ struct is_static_castable : std::false_type {};
 template <typename FromType, typename ToType>
 struct is_static_castable<FromType, ToType, std::void_t<decltype( static_cast<ToType>(std::declval<FromType>()) )>> : std::true_type {};
 
-template <typename T> T&& decltype_value(T&&); // not impl
-void decltype_value(); // not impl
-
-template <typename Type>
-struct type_identity { using type = Type; };
-
 template <typename Type>
 struct inherits : std::conditional_t
 <
     std::conjunction_v< std::is_class<Type>, std::negation<std::is_final<Type>> >,
     Type,
-    type_identity<Type>
+    std::type_identity<Type>
 > {};
 
 template <typename ReferenceType>
@@ -484,7 +478,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const, typename type_identity<PropertyType(ParentClassType::*)(void) const>::type)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const, std::type_identity_t<PropertyType(ParentClassType::*)(void) const>)
         {
             return function_data(iproperty, nullptr);
         }
@@ -528,7 +522,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const&, typename type_identity<PropertyType(ParentClassType::*)(void) const&>::type)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void) const&, std::type_identity_t<PropertyType(ParentClassType::*)(void) const&>)
         {
             return function_data(iproperty, nullptr);
         }
@@ -572,7 +566,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void), typename type_identity<PropertyType(ParentClassType::*)(void)>::type)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void), std::type_identity_t<PropertyType(ParentClassType::*)(void)>)
         {
             return function_data(iproperty, nullptr);
         }
@@ -582,7 +576,7 @@ struct access_traits<ClassType>
             return std::make_pair(iproperty, oproperty);
         }
 
-        static constexpr auto of(PropertyType(* iproperty)(void), typename type_identity<PropertyType(*)(void)>::type)
+        static constexpr auto of(PropertyType(* iproperty)(void), std::type_identity_t<PropertyType(*)(void)>)
         {
             return std::make_pair(iproperty, nullptr);
         }
@@ -634,7 +628,7 @@ struct access_traits<ClassType>
         }
 
         template <typename ParentClassType>
-        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void)&, typename type_identity<PropertyType(ParentClassType::*)(void)&>::type)
+        static constexpr auto of(PropertyType(ParentClassType::* iproperty)(void)&, std::type_identity_t<PropertyType(ParentClassType::*)(void)&>)
         {
             return function_data(iproperty, nullptr);
         }

@@ -335,7 +335,7 @@ function_t* find_or_add_function(type_t* type, std::string const& name, Function
         typename std::conditional_t
         <
             std::is_void_v<DirtyFunctionType>,
-            meta::type_identity<FunctionTypePointer>,
+            std::type_identity<FunctionTypePointer>,
             meta::mark_dirty<FunctionTypePointer, DirtyFunctionType>
         >::type
     >;
@@ -375,7 +375,7 @@ function_t* find_or_add_function(type_t* type, std::string const& name, Function
     return xxfunction;
 }
 
-template <typename IDirtyPropertyType = void, typename ODirtyPropertyType = void /*unused*/,
+template <typename IDirtyType = void, typename ODirtyType = void /*unused*/,
           typename ITypePointer, typename OTypePointer>
 property_t* find_or_add_property(type_t* type, std::string const& name, ITypePointer ipointer, OTypePointer opointer)
 {
@@ -383,9 +383,9 @@ property_t* find_or_add_property(type_t* type, std::string const& name, ITypePoi
     <
         typename std::conditional_t
         <
-            std::is_void_v<IDirtyPropertyType>,
-            meta::type_identity<ITypePointer>,
-            meta::mark_dirty<ITypePointer, IDirtyPropertyType>
+            std::is_void_v<IDirtyType>,
+            std::type_identity<ITypePointer>,
+            meta::mark_dirty<ITypePointer, IDirtyType>
         >::type
     >;
 
@@ -410,12 +410,12 @@ property_t* find_or_add_property(type_t* type, std::string const& name, ITypePoi
 
 
 template <typename ReflectableType,
-          typename IDirtyPropertyType = void, typename ODirtyPropertyType = void,
+          typename IDirtyType = void, typename ODirtyType = void,
           typename ITypePointer, typename OTypePointer,
           class InjectionType>
 property_t* find_or_add_property(type_t* type, std::string const& name, ITypePointer ipointer, OTypePointer opointer, InjectionType& injection)
 {
-    auto xxproperty = find_or_add_property<IDirtyPropertyType, ODirtyPropertyType>(type, name, ipointer, opointer);
+    auto xxproperty = find_or_add_property<IDirtyType, ODirtyType>(type, name, ipointer, opointer);
     injection.template property<ReflectableType, ITypePointer, OTypePointer>(*xxproperty);
 
     return xxproperty;
