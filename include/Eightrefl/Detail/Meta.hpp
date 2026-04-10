@@ -378,26 +378,26 @@ struct access_traits<>
 template <class ClassType>
 struct access_traits<ClassType>
 {
-    template <typename IPointerType, typename OPointerType>
-    static constexpr auto property_data(IPointerType iproperty, OPointerType oproperty)
+    template <typename ITypePointer, typename OTypePointer>
+    static constexpr auto property_data(ITypePointer iproperty, OTypePointer oproperty)
     {
         return std::make_pair(detail::property_ptr_impl<ClassType>(iproperty), detail::property_ptr_impl<ClassType>(oproperty));
     }
 
-    template <typename IPointerType, typename OPointerType>
-    static constexpr auto function_data(IPointerType iproperty, OPointerType oproperty)
+    template <typename ITypePointer, typename OTypePointer>
+    static constexpr auto function_data(ITypePointer iproperty, OTypePointer oproperty)
     {
         return std::make_pair(detail::function_ptr_impl<ClassType>(iproperty), detail::function_ptr_impl<ClassType>(oproperty));
     }
 
-    template <typename IPointerType>
-    static constexpr auto function_data(IPointerType iproperty, std::nullptr_t)
+    template <typename ITypePointer>
+    static constexpr auto function_data(ITypePointer iproperty, std::nullptr_t)
     {
         return std::make_pair(detail::function_ptr_impl<ClassType>(iproperty), nullptr);
     }
 
-    template <typename FunctionType>
-    static constexpr auto function_data(FunctionType function)
+    template <typename FunctionTypePointer>
+    static constexpr auto function_data(FunctionTypePointer function)
     {
         return detail::function_ptr_impl<ClassType>(function);
     }

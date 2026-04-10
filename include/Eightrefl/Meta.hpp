@@ -12,9 +12,7 @@
 // .meta(external_name, meta_expression)
 #define META(external_name, ... /*meta_expression*/) \
     { \
-        auto xxitem = xxmeta->find(external_name); \
-        if (xxitem == nullptr) xxitem = xxmeta->add(external_name, { external_name, std::any(__VA_ARGS__) }); \
-        injection.template meta<CleanR, decltype(::eightrefl::meta::decltype_value(__VA_ARGS__))>(*xxitem); \
+        eightrefl::find_or_add_meta<CleanR>(*xxmeta, external_name __VA_OPT__(, __VA_ARGS__), injection); \
     }
 
 namespace eightrefl
