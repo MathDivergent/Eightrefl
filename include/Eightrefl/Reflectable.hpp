@@ -55,7 +55,7 @@
         EIGHTREFL_REFLECTABLE_BODY()
 
 #define EIGHTREFL_REFLECTABLE_BODY() \
-    template <class InjectionType> static void evaluate(InjectionType&& injection) { \
+    template <class InjectionType> static void evaluate(InjectionType& injection) { \
         auto xxtype = eightrefl::find_or_add_type<R>(injection); \
         [[maybe_unused]] auto xxmeta = &xxtype->meta; \
         eightrefl::add_injections_using_keys<R>(xxtype);
@@ -147,10 +147,11 @@ using clean_of = typename ::xxeightrefl_dirty<ReflectableType>::R;
 template <typename ReflectableType>
 void reflectable()
 {
-    static auto lock = false; if (lock) return;
-    lock = true;
+    static auto xxlock = false; if (xxlock) return;
+    xxlock = true;
 
-    ::xxeightrefl<ReflectableType>::evaluate(injectable_t{});
+    auto xxinjectable = injectable_t{};
+    ::xxeightrefl<ReflectableType>::evaluate(xxinjectable);
 }
 
 template <typename ReflectableType>
@@ -321,7 +322,7 @@ factory_t* find_or_add_factory(type_t* type, InjectionType& injection)
 {
     using function_traits = meta::function_traits<DirtyFactoryType>;
 
-    auto xxfactory = find_or_add_factory<typename function_traits::dirty_type_pointer>(type);
+    auto xxfactory = find_or_add_factory<DirtyFactoryType>(type);
     injection.template factory<ReflectableType, typename function_traits::type_pointer>(*xxfactory);
 
     return xxfactory;
@@ -484,7 +485,7 @@ deleter_t* find_or_add_deleter(type_t* type, InjectionType& injection)
 {
     using deleter_traits = eightrefl::meta::deleter_traits<DirtyDeleterType>;
 
-    auto xxdeleter = eightrefl::find_or_add_deleter<typename deleter_traits::dirty_type_pointer>(type);
+    auto xxdeleter = eightrefl::find_or_add_deleter<DirtyDeleterType>(type);
     injection.template deleter<ReflectableType, typename deleter_traits::type_pointer>(*xxdeleter);
 
     return xxdeleter;
