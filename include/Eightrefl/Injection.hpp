@@ -47,6 +47,9 @@ struct EIGHTREFL_API injectable_t
     template <typename ReflectableType, typename ITypePointer, typename OTypePointer>
     void property(eightrefl::property_t&) {}
 
+    template <typename ReflectableType, typename BitfieldType>
+    void bitfield(eightrefl::property_t&) {}
+
     template <typename ReflectableType, typename FunctionTypePointer>
     void deleter(eightrefl::deleter_t&) {}
 

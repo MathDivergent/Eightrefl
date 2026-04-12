@@ -445,7 +445,7 @@ property_t* find_or_add_bitfield(type_t* type, std::string const& name,
                                  InjectionType& injection)
 {
     auto xxproperty = find_or_add_bitfield<BitfieldType>(type, name, ihandler, ohandler);
-    injection.template property<ReflectableType, BitfieldType, BitfieldType>(*xxproperty);
+    injection.template bitfield<ReflectableType, BitfieldType>(*xxproperty);
 
     return xxproperty;
 }
