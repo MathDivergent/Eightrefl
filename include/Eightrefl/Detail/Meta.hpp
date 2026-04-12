@@ -388,16 +388,25 @@ struct access_traits<>
     struct function
     {
         template <typename ReturnType, typename... ArgumentTypes>
-        static constexpr auto of(ReturnType(* function)(ArgumentTypes...)) { return function; }
+        static constexpr auto of(ReturnType(* function)(ArgumentTypes...))
+        {
+            return function;
+        }
     };
 
     template <typename ReturnType, typename... ArgumentTypes>
     struct function<ReturnType(ArgumentTypes...)>
     {
-        static constexpr auto of(typename ::xxeightrefl_dirty<ReturnType>::R(* function)(typename ::xxeightrefl_dirty<ArgumentTypes>::R...)) { return function; }
+        static constexpr auto of(typename ::xxeightrefl_dirty<ReturnType>::R(* function)(typename ::xxeightrefl_dirty<ArgumentTypes>::R...))
+        {
+            return function;
+        }
 
         template <typename OtherReturnType, typename... OtherArgumentTypes>
-        static constexpr auto of(OtherReturnType(* function)(OtherArgumentTypes...)) { return function; }
+        static constexpr auto of(OtherReturnType(* function)(OtherArgumentTypes...))
+        {
+            return function;
+        }
     };
 };
 
