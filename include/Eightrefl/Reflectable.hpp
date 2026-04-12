@@ -162,7 +162,7 @@ ReflectableType&& reflectable(ReflectableType&& object)
 }
 
 template <typename ReflectableType>
-bool fixture() // TODO: add autotests
+bool fixture()
 {
     static_assert
     (
