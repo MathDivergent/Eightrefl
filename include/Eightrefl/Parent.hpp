@@ -12,8 +12,7 @@
 // .parent<R, reflectable_type>()
 #define PARENT(... /*reflectable_type*/) \
     { \
-        auto xxparent = eightrefl::find_or_add_parent<CleanR, __VA_ARGS__>(xxtype); \
-        injection.template parent<CleanR, __VA_ARGS__>(*xxparent); \
+        auto xxparent = eightrefl::find_or_add_parent<CleanR, __VA_ARGS__>(xxtype, injection); \
         xxmeta = &xxparent->meta; \
     }
 

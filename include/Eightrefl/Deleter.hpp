@@ -12,9 +12,7 @@
 // .deleter<R, function_type>()
 #define DELETER(... /*function_type*/) \
     { \
-        using xxtraits = eightrefl::meta::deleter_traits<__VA_ARGS__>; \
-        auto xxdeleter = eightrefl::find_or_add_deleter<typename xxtraits::dirty_type_pointer>(xxtype); \
-        injection.template deleter<CleanR, typename xxtraits::type_pointer>(*xxdeleter); \
+        auto xxdeleter = eightrefl::find_or_add_deleter<CleanR, __VA_ARGS__>(xxtype, injection); \
         xxmeta = &xxdeleter->meta; \
     }
 

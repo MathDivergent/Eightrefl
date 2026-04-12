@@ -17,10 +17,8 @@
 // .property<R, variable_type_or_function_type>(external_name, &scope::internal_iname, &scope::ìnternal_oname)
 #define EIGHTREFL_PROPERTY_IMPL(scope, external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
     { \
-        using xxaccess = typename eightrefl::meta::access_traits<scope>::template property<__VA_ARGS__>; \
-        auto xxpointer = xxaccess::of(&scope::EIGHTREFL_DEPAREN(internal_iname), &scope::EIGHTREFL_DEPAREN(internal_oname)); \
-        auto xxproperty = eightrefl::find_or_add_property<__VA_ARGS__>(xxtype, external_name, xxpointer.first, xxpointer.second); \
-        injection.template property<CleanR, decltype(xxpointer.first), decltype(xxpointer.second)>(*xxproperty); \
+        auto [xxi, xxo] = eightrefl::meta::access_traits<scope>::template property<__VA_ARGS__>::of(&scope::EIGHTREFL_DEPAREN(internal_iname), &scope::EIGHTREFL_DEPAREN(internal_oname)); \
+        auto xxproperty = eightrefl::find_or_add_property<CleanR __VA_OPT__(, __VA_ARGS__)>(xxtype, external_name, xxi, xxo, injection); \
         xxmeta = &xxproperty->meta; \
     }
 
@@ -42,8 +40,7 @@
         using xxbitfield_type = std::decay_t<decltype(std::declval<CleanR>().internal_name)>; \
         auto xxi = [](std::any const& context, std::any& result) { result = xxbitfield_type(std::any_cast<CleanR*>(context)->internal_name); }; \
         auto xxo = [](std::any const& context, std::any const& value) { std::any_cast<CleanR*>(context)->internal_name = std::any_cast<xxbitfield_type>(value); }; \
-        auto xxproperty = eightrefl::find_or_add_bitfield<xxbitfield_type>(xxtype, external_name, xxi, xxo); \
-        injection.template property<CleanR, xxbitfield_type, xxbitfield_type>(*xxproperty); \
+        auto xxproperty = eightrefl::find_or_add_bitfield<CleanR, xxbitfield_type>(xxtype, external_name, xxi, xxo, injection); \
         xxmeta = &xxproperty->meta; \
     }
 
@@ -70,8 +67,8 @@ struct EIGHTREFL_API property_t
 namespace detail
 {
 
-template <typename ReflectableType, typename IPointerType>
-auto handler_property_get_impl(IPointerType property)
+template <typename ReflectableType, typename ITypePointer>
+auto handler_property_get_impl(ITypePointer property)
 {
     return [property](std::any const& context, std::any& value)
     {
@@ -139,13 +136,18 @@ auto handler_property_get(PropertyType(* property)(void))
     };
 }
 
+inline auto handler_property_get(std::nullptr_t)
+{
+    return nullptr;
+}
+
 namespace detail
 {
 
-template <typename ReflectableType, typename OPointerType>
-auto handler_property_set_impl(OPointerType property)
+template <typename ReflectableType, typename OTypePointer>
+auto handler_property_set_impl(OTypePointer property)
 {
-    using property_type = typename meta::property_traits<OPointerType>::type;
+    using property_type = typename meta::property_traits<OTypePointer>::type;
     return [property](std::any const& context, std::any const& value)
     {
         (std::any_cast<ReflectableType*>(context)->*property)(utility::forward<property_type>(value));
@@ -216,10 +218,10 @@ inline auto handler_property_set(std::nullptr_t)
 namespace detail
 {
 
-template <typename ReflectableType, typename IPointerType>
-auto handler_property_context_impl(IPointerType property)
+template <typename ReflectableType, typename ITypePointer>
+auto handler_property_context_impl(ITypePointer property)
 {
-    using property_type = typename meta::property_traits<IPointerType>::type;
+    using property_type = typename meta::property_traits<ITypePointer>::type;
     if constexpr (std::is_reference_v<property_type>)
     {
         return [property](std::any const& outer_context) -> std::any
@@ -304,6 +306,11 @@ auto handler_property_context(PropertyType(* property)(void))
         // context to non-reference return type is not allowed
         return nullptr;
     }
+}
+
+inline auto handler_property_context(std::nullptr_t)
+{
+    return nullptr;
 }
 
 template <typename IPropertyType, typename OPropertyType>

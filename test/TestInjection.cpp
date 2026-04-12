@@ -31,10 +31,10 @@ struct ToString
 
 struct TestToStringInjection : eightrefl::injectable_t
 {
-    template <typename ReflectableType>
+    template <typename DirtyReflectableType>
     void type(eightrefl::type_t& type)
     {
-        eightrefl::find_or_add_meta(type.meta, "ToString", ToString<ReflectableType>());
+        eightrefl::find_or_add_meta(type.meta, "ToString", ToString<DirtyReflectableType>());
     }
 };
 
@@ -68,7 +68,7 @@ TEST(TestLibrary, TestDefaultInjection)
 
 struct TestVirusInjection : eightrefl::injectable_t
 {
-    template <typename ReflectableType, typename FunctionType>
+    template <typename ReflectableType, typename FunctionTypePointer>
     void factory(eightrefl::factory_t& factory)
     {
         eightrefl::find_or_add_meta(factory.meta, "IsDefaultConstructible", factory.arguments.size() == 0);

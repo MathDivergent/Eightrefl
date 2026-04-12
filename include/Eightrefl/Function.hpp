@@ -17,10 +17,8 @@
 // .function<R, function_type>(external_name, &scope::internal_name)
 #define EIGHTREFL_FUNCTION_IMPL(scope, external_name, internal_name, ... /*function_type*/) \
     { \
-        using xxaccess = typename eightrefl::meta::access_traits<scope>::template function<__VA_ARGS__>; \
-        auto xxpointer = xxaccess::of(&scope::EIGHTREFL_DEPAREN(internal_name)); \
-        auto xxfunction = eightrefl::find_or_add_function<__VA_ARGS__>(xxtype, external_name, xxpointer); \
-        injection.template function<CleanR, decltype(xxpointer)>(*xxfunction); \
+        auto xxpointer = eightrefl::meta::access_traits<scope>::template function<__VA_ARGS__>::of(&scope::EIGHTREFL_DEPAREN(internal_name)); \
+        auto xxfunction = eightrefl::find_or_add_function<CleanR __VA_OPT__(, __VA_ARGS__)>(xxtype, external_name, xxpointer, injection); \
         xxmeta = &xxfunction->meta; \
     }
 
@@ -56,8 +54,8 @@ namespace detail
 {
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes,
-          typename FunctionType, std::size_t... ArgumentIndexValues>
-auto handler_member_function_call_impl(FunctionType function, std::index_sequence<ArgumentIndexValues...>)
+          typename FunctionTypePointer, std::size_t... ArgumentIndexValues>
+auto handler_member_function_call_impl(FunctionTypePointer function, std::index_sequence<ArgumentIndexValues...>)
 {
     return [function](std::any const& context, std::vector<std::any> const& arguments) -> std::any
     {

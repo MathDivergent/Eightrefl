@@ -32,22 +32,25 @@ struct meta_t;
 
 struct EIGHTREFL_API injectable_t
 {
-    template <typename ReflectableType>
+    template <typename DirtyReflectableType>
     void type(eightrefl::type_t&) {}
 
     template <typename ReflectableType, typename ParentReflectableType>
     void parent(eightrefl::parent_t&) {}
 
-    template <typename ReflectableType, typename FunctionType>
+    template <typename ReflectableType, typename FunctionTypePointer>
     void factory(eightrefl::factory_t&) {}
 
-    template <typename ReflectableType, typename FunctionType>
+    template <typename ReflectableType, typename FunctionTypePointer>
     void function(eightrefl::function_t&) {}
 
-    template <typename ReflectableType, typename IPointerType, typename OPointerType>
+    template <typename ReflectableType, typename ITypePointer, typename OTypePointer>
     void property(eightrefl::property_t&) {}
 
-    template <typename ReflectableType, typename FunctionType>
+    template <typename ReflectableType, typename BitfieldType>
+    void bitfield(eightrefl::property_t&) {}
+
+    template <typename ReflectableType, typename FunctionTypePointer>
     void deleter(eightrefl::deleter_t&) {}
 
     template <typename ReflectableType, typename MetaType>

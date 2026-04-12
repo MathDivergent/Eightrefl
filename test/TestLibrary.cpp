@@ -215,7 +215,7 @@ REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestTypedPropertyStruct)
     PROPERTY(FunctionProperty, int const&(), void(int))
-    PROPERTY(OtherFunctionProperty, int const&() const)
+    PROPERTY(OtherFunctionProperty, void(int&))
     PROPERTY(TemplateFunctionProperty<char>, char())
     PROPERTY(Property, int)
     PROPERTY(ConstProperty, int const)
@@ -237,9 +237,9 @@ TEST(TestLibrary, TestTypedProperty)
     auto other_function_property = type->property.find("OtherFunctionProperty");
 
     ASSERT("other_function_property", other_function_property != nullptr);
-    EXPECT("other_function_property-get", other_function_property->get != nullptr);
-    EXPECT("other_function_property-set", other_function_property->set == nullptr);
-    EXPECT("other_function_property-context", other_function_property->context != nullptr);
+    EXPECT("other_function_property-get", other_function_property->get == nullptr);
+    EXPECT("other_function_property-set", other_function_property->set != nullptr);
+    EXPECT("other_function_property-context", other_function_property->context == nullptr);
 
     auto template_function_property = type->property.find("TemplateFunctionProperty<char>");
 
@@ -1250,3 +1250,80 @@ TEST(TestLibrary, TestMemberPointer)
     }
 }
 #endif // EIGHTREFL_MEMBER_ENABLE
+
+
+TEST_SPACE()
+{
+
+struct TestNoAutoFixtureStruct
+{
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestNoAutoFixtureStruct)
+    REFLECTABLE_LAZY_EVALUATE()
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestNoAutoFixtureStruct)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestNoAutoFixture)
+{
+    {
+        auto type = eightrefl::global()->find("TestNoAutoFixtureStruct");
+
+        ASSERT("type-no_fixture", type == nullptr);
+    }
+
+    eightrefl::find_or_add_type<TestNoAutoFixtureStruct>();
+
+    {
+        auto type = eightrefl::global()->find("TestNoAutoFixtureStruct");
+
+        ASSERT("type-with_fixture", type != nullptr);
+    }
+}
+
+
+TEST_SPACE()
+{
+
+struct TestRelativeFixtureStruct
+{
+};
+
+struct TestAutoFixtureStruct
+{
+    TestRelativeFixtureStruct Property;
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestRelativeFixtureStruct)
+    REFLECTABLE_LAZY_EVALUATE()
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestRelativeFixtureStruct)
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(TestAutoFixtureStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestAutoFixtureStruct)
+    PROPERTY(Property)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestAutoAndRelativeFixture)
+{
+    {
+        auto type = eightrefl::global()->find("TestRelativeFixtureStruct");
+
+        ASSERT("type-auto_fixture", type != nullptr);
+    }
+    {
+        auto type = eightrefl::global()->find("TestAutoFixtureStruct");
+
+        ASSERT("type-relative_fixture", type != nullptr);
+    }
+}
