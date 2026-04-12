@@ -215,7 +215,7 @@ REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestTypedPropertyStruct)
     PROPERTY(FunctionProperty, int const&(), void(int))
-    PROPERTY(OtherFunctionProperty, int const&() const)
+    PROPERTY(OtherFunctionProperty, void(int&))
     PROPERTY(TemplateFunctionProperty<char>, char())
     PROPERTY(Property, int)
     PROPERTY(ConstProperty, int const)
@@ -237,9 +237,9 @@ TEST(TestLibrary, TestTypedProperty)
     auto other_function_property = type->property.find("OtherFunctionProperty");
 
     ASSERT("other_function_property", other_function_property != nullptr);
-    EXPECT("other_function_property-get", other_function_property->get != nullptr);
-    EXPECT("other_function_property-set", other_function_property->set == nullptr);
-    EXPECT("other_function_property-context", other_function_property->context != nullptr);
+    EXPECT("other_function_property-get", other_function_property->get == nullptr);
+    EXPECT("other_function_property-set", other_function_property->set != nullptr);
+    EXPECT("other_function_property-context", other_function_property->context == nullptr);
 
     auto template_function_property = type->property.find("TemplateFunctionProperty<char>");
 

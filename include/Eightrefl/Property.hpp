@@ -136,6 +136,11 @@ auto handler_property_get(PropertyType(* property)(void))
     };
 }
 
+inline auto handler_property_get(std::nullptr_t)
+{
+    return nullptr;
+}
+
 namespace detail
 {
 
@@ -301,6 +306,11 @@ auto handler_property_context(PropertyType(* property)(void))
         // context to non-reference return type is not allowed
         return nullptr;
     }
+}
+
+inline auto handler_property_context(std::nullptr_t)
+{
+    return nullptr;
 }
 
 template <typename IPropertyType, typename OPropertyType>
