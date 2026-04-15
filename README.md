@@ -1611,7 +1611,7 @@ Compiled definitions:
 ## Extended documentation
 
 <details>
-<summary><strong>Reflection without macros (full manual API)</strong></summary>
+<summary><strong>Reflection without macros</strong></summary>
 
 Each macro is syntactic sugar over C++ template structures. Full manual version (simplified):
 
@@ -1762,7 +1762,7 @@ struct xxeightrefl<MyClass>
 </details>
 
 <details>
-<summary><strong>Overloads and template functions (details)</strong></summary>
+<summary><strong>Overloads and template functions</strong></summary>
 
 ```cpp
 struct Foo
