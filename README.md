@@ -1270,9 +1270,9 @@ Packs a result into `std::any`.
 
 ```cpp
 int glvalue = 8;
-std::any copy = eightrefl::backward(glvalue);         // std::any stores int
-std::any ref_as_ptr = eightrefl::backward(&glvalue);  // std::any stores int*
-std::any ptr = eightrefl::backward<int&>(glvalue);    // std::any stores int*
+std::any copy = eightrefl::backward(glvalue);                   // std::any stores int
+std::any reference_as_pointer = eightrefl::backward(&glvalue);  // std::any stores int*
+std::any pointer = eightrefl::backward<int&>(glvalue);          // std::any stores int*
 ```
 
 ### get/set chain
