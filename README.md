@@ -516,7 +516,7 @@ struct meta_t
 } // namespace eightrefl
 ```
 
-<details>
+</details>
 
 ### Interaction model
 
