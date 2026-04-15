@@ -167,6 +167,8 @@ Core reflection-table element structures:
 | `meta_t` | `name`, `value` |
 | `injection_t` | `type`, `call` |
 
+<details>
+<summary><strong>reflection-table structure synopsis</strong></summary>
 
 `injection_t` structure synopsis:
 
@@ -528,6 +530,10 @@ struct EIGHTREFL_API meta_t
 
 } // namespace eightrefl
 ```
+
+</details>
+
+---
 
 ### Interaction model
 
@@ -1286,11 +1292,21 @@ property->set(context, std::any{8});  // forward<int>(value) inside
 <summary><strong>forward / backward synopsis</strong></summary>
 
 ```cpp
+namespace eightrefl
+{
+
+inline namespace utility
+{
+
 template <typename ValueType>
 ValueType forward(std::any const& object);
 
 template <typename ValueType>
 std::any backward(ValueType&& result);
+
+} // inline namespace utility
+
+} // namespace eightrefl
 ```
 
 </details>
