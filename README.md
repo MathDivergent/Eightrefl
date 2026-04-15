@@ -246,8 +246,6 @@ struct EIGHTREFL_API parent_t
 } // namespace eightrefl
 ```
 
-</details>
-
 <details>
 <summary><strong>parent_t advance synopsis</strong></summary>
 
