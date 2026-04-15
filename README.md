@@ -157,7 +157,7 @@ struct attribute_t
 Core reflection-table element structures:
 
 | Structure | Key fields |
-|-----------|-------------|
+|-----------|------------|
 | `factory_t` | `name`, `call`, `arguments`, `result`, `meta` |
 | `function_t` | `name`, `call`, `arguments`, `result`, `pointer`, `meta` |
 | `property_t` | `name`, `type`, `get`, `set`, `context`, `pointer`, `meta` |
@@ -862,7 +862,7 @@ struct xxeightrefl_traits<DirtyR, std::enable_if_t<std::is_enum_v<DirtyR>>>
 #### Helper declaration macros
 
 | Macro | Description |
-|--------|------|
+|-------|-------------|
 | `REFLECTABLE_NAME(... /*reflectable_name_string*/)` | Override the type name (string literal or `std::string` expression) |
 | `REFLECTABLE_REGISTRY(... /*reflectable_registry_address*/)` | Specify registry (default is `eightrefl::global()`) |
 | `REFLECTABLE_LAZY_EVALUATE()` | Mark type as lazily reflected (automatic in template declaration) |
@@ -1201,7 +1201,7 @@ Look-up: `type->meta.find("Version")`, `factory->meta.find("PostLoad")`.
 ### Built-in registries
 
 | Registry | Contents |
-|--------|-------|
+|----------|----------|
 | `eightrefl::global()` | Intended for user-defined types |
 | `eightrefl::builtin()` | Primitive C++ types (`int`, `float`, `void*`, qualifiers, etc.) |
 | `eightrefl::standard()` | STL types — when `EIGHTREFL_STANDARD_ENABLE` is enabled |
@@ -1244,7 +1244,7 @@ Functions are in `include/Eightrefl/Utility.hpp`. They handle conversion between
 Extracts a `ValueType` value from `std::any`.
 
 | `ValueType` | What is stored in `std::any` | Behavior |
-|-------------|------------------------------|-----------|
+|-------------|------------------------------|----------|
 | `T` (value) | `T` (without const/ref) | `any_cast<T>(object)` — copy |
 | `T*` (pointer) | `T*` (without const) | `any_cast<T*>(object)` |
 | `T&` (lvalue-ref) | `T*` | `*any_cast<T*>(object)` — dereference |
@@ -1263,7 +1263,7 @@ int* pointer = eightrefl::forward<int*>(object);          // get pointer (glvalu
 Packs a result into `std::any`.
 
 | `ValueType` | What goes into `std::any` |
-|-------------|--------------------------|
+|-------------|---------------------------|
 | `T` (prvalue/xvalue) | copy of `T` (implicit remove const/ref) |
 | `T*` | `T*` (without const on pointer) |
 | `T&` or `T const&` | `T*` (`std::addressof(result)`) |
@@ -1547,7 +1547,7 @@ REFLECTABLE_INIT()
 Included via `#include <Eightrefl/Core.hpp>` (always active).
 
 | Category | Types |
-|-----------|------|
+|----------|-------|
 | Void | `void` |
 | Nullptr | `std::nullptr_t` |
 | Bool | `bool` |
@@ -1587,7 +1587,7 @@ This allows **metaprogrammatic** traversal of the reflection structure itself th
 ## CMake options
 
 | Option | Default | Description |
-|-------|:---------------:|------|
+|--------|:-------:|-------------|
 | `EIGHTREFL_BUILD_SHARED_LIBS` | `ON` | Shared/static library |
 | `EIGHTREFL_FULLY_ENABLE` | `OFF` | Full STL constructor set |
 | `EIGHTREFL_RTTI_ENABLE` | `OFF` | `find(std::type_index)`, `-frtti` |
@@ -1600,7 +1600,7 @@ This allows **metaprogrammatic** traversal of the reflection structure itself th
 Compiled definitions:
 
 | Macro | Description |
-|--------|------|
+|-------|-------------|
 | `EIGHTREFL_DISABLE_REFLECTION_FIXTURE` | Disable automatic `xxfixture` registration |
 | `EIGHTREFL_REGISTRY_RESERVE_SIZE` | Registry reserve size (default `1024`) |
 | `EIGHTREFL_ATTRIBUTE_RESERVE_SIZE` | `attribute_t` reserve size (default `8`) |
