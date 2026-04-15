@@ -57,7 +57,7 @@ struct EIGHTREFL_API injectable_t
     void meta(eightrefl::meta_t&) {}
 };
 
-struct injection_t
+struct EIGHTREFL_API injection_t
 {
     type_t* const type = nullptr;
     std::function<void(std::any const& injectable_context)> const call = nullptr;

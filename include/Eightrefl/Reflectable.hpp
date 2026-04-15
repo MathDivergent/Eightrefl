@@ -60,19 +60,13 @@
         [[maybe_unused]] auto xxmeta = &xxtype->meta; \
         eightrefl::add_injections_using_keys<R>(xxtype);
 
-#ifdef EIGHTREFL_DISABLE_REFLECTION_FIXTURE
-    #define REFLECTABLE_INIT() \
-            } \
-        };
-#else
-    #define REFLECTABLE_INIT() \
-            } \
-            inline static auto xxfixture = eightrefl::fixture<R>(); \
-        };
-#endif // EIGHTREFL_DISABLE_REFLECTION_FIXTURE
+#define REFLECTABLE_INIT() \
+        } \
+        inline static auto xxfixture = eightrefl::fixture_of<R>(); \
+    };
 
 
-#define REFLECTABLE_INJECTION_KEY(injection_key, ... /*reflectable_type*/) \
+#define REFLECTABLE_INJECTION_KEY(injection_key, ... /*reflectable_injection_type*/) \
     template <> struct xxeightrefl_injection_traits<injection_key> { using R = __VA_ARGS__; }; \
 
 #define TEMPLATE_REFLECTABLE_CLEAN(type_template_header, dirty_type, ... /*clean_reflectable_type_template*/) \
@@ -161,8 +155,9 @@ ReflectableType&& reflectable(ReflectableType&& object)
     return std::forward<ReflectableType>(object);
 }
 
+
 template <typename ReflectableType>
-bool fixture()
+bool fixture_of()
 {
     static_assert
     (
@@ -170,6 +165,9 @@ bool fixture()
         "fixture: reflection declaration for this type not found"
     );
 
+#ifdef EIGHTREFL_DISABLE_REFLECTION_FIXTURE
+    return false;
+#else
     if constexpr (::xxeightrefl_traits_has_reflectable_lazy_evaluate<ReflectableType>::value)
     {
         return false;
@@ -179,6 +177,7 @@ bool fixture()
         reflectable<ReflectableType>();
         return true;
     }
+#endif // EIGHTREFL_DISABLE_REFLECTION_FIXTURE
 }
 
 

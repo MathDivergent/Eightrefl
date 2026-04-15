@@ -25,7 +25,7 @@ See last stable library version 3.0.0 [here](https://github.com/MathDivergent/Ei
   - [Reflection table macros](#reflection-table-macros)
 - [Registry (registry_t)](#registry-registry_t)
 - [forward / backward](#forward--backward)
-- [injectable_t and the injection system](#injectable_t-and-the-injection-system)
+- [Injection (injectable_t)](#injection-injectable_t)
 - [Clean and Dirty reflection](#clean-and-dirty-reflection)
 - [Lazy Evaluate](#lazy-evaluate)
 - [Built-in reflections](#built-in-reflections)
@@ -36,7 +36,7 @@ See last stable library version 3.0.0 [here](https://github.com/MathDivergent/Ei
 
 ## Core principles
 
-1. **External reflection** — no need to modify the reflected class. Reflection is described in separate external files.
+1. **External reflection** — no need to modify the reflected type. Reflection is described in separate external files.
 2. **Declaration/definition split** — the declaration (`xxeightrefl_traits`) is placed in a `.hpp` file, while the reflection body (`xxeightrefl`) is placed in a `.cpp` file.
 3. **Standard C++20** — no code generators or custom preprocessors.
 4. **`std::any` as a unified carrier** — all operations on objects are performed via `std::any`, which avoids compile-time coupling to specific types.
@@ -47,51 +47,476 @@ See last stable library version 3.0.0 [here](https://github.com/MathDivergent/Ei
 
 ### Data structures
 
-Each reflected type is stored in a `type_t` structure:
+Each reflected type is stored in a `type_t` structure, synopsis:
 
 ```cpp
+namespace eightrefl
+{
+
 struct type_t
 {
-    std::string const name{};                                    // type name (registry key)
-    registry_t* const registry = nullptr;                        // registry that owns the type
-    std::size_t const size = 0;                                  // sizeof(T), 0 for void
-    std::function<std::any(std::any& object)> const context;     // extracts T* from std::any
+    std::string const name{};                                           // type name (registry key)
+    registry_t* const registry = nullptr;                               // registry that owns the type
+    std::size_t const size = 0;                                         // sizeof(T), 0 for void
+    std::function<std::any(std::any& object)> const context = nullptr;  // extracts T* from std::any
 
-    attribute_t<injection_t>             injection{};  // injections
-    attribute_t<child_t>                 child{};      // child types
-    attribute_t<parent_t>                parent{};     // parent types
-    attribute_t<factory_t>               factory{};    // constructors
-    attribute_t<attribute_t<function_t>> function{};   // functions (name → overloads)
-    attribute_t<property_t>              property{};   // fields / accessors
-    attribute_t<deleter_t>               deleter{};    // destructors
-    attribute_t<meta_t>                  meta{};       // metadata
+    attribute_t<injection_t> injection{};             // injections
+    attribute_t<child_t> child{};                     // child types
+    attribute_t<parent_t> parent{};                   // parent types
+    attribute_t<factory_t> factory{};                 // constructors
+    attribute_t<attribute_t<function_t>> function{};  // functions (name → overloads)
+    attribute_t<property_t> property{};               // fields / accessors
+    attribute_t<deleter_t> deleter{};                 // destructors
+    attribute_t<meta_t> meta{};                       // metadata
 };
+
+
+template <typename ReflectableType>
+auto handler_type_context();
+
+template <typename ReflectableType>
+auto type_size();
+
+} // namespace eightrefl
 ```
 
-`attribute_t<T>` is a wrapper over `std::unordered_map<std::string, T>` with `find` / `add` functions:
+<details>
+<summary><strong>registry_t structure synopsis</strong></summary>
 
 ```cpp
+namespace eightrefl
+{
+
+template <typename ReflectableType>
+std::string name_of();
+
+template <typename ReflectableType>
+registry_t* registry_of();
+
+
+template <typename ReflectableType>
+using clean_of = typename ::xxeightrefl_dirty<ReflectableType>::R;
+
+
+template <typename ReflectableType>
+void reflectable();
+
+template <typename ReflectableType>
+ReflectableType&& reflectable(ReflectableType&& object);
+
+
+template <typename ReflectableType>
+bool fixture_of();
+
+
+template <typename DirtyReflectableType>
+type_t* find_or_add_type();
+
+template <typename DirtyReflectableType,
+          class InjectionType>
+type_t* find_or_add_type(InjectionType& injection);
+
+
+template <typename ReflectableType, typename ParentReflectableType>
+parent_t* find_or_add_parent(type_t* type);
+
+template <typename ReflectableType, typename ParentReflectableType,
+          class InjectionType>
+parent_t* find_or_add_parent(type_t* type, InjectionType& injection);
+
+
+template <typename DirtyFactoryType>
+factory_t* find_or_add_factory(type_t* type);
+
+template <typename ReflectableType,
+          typename DirtyFactoryType,
+          class InjectionType>
+factory_t* find_or_add_factory(type_t* type, InjectionType& injection);
+
+
+template <typename DirtyFunctionType = void, typename FunctionTypePointer>
+function_t* find_or_add_function(type_t* type, std::string const& name, FunctionTypePointer pointer);
+
+template <typename ReflectableType,
+          typename DirtyFunctionType = void, typename FunctionTypePointer,
+          class InjectionType>
+function_t* find_or_add_function(type_t* type, std::string const& name, FunctionTypePointer pointer, InjectionType& injection);
+
+
+template <typename IODirtyType = void, typename ODirtyType = void /*unused*/,
+          typename ITypePointer, typename OTypePointer>
+property_t* find_or_add_property(type_t* type, std::string const& name, ITypePointer ipointer, OTypePointer opointer);
+
+template <typename ReflectableType,
+          typename IODirtyType = void, typename ODirtyType = void,
+          typename ITypePointer, typename OTypePointer,
+          class InjectionType>
+property_t* find_or_add_property(type_t* type, std::string const& name, ITypePointer ipointer, OTypePointer opointer, InjectionType& injection);
+
+
+template <typename BitfieldType>
+property_t* find_or_add_bitfield(type_t* type, std::string const& name,
+                                 std::function<void(std::any const&, std::any&)> ihandler,
+                                 std::function<void(std::any const&, std::any const&)> ohandler);
+
+template <typename ReflectableType,
+          typename BitfieldType,
+          class InjectionType>
+property_t* find_or_add_bitfield(type_t* type, std::string const& name,
+                                 std::function<void(std::any const&, std::any&)> ihandler,
+                                 std::function<void(std::any const&, std::any const&)> ohandler,
+                                 InjectionType& injection);
+
+
+template <typename DirtyDeleterType>
+deleter_t* find_or_add_deleter(type_t* type);
+
+template <typename ReflectableType,
+          typename DirtyDeleterType,
+          class InjectionType>
+deleter_t* find_or_add_deleter(type_t* type, InjectionType& injection);
+
+
+template <typename MetaType>
+meta_t* find_or_add_meta(attribute_t<meta_t>& meta, std::string const& name, MetaType&& value);
+
+template <typename ReflectableType,
+          typename MetaType,
+          class InjectionType>
+meta_t* find_or_add_meta(attribute_t<meta_t>& meta, std::string const& name, MetaType&& value, InjectionType& injection);
+
+inline meta_t* find_or_add_meta(attribute_t<meta_t>& meta, std::string const& name);
+
+template <typename ReflectableType,
+          class InjectionType>
+meta_t* find_or_add_meta(attribute_t<meta_t>& meta, std::string const& name, InjectionType& injection);
+
+
+template <typename ReflectableType, class InjectionType>
+injection_t* find_or_add_injection(type_t* type);
+
+
+template <typename ReflectableType, std::size_t InjectionKeyValue = 0>
+void add_injections_using_keys(type_t* type);
+
+} // namespace eightrefl
+```
+
+</details>
+
+`attribute_t<T>` is a wrapper over `std::unordered_map<std::string, T>` with `find` / `add` functions, synopsis:
+
+```cpp
+namespace eightrefl
+{
+
 template <class ElementType>
 struct attribute_t
 {
+    attribute_t();
     ElementType* find(std::string const& name);
     ElementType* add(std::string const& name, ElementType const& element);
+
     std::unordered_map<std::string, ElementType> all{};
 };
+
+} // namespace eightrefl
 ```
 
 Core reflection-table element structures:
 
 | Structure | Key fields |
 |-----------|-------------|
-| `factory_t` | `name` (signature), `call(args) → std::any`, `arguments`, `result`, `meta` |
-| `function_t` | `name`, `call(context, args) → std::any`, `arguments`, `result`, `pointer`, `meta` |
-| `property_t` | `name`, `type`, `get(ctx, result)`, `set(ctx, value)`, `context(outer) → T*`, `pointer`, `meta` |
-| `deleter_t` | `name`, `call(context)`, `meta` |
-| `parent_t` | `type*`, `cast(child_ctx) → parent*`, `meta` |
-| `child_t` | `type*`, `cast(parent_ctx) → child*` |
-| `meta_t` | `name`, `value` (`std::any`) |
-| `injection_t` | `type*`, `call(injectable_context)` |
+| `factory_t` | `name`, `call`, `arguments`, `result`, `meta` |
+| `function_t` | `name`, `call`, `arguments`, `result`, `pointer`, `meta` |
+| `property_t` | `name`, `type`, `get`, `set`, `context`, `pointer`, `meta` |
+| `deleter_t` | `name`, `call`, `meta` |
+| `parent_t` | `type`, `cast`, `meta` |
+| `child_t` | `type`, `cast` |
+| `meta_t` | `name`, `value` |
+| `injection_t` | `type`, `call` |
+
+<details>
+<summary><strong>injection_t structure synopsis</strong></summary>
+
+```cpp
+namespace eightrefl
+{
+
+struct injection_t
+{
+    type_t* const type = nullptr;
+    std::function<void(std::any const& injectable_context)> const call = nullptr;
+};
+
+
+template <typename ReflectionType, class InjectionType>
+auto handler_injection_call();
+
+} // namespace eightrefl
+```
+
+</details>
+
+<details>
+<summary><strong>child_t structure synopsis</strong></summary>
+
+```cpp
+namespace eightrefl
+{
+
+struct child_t
+{
+    type_t* const type = nullptr;
+    std::function<std::any(std::any const& parent_context)> const cast = nullptr;
+};
+
+
+template <typename ReflectableType, typename ChildReflectableType>
+auto handler_child_cast();
+
+} // namespace eightrefl
+```
+
+</details>
+
+<details>
+<summary><strong>parent_t structure synopsis</strong></summary>
+
+```cpp
+namespace eightrefl
+{
+
+struct parent_t
+{
+    type_t* const type = nullptr;
+    std::function<std::any(std::any const& child_context)> const cast = nullptr;
+    attribute_t<meta_t> meta{};
+};
+
+
+template <typename ReflectableType, typename ParentReflectableType>
+auto handler_parent_cast();
+
+} // namespace eightrefl
+```
+
+</details>
+
+<details>
+<summary><strong>factory_t structure synopsis</strong></summary>
+
+```cpp
+namespace eightrefl
+{
+
+struct factory_t
+{
+    std::string const name{};
+    std::function<std::any(std::vector<std::any> const& arguments)> const call = nullptr;
+    std::vector<type_t*> const arguments{};
+    type_t* const result = nullptr;
+    attribute_t<meta_t> meta{};
+};
+
+
+template <typename ReflectableType, typename... ArgumentTypes>
+auto handler_factory_call(ReflectableType(*)(ArgumentTypes...));
+
+} // namespace eightrefl
+```
+
+</details>
+
+<details>
+<summary><strong>function_t structure synopsis</strong></summary>
+
+```cpp
+namespace eightrefl
+{
+
+struct function_t
+{
+    std::string const name{};
+    std::function<std::any(std::any const& context, std::vector<std::any> const& arguments)> const call = nullptr;
+    std::vector<type_t*> const arguments{};
+    type_t* const result = nullptr;
+    std::any const pointer{};
+    attribute_t<meta_t> meta{};
+};
+
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes...) const);
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes...) const&);
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes...));
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes...)&);
+
+template <typename ReturnType, typename... ArgumentTypes>
+auto handler_function_call(ReturnType(* function)(ArgumentTypes...));
+```
+
+</details>
+
+<details>
+<summary><strong>property_t structure synopsis</strong></summary>
+
+```cpp
+struct property_t
+{
+    std::string const name{};
+    type_t* const type = nullptr;
+    std::function<void(std::any const& context, std::any& result)> const get = nullptr;
+    std::function<void(std::any const& context, std::any const& value)> const set = nullptr;
+    std::function<std::any(std::any const& outer_context)> const context = nullptr;
+    std::pair<std::any, std::any> const pointer{};
+    attribute_t<meta_t> meta{};
+};
+
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_get(PropertyType ReflectableType::* property);
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_get(PropertyType(ReflectableType::* property)(void) const);
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_get(PropertyType(ReflectableType::* property)(void) const&);
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_get(PropertyType(ReflectableType::* property)(void));
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_get(PropertyType(ReflectableType::* property)(void)&);
+
+template <typename PropertyType>
+auto handler_property_get(PropertyType* property);
+
+template <typename PropertyType>
+auto handler_property_get(PropertyType(* property)(void));
+
+constexpr auto handler_property_get(std::nullptr_t);
+
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_set(PropertyType ReflectableType::* property);
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_set(void(ReflectableType::* property)(PropertyType));
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_set(void(ReflectableType::* property)(PropertyType)&);
+
+template <typename PropertyType>
+auto handler_property_set(PropertyType* property);
+
+template <typename PropertyType>
+auto handler_property_set(void(* property)(PropertyType));
+
+constexpr auto handler_property_set(std::nullptr_t);
+
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_context(PropertyType ReflectableType::* property);
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_context(PropertyType(ReflectableType::* property)(void) const);
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_context(PropertyType(ReflectableType::* property)(void) const&);
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_context(PropertyType(ReflectableType::* property)(void));
+
+template <typename ReflectableType, typename PropertyType>
+auto handler_property_context(PropertyType(ReflectableType::* property)(void)&);
+
+template <typename PropertyType>
+auto handler_property_context(PropertyType* property);
+
+template <typename PropertyType>
+auto handler_property_context(PropertyType(* property)(void));
+
+constexpr auto handler_property_context(std::nullptr_t);
+
+
+template <typename IPropertyType, typename OPropertyType>
+constexpr auto property_pointer(IPropertyType iproperty, OPropertyType oproperty);
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(PropertyType const ReflectableType::* iproperty, std::nullptr_t);
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void) const, std::nullptr_t);
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void) const&, std::nullptr_t);
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void), std::nullptr_t);
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void)&, std::nullptr_t);
+
+template <typename PropertyType>
+constexpr auto property_pointer(PropertyType(* iproperty)(void), std::nullptr_t);
+
+template <typename PropertyType>
+constexpr auto property_pointer(PropertyType const* iproperty, std::nullptr_t);
+
+} // namespace eightrefl
+```
+
+</details>
+
+<details>
+<summary><strong>deleter_t structure synopsis</strong></summary>
+
+```cpp
+namespace eightrefl
+{
+
+struct deleter_t
+{
+    std::string const name{};
+    std::function<void(std::any const& context)> const call = nullptr;
+    attribute_t<meta_t> meta{};
+};
+
+template <typename ReflectableType>
+auto handler_deleter_call(void(*)(ReflectableType*));
+
+template <typename CustomDeleterType, typename ReflectableType>
+auto handler_deleter_call(CustomDeleterType(*)(ReflectableType*));
+
+} // namespace eightrefl
+```
+
+</details>
+
+<details>
+<summary><strong>meta_t structure synopsis</strong></summary>
+
+```cpp
+namespace eightrefl
+{
+
+struct meta_t
+{
+    std::string const name{};
+    std::any value{};
+};
+
+} // namespace eightrefl
+```
+
+<details>
 
 ### Interaction model
 
@@ -112,6 +537,14 @@ Calling `eightrefl::reflectable<T>()` runs `xxeightrefl<T>::evaluate(injectable_
 3. Executes `add_injections_using_keys<T>()` — automatically registers injections by numeric keys.
 
 `xxfixture` is an `inline static` variable generated by `REFLECTABLE_INIT()` that automatically runs `reflectable<T>()` during program initialization.
+
+<details>
+<summary><strong>registration synopsis</strong></summary>
+
+```cpp
+```
+
+</details>
 
 ---
 
@@ -163,7 +596,7 @@ int main()
     // read field value
     std::any result;
     type->property.find("value")->get(context, result);
-    // *std::any_cast<int*>(result) == 42
+    // *std::any_cast<int*>(result) == 8
 
     // function call
     type->function.find("Print")->find("void() const")->call(context, {});
@@ -180,13 +613,13 @@ The declaration is placed in a **header file** (`.hpp`). It registers `xxeightre
 
 ---
 
-#### `REFLECTABLE_DECLARATION(... /*reflectable_type*/)` / `REFLECTABLE_DECLARATION_INIT()`
+#### `REFLECTABLE_DECLARATION(... /*reflectable_type*/)` and `REFLECTABLE_DECLARATION_INIT()`
 
 Declaration for a regular (non-template) type.
 
 ```cpp
 REFLECTABLE_DECLARATION(MyClass)
-    // optional: REFLECTABLE_NAME, REFLECTABLE_REGISTRY
+    // optional: REFLECTABLE_NAME, REFLECTABLE_REGISTRY, REFLECTABLE_LAZY_EVALUATE, ...
 REFLECTABLE_DECLARATION_INIT()
 ```
 
@@ -202,7 +635,7 @@ struct xxeightrefl_traits<MyClass>
 
 ---
 
-#### `TEMPLATE_REFLECTABLE_DECLARATION(type_template_header, type_template)` / `REFLECTABLE_DECLARATION_INIT()`
+#### `TEMPLATE_REFLECTABLE_DECLARATION(type_template_header, ... /*reflectable_type_template*/)` and `REFLECTABLE_DECLARATION_INIT()`
 
 Declaration for a template type. Automatically includes `REFLECTABLE_LAZY_EVALUATE()`.
 
@@ -227,7 +660,7 @@ struct xxeightrefl_traits<MyBox<T>>
 
 ---
 
-#### `CONDITIONAL_REFLECTABLE_DECLARATION(condition)` / `REFLECTABLE_DECLARATION_INIT()`
+#### `CONDITIONAL_REFLECTABLE_DECLARATION(... /*reflectable_type_condition*/)` / `REFLECTABLE_DECLARATION_INIT()`
 
 Conditional declaration via SFINAE. Suitable for an entire category of types.
 
@@ -254,14 +687,14 @@ struct xxeightrefl_traits<DirtyR, std::enable_if_t<std::is_enum_v<DirtyR>>>
 
 | Macro | Description |
 |--------|------|
-| `REFLECTABLE_NAME(... /*reflectable_name_string*/)` | Override the type name (string or `std::string` expression) |
+| `REFLECTABLE_NAME(... /*reflectable_name_string*/)` | Override the type name (string literal or `std::string` expression) |
 | `REFLECTABLE_REGISTRY(... /*reflectable_registry_address*/)` | Specify registry (default is `eightrefl::global()`) |
 | `REFLECTABLE_LAZY_EVALUATE()` | Mark type as lazily reflected (automatic in template declaration) |
 
 ```cpp
 REFLECTABLE_DECLARATION(MyClass)
     REFLECTABLE_NAME("my_module::MyClass")
-    REFLECTABLE_REGISTRY(myCustomRegistry()) // myCustomRegistry() must return registry_t*
+    REFLECTABLE_REGISTRY(MyCustomRegistry())  // MyCustomRegistry() must return registry_t*
 REFLECTABLE_DECLARATION_INIT()
 ```
 
@@ -273,7 +706,7 @@ The body is placed in a **source file** (`.cpp`). It registers `xxeightrefl<T>`.
 
 ---
 
-#### `REFLECTABLE(... /*reflectable_type*/)` / `REFLECTABLE_INIT()`
+#### `REFLECTABLE(... /*reflectable_type*/)` and `REFLECTABLE_INIT()`
 
 ```cpp
 REFLECTABLE(MyClass)
@@ -294,20 +727,19 @@ struct xxeightrefl<MyClass>
     template <class InjectionType>
     static void evaluate(InjectionType&& injection)
     {
-        auto xxtype = eightrefl::find_or_add_type<R>();
+        auto xxtype = eightrefl::find_or_add_type<R>(injection);
         [[maybe_unused]] auto xxmeta = &xxtype->meta;
-        injection.template type<R>(*xxtype);
-        // ... FACTORY, PROPERTY, FUNCTION ...
         eightrefl::add_injections_using_keys<R>(xxtype);
+        // FACTORY, PROPERTY, FUNCTION, ...
     }
 
-    inline static auto xxfixture = (eightrefl::reflectable<R>(), true);
+    inline static auto xxfixture = eightrefl::fixture_of<R>();
 };
 ```
 
 ---
 
-#### `TEMPLATE_REFLECTABLE(reflectable_type_template_header, ... /*reflectable_type_template*/)` / `REFLECTABLE_INIT()`
+#### `TEMPLATE_REFLECTABLE(reflectable_type_template_header, ... /*reflectable_type_template*/)` and `REFLECTABLE_INIT()`
 
 Body for a template type.
 
@@ -320,7 +752,7 @@ REFLECTABLE_INIT()
 
 ---
 
-#### `CONDITIONAL_REFLECTABLE(... /*reflectable_type_condition*/)` / `REFLECTABLE_INIT()`
+#### `CONDITIONAL_REFLECTABLE(... /*reflectable_type_condition*/)` and `REFLECTABLE_INIT()`
 
 Body for conditional reflection (SFINAE on `R`).
 
@@ -346,9 +778,30 @@ private:
 
 ---
 
+#### `REFLECTABLE_INJECTION_KEY(injection_key, ... /*reflectable_injection_type*/)`
+
+Registers injector type by numeric key. Automatically applied to **all** reflections that follow this macro in the same translation unit.
+
+```cpp
+REFLECTABLE_INJECTION_KEY(0, MyInjection)
+```
+
+Maximum number of keys is `EIGHTREFL_INJECTION_TRAITS_MAX_KEY_VALUE` (default `4`).
+
+**Equivalent without macro:**
+```cpp
+template <>
+struct xxeightrefl_injection_traits<0>
+{
+    using R = MyInjection;
+};
+```
+
+---
+
 ### Reflection table macros
 
-All these macros are used between `REFLECTABLE(...)` (`TEMPLATE_REFLECTABLE(...)`, `CONDITIONAL_REFLECTABLE(...)`) and `REFLECTABLE_INIT()`. After each one, `META(...)` can be chained.
+All these macros are used between `REFLECTABLE(...)` (or `TEMPLATE_REFLECTABLE(...)`, or `CONDITIONAL_REFLECTABLE(...)`) and `REFLECTABLE_INIT()`. After each one, `META(...)` can be chained.
 
 ---
 
@@ -358,10 +811,10 @@ Registers a constructor. The name is formed as a function signature.
 
 ```cpp
 REFLECTABLE(MyClass)
-    FACTORY(R())                  // MyClass()
-    FACTORY(R(int))               // MyClass(int)
-    FACTORY(R(R const&))          // MyClass(MyClass const&)
-    FACTORY(SomeBuilder())        // custom builder type
+    FACTORY(R())            // MyClass()
+    FACTORY(R(int))         // MyClass(int)
+    FACTORY(R(R const&))    // MyClass(MyClass const&)
+    FACTORY(SomeBuilder())  // custom builder type
 REFLECTABLE_INIT()
 ```
 
@@ -377,19 +830,19 @@ Look-up: `type->factory.find("MyClass(int)")`.
 
 ---
 
-#### `FUNCTION(name, ... /*function_type*/)` / `FUNCTION_AS(external_name, internal_name, ... /*function_type*/)`
+#### `FUNCTION(name, ... /*function_type*/)` or `FUNCTION_AS(external_name, internal_name, ... /*function_type*/)`
 
 Registers a member function or static function. `function_type` is required for overloads or templates.
 
 ```cpp
 REFLECTABLE(MyClass)
-    FUNCTION(Print)                         // auto-deduce
-    FUNCTION(Overload, void(int))           // specific overload
+    FUNCTION(Print)                          // auto-deduce
+    FUNCTION(Overload, void(int))            // specific overload
     FUNCTION(Overload, void(float))
     FUNCTION(Overload, void(int) const)
-    FUNCTION(Template<int>, void())         // template function with type argument
-    FUNCTION((Template<int, bool>), void()) // parentheses required for commas
-    FUNCTION_AS("@wild", Print)             // custom external name
+    FUNCTION(Template<int>, void())          // template function with type argument
+    FUNCTION((Template<int, bool>), void())  // parentheses required for commas
+    FUNCTION_AS("@wild", Print)              // custom external name
 REFLECTABLE_INIT()
 ```
 
@@ -408,7 +861,7 @@ eightrefl::find_or_add_function(xxtype, "@wild", &MyClass::Print);
 
 ---
 
-#### `EXTERNAL_FUNCTION(name, .../*function_type*/)` / `EXTERNAL_FUNCTION_AS(external_name, internal_name, ... /*function_type*/)`
+#### `EXTERNAL_FUNCTION(name, .../*function_type*/)` or `EXTERNAL_FUNCTION_AS(external_name, internal_name, ... /*function_type*/)`
 
 Registers a **free function** (not a class member) in a type’s reflection table.
 
@@ -430,16 +883,16 @@ eightrefl::find_or_add_function(xxtype, "Serialize", (void(*)(MyClass const&, in
 
 ---
 
-#### `PROPERTY(name, ... /*variable_type_or_function_type(s)*/)` / `PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/)`
+#### `PROPERTY(name, ... /*variable_type_or_function_type(s)*/)` or `PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/)`
 
 Registers a member field or accessor pair.
 
 ```cpp
 REFLECTABLE(MyClass)
-    PROPERTY(value)                                             // member field
-    PROPERTY(Name, std::string() const, void(std::string))      // get/set accessors
-    PROPERTY(Readonly)                                          // const field → set = nullptr
-    PROPERTY(Writeonly, void(int))                              // set only → get = nullptr
+    PROPERTY(value)                                            // member field
+    PROPERTY(Name, std::string() const, void(std::string))     // get/set accessors
+    PROPERTY(Readonly)                                         // const field → set = nullptr
+    PROPERTY(Writeonly, void(int))                             // set only → get = nullptr
     PROPERTY_AS("bIsActivate", Activate, IsActivated)
     PROPERTY_AS("flag", setF, getS, void(int), char const*())
 REFLECTABLE_INIT()
@@ -457,7 +910,7 @@ eightrefl::find_or_add_property(xxtype, "flag", (void(MyClass::*)(int))&MyClass:
 
 ---
 
-#### `EXTERNAL_PROPERTY(name, ... /*variable_type_or_function_type(s)*/)` / `EXTERNAL_PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/)`
+#### `EXTERNAL_PROPERTY(name, ... /*variable_type_or_function_type(s)*/)` or `EXTERNAL_PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/)`
 
 Registers a **global or static** variable in the reflection table.
 
@@ -476,7 +929,7 @@ eightrefl::find_or_add_property(xxtype, "GlobalCounter", &::GlobalCounter);
 
 ---
 
-#### `BITFIELD(name)` / `BITFIELD_AS(external_name, internal_name)`
+#### `BITFIELD(name)` or `BITFIELD_AS(external_name, internal_name)`
 
 Registers a bitfield. Since a bitfield address cannot be taken, copy lambdas are used.
 
@@ -484,7 +937,7 @@ Registers a bitfield. Since a bitfield address cannot be taken, copy lambdas are
 struct Flags
 {
     std::uint32_t visible : 1;
-    std::uint32_t active  : 1;
+    std::uint32_t active : 1;
 };
 
 REFLECTABLE(Flags)
@@ -497,7 +950,7 @@ REFLECTABLE_INIT()
 
 ---
 
-#### `PARENT(ParentType)`
+#### `PARENT(... /*reflectable_type*/)`
 
 Registers a base class. Automatically adds `child_t` to the parent type entry (for reverse casting).
 
@@ -518,14 +971,14 @@ eightrefl::find_or_add_parent<Derived, Base>(xxtype);
 
 ---
 
-#### `DELETER(function_type)`
+#### `DELETER(... /*function_type*/)`
 
 Registers a destructor or custom memory releaser.
 
 ```cpp
 REFLECTABLE(MyClass)
-    DELETER(void(R*))                 // standard destructor
-    DELETER(CustomDeleter(R*))        // custom deleter type
+    DELETER(void(R*))           // standard destructor
+    DELETER(CustomDeleter(R*))  // custom deleter type
 REFLECTABLE_INIT()
 ```
 
@@ -533,7 +986,7 @@ Look-up: `type->deleter.find("void(MyClass*)")`.
 
 ---
 
-#### `META(name, value)` / `META(name)` (without value)
+#### `META(name, ... /*meta_expression*/)` or `META(name)` (without value)
 
 Adds arbitrary metadata to the **previous** table element (or the type itself).
 
@@ -546,7 +999,7 @@ REFLECTABLE(MyClass)
         META("PostLoad", true)
 
     PROPERTY(health)
-        META("Serializable")          // no value → std::any{}
+        META("Serializable")              // no value → std::any{}
         META("Range", std::pair{0, 100})
 
     FUNCTION(Fire, void(int))
@@ -556,27 +1009,6 @@ REFLECTABLE_INIT()
 ```
 
 Look-up: `type->meta.find("Version")`, `factory->meta.find("PostLoad")`.
-
----
-
-#### `REFLECTABLE_INJECTION_KEY(key_value, InjectionType)`
-
-Registers injector type by numeric key. Automatically applied to **all** reflections that follow this macro in the same translation unit.
-
-```cpp
-REFLECTABLE_INJECTION_KEY(0, MyInjection)
-```
-
-Maximum number of keys is `EIGHTREFL_INJECTION_TRAITS_MAX_KEY_VALUE` (default `4`).
-
-**Equivalent without macro:**
-```cpp
-template <>
-struct xxeightrefl_injection_traits<0>
-{
-    using R = MyInjection;
-};
-```
 
 ---
 
@@ -644,10 +1076,10 @@ Extracts a `ValueType` value from `std::any`.
 
 ```cpp
 std::any object = std::make_any<int>(8);
-int prvalue    = eightrefl::forward<int>(8);                     // copy (prvalue)
-int xvalue     = eightrefl::forward<int>(std::move(object));     // copy (xvalue)
-int& reference = eightrefl::forward<int&>(object);               // dereference pointer (glvalue)
-int* pointer   = eightrefl::forward<int*>(object);               // get pointer (glvalue)
+int prvalue = eightrefl::forward<int>(8);                 // copy (prvalue)
+int xvalue = eightrefl::forward<int>(std::move(object));  // copy (xvalue)
+int& reference = eightrefl::forward<int&>(object);        // dereference pointer (glvalue)
+int* pointer = eightrefl::forward<int*>(object);          // get pointer (glvalue)
 ```
 
 ### `backward<ValueType>(ValueType&& result) → std::any`
@@ -662,9 +1094,9 @@ Packs a result into `std::any`.
 
 ```cpp
 int glvalue = 8;
-std::any a1 = eightrefl::backward(glvalue);           // std::any stores int
-std::any a2 = eightrefl::backward(&glvalue);          // std::any stores int*
-std::any a3 = eightrefl::backward<int&>(glvalue);     // std::any stores int*
+std::any copy = eightrefl::backward(glvalue);         // std::any stores int
+std::any ref_as_ptr = eightrefl::backward(&glvalue);  // std::any stores int*
+std::any ptr = eightrefl::backward<int&>(glvalue);    // std::any stores int*
 ```
 
 ### get/set chain
@@ -675,12 +1107,25 @@ property->get(context, result);
 // result: std::any stores T (value types) or T* (reference/pointer types)
 
 // set: expects std::any; pass via backward or directly
-property->set(context, std::any{8});     // forward<int>(value) inside
+property->set(context, std::any{8});  // forward<int>(value) inside
 ```
+
+<details>
+<summary><strong>forward / backward synopsis</strong></summary>
+
+```cpp
+template <typename ValueType>
+ValueType forward(std::any const& object);
+
+template <typename ValueType>
+std::any backward(ValueType&& result);
+```
+
+</details>
 
 ---
 
-## injectable_t and the injection system
+## Injection (injectable_t)
 
 ### Why injectable_t is needed
 
@@ -697,37 +1142,42 @@ Typical use cases:
 Override only the methods you need:
 
 ```cpp
+namespace eightrefl
+{
+
 struct injectable_t
 {
     template <typename ReflectableType>
-    void type(type_t&) {}                         // on type reflection
+    void type(type_t&) {}          // on type reflection
 
     template <typename ReflectableType, typename ParentType>
-    void parent(parent_t&) {}                     // on parent class registration
+    void parent(parent_t&) {}      // on parent class registration
 
     template <typename ReflectableType, typename FunctionTypePointer>
-    void factory(factory_t&) {}                   // on constructor registration
+    void factory(factory_t&) {}    // on constructor registration
 
     template <typename ReflectableType, typename FunctionTypePointer>
-    void function(function_t&) {}                 // on function registration
+    void function(function_t&) {}  // on function registration
 
     template <typename ReflectableType, typename ITypePointer, typename OTypePointer>
-    void property(property_t&) {}                 // on field/accessor registration
+    void property(property_t&) {}  // on field/accessor registration
 
     template <typename ReflectableType, typename BitfieldType>
-    void bitfield(property_t&) {}                 // on bitfield registration
+    void bitfield(property_t&) {}  // on bitfield registration
 
     template <typename ReflectableType, typename FunctionTypePointer>
-    void deleter(deleter_t&) {}                   // on destructor registration
+    void deleter(deleter_t&) {}    // on destructor registration
 
     template <typename ReflectableType, typename MetaType>
-    void meta(meta_t&) {}                         // on metadata registration
+    void meta(meta_t&) {}          // on metadata registration
 };
+
+} // namespace eightrefl
 ```
 
 ### Key-based injection (automatic)
 
-Registered via `REFLECTABLE_INJECTION_KEY`. Automatically applied to all reflections after this macro in the same TU:
+Registered via `REFLECTABLE_INJECTION_KEY(...)`. Automatically applied to all reflections after this macro in the same TU:
 
 ```cpp
 // my_injection.hpp
@@ -775,7 +1225,9 @@ struct FlagInjection : eightrefl::injectable_t
 
 REFLECTABLE_DECLARATION(FlagInjection)
 REFLECTABLE_DECLARATION_INIT()
+```
 
+```cpp
 // Register manually after init:
 auto type = eightrefl::global()->find("MyClass");
 eightrefl::find_or_add_injection<MyClass, FlagInjection>(type);
@@ -801,6 +1253,8 @@ injection->call(injection->type->context(injectable));
 ```cpp
 // Does not compile! Container<T>::Iterator is a dependent type
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, Container<T>::Iterator)
+    // ...
+REFLECTABLE_DECLARATION_INIT()
 ```
 
 **2. Reflecting typedef/using under another name.** `std::size_t` is physically `unsigned long long`, but we want the name `"std::size_t"`, not `"unsigned long long"`.
@@ -809,24 +1263,20 @@ TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, Container<T>::Iterator)
 
 ### Macros
 
-#### `REFLECTABLE_CLEAN(dirty_type, clean_type)`
+#### `REFLECTABLE_CLEAN(dirty_type, ... /*clean_reflectable_type*/)`
 
 ```cpp
-// dirty_type → clean_type (does not declare a new type)
+// dirty_type → clean_reflectable_type (does not declare a new type)
 REFLECTABLE_CLEAN(std_size_t, std::size_t)
-```
-
-**Without macro:**
-```cpp
-template <>
-struct xxeightrefl_dirty<std_size_t> { using R = std::size_t; };
+// ↑ Generates:
+//   struct std_size_t : eightrefl::meta::inherits<std::size_t> {};
 ```
 
 ---
 
-#### `REFLECTABLE_DIRTY(dirty_type, clean_type)`
+#### `REFLECTABLE_DIRTY(dirty_type, ... /*clean_reflectable_type*/)`
 
-Declares a **new struct** `dirty_type` as a `clean_type` wrapper and immediately registers `REFLECTABLE_CLEAN`:
+Declares a **new struct** `dirty_type` as a `clean_reflectable_type` wrapper and immediately registers `REFLECTABLE_CLEAN`:
 
 ```cpp
 REFLECTABLE_DIRTY(std_size_t, std::size_t)
@@ -847,17 +1297,18 @@ REFLECTABLE_INIT()
 
 ---
 
-#### `TEMPLATE_REFLECTABLE_DIRTY(dirty_type_template_header, dirty_type, dirty_type_template, ... /*clean_reflectable_type_template*/)` / `TEMPLATE_REFLECTABLE_CLEAN(type_template_header, dirty_type, ... /*clean_reflectable_type_template*/)`
+#### `TEMPLATE_REFLECTABLE_DIRTY(dirty_type_template_header, dirty_type, dirty_type_template, ... /*clean_reflectable_type_template*/)` or `TEMPLATE_REFLECTABLE_CLEAN(type_template_header, dirty_type, ... /*clean_reflectable_type_template*/)`
 
 Template variants for nested types:
 
 ```cpp
 // Reflect Container<T>::Iterator via a dirty intermediary
-TEMPLATE_REFLECTABLE_DIRTY(
+TEMPLATE_REFLECTABLE_DIRTY
+(
     template <typename T>,
-    ContainerIterator,              // new intermediary struct
-    ContainerIterator<T>,           // dirty template type
-    typename Container<T>::Iterator // clean type
+    ContainerIterator,               // new intermediary struct
+    ContainerIterator<T>,            // dirty template type
+    typename Container<T>::Iterator  // clean type
 )
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, ContainerIterator<T>)
@@ -883,7 +1334,7 @@ Reflection cannot be auto-started via `xxfixture` for template types, so it must
 
 ### Solution
 
-If a type is marked with `REFLECTABLE_LAZY_EVALUATE()` (automatic for `TEMPLATE_REFLECTABLE_DECLARATION(...)`, `CONDITIONAL_REFLECTABLE_DECLARATION(...)`), then on first access `find_or_add_type<T>()` **automatically** runs `reflectable<T>()`:
+If a type is marked with `REFLECTABLE_LAZY_EVALUATE()` (automatic for `TEMPLATE_REFLECTABLE_DECLARATION(...)` and `CONDITIONAL_REFLECTABLE_DECLARATION(...)`), then on first access `find_or_add_type<T>()` **automatically** runs `reflectable<T>()`:
 
 ```cpp
 // std::vector<T> has lazy evaluate automatically
@@ -899,7 +1350,7 @@ REFLECTABLE(MyStruct)
 REFLECTABLE_INIT()
 ```
 
-> Lazy Evaluate is triggered **only once** (recursion protected by a `lock` flag in `reflectable<T>()`). Requires reflection (`REFLECTABLE(...)`, `TEMPLATE_REFLECTABLE(...)`, `CONDITIONAL_REFLECTABLE(...)`) to be placed in a `.hpp` file.
+> Lazy Evaluate is triggered **only once** (recursion protected by a `lock` flag in `reflectable<T>()`). Requires reflection (`REFLECTABLE(...)` or `TEMPLATE_REFLECTABLE(...)`, or `CONDITIONAL_REFLECTABLE(...)`) to be placed in a `.hpp` file.
 
 ---
 
@@ -979,17 +1430,103 @@ Compiled definitions:
 Each macro is syntactic sugar over C++ template structures. Full manual version (simplified):
 
 ```cpp
+// MyBaseClass.hpp
+class MyBaseClass
+{
+};
+
+// reflectable declaration with macro:
+REFLECTABLE_DECLARATION(MyBaseClass)
+REFLECTABLE_DECLARATION_INIT()
+
+// reflectable declaration without macro:
+template <>
+struct xxeightrefl_traits<MyBaseClass>
+{
+    using R = typename ::xxeightrefl_dirty<MyBaseClass>::R;
+    [[maybe_unused]] static constexpr auto xxnative_name = "MyBaseClass";
+};
+```
+
+```cpp
+// MyRegistry.hpp
+eightrefl::registry_t* MyRegistry();
+
+```
+
+```cpp
 // MyClass.hpp
+#include "MyBaseClass.hpp"
+#include "MyRegistry.hpp"
+
+class MyClass : public MyBaseClass
+{
+    int Property;
+
+    void Function();
+};
+
+// reflectable declaration with macro:
+REFLECTABLE_DECLARATION(MyClass)
+    REFLECTABLE_REGISTRY()
+    REFLECTABLE_NAME("my_custom_class")
+REFLECTABLE_DECLARATION_INIT()
+
+// reflectable declaration without macro:
 template <>
 struct xxeightrefl_traits<MyClass>
 {
     using R = typename ::xxeightrefl_dirty<MyClass>::R;
     [[maybe_unused]] static constexpr auto xxnative_name = "MyClass";
-    static auto registry() { return eightrefl::global(); }
-    static auto name() { return "MyClass"; }
+    static auto registry() { return MyRegistry(); }
+    static auto name() { return "my_custom_class"; }
 };
+```
 
+```cpp
+// MyBaseClass.cpp
+#include "MyBaseClass.hpp"
+
+// reflectable declaration with macro:
+REFLECTABLE(MyBaseClass)
+REFLECTABLE_INIT()
+
+// reflectable declaration without macro:
+template <>
+struct xxeightrefl<MyBaseClass>
+{
+    using R = MyClass;
+    using CleanR = typename ::xxeightrefl_dirty<R>::R;
+
+    template <class InjectionType>
+    static void evaluate(InjectionType&& injection)
+    {
+        auto xxtype = eightrefl::find_or_add_type<R>(injection);
+        [[maybe_unused]] auto xxmeta = &xxtype->meta;
+        eightrefl::add_injections_using_keys<CleanR>(xxtype);
+    }
+
+    inline static auto xxfixture = eightrefl::fixture_of<R>();
+}
+```
+
+```cpp
 // MyClass.cpp
+#include "MyClass.hpp"
+
+// reflectable declaration with macro:
+REFLECTABLE(MyClass)
+    META("Version", 1)
+    PARENT(MyBaseClass)
+    if constexpr (std::is_default_constructible_v<R>)
+        FACTORY(R())
+    DELETER(void(R*))
+    PROPERTY(Property)
+        META("Default", 8)
+    FUNCTION(Function)
+REFLECTABLE_INIT()
+
+// reflectable declaration without macro:
 template <>
 struct xxeightrefl<MyClass>
 {
@@ -997,22 +1534,42 @@ struct xxeightrefl<MyClass>
     using CleanR = typename ::xxeightrefl_dirty<R>::R;
 
     template <class InjectionType>
-    static void evaluate(InjectionType&&)
+    static void evaluate(InjectionType&& injection)
     {
-        auto xxtype = eightrefl::find_or_add_type<R>();
+        auto xxtype = eightrefl::find_or_add_type<R>(injection);
         [[maybe_unused]] auto xxmeta = &xxtype->meta;
+        eightrefl::add_injections_using_keys<CleanR>(xxtype);
 
-        eightrefl::find_or_add_factory<R()>(xxtype);
-        eightrefl::find_or_add_function(xxtype, "Print", &R::Print);
-        eightrefl::find_or_add_property(xxtype, "value", &R::value, &R::value);
-        eightrefl::find_or_add_parent<R, BaseClass>(xxtype);
-        eightrefl::find_or_add_deleter<void(R*)>(xxtype);
-        eightrefl::find_or_add_meta(xxtype->meta, "Version", 1);
-
-        eightrefl::add_injections_using_keys<R>(xxtype);
+        {
+            eightrefl::find_or_add_meta(xxmeta, "Version", 1, injection);
+        }
+        {
+            auto xxparent = eightrefl::find_or_add_parent<R, MyBaseClass>(xxtype, injection);
+            xxmeta = &xxparent->meta;
+        }
+        if constexpr (std::is_default_constructible_v<R>)
+        {
+            auto xxfactory = eightrefl::find_or_add_factory<R()>(xxtype, injection);
+            xxmeta = &xxfactory->meta;
+        }
+        {
+            auto xxdeleter = eightrefl::find_or_add_deleter<void(R*)>(xxtype, injection);
+            xxmeta = &xxdeleter->meta;
+        }
+        {
+            auto xxproperty = eightrefl::find_or_add_property(xxtype, "Property", &R::Property, &R::Property, injection);
+            xxmeta = &xxproperty->meta;
+        }
+        {
+            eightrefl::find_or_add_meta(*xxmeta, "Default", 8, injection);
+        }
+        {
+            auto xxfunction = eightrefl::find_or_add_function(xxtype, "Function", &R::Function, injection);
+            xxmeta = &xxfunction->meta;
+        }
     }
 
-    inline static auto xxfixture = (eightrefl::reflectable<R>(), true);
+    inline static auto xxfixture = eightrefl::fixture_of<R>();
 };
 ```
 
@@ -1024,12 +1581,12 @@ struct xxeightrefl<MyClass>
 ```cpp
 struct Foo
 {
-    void Bar()              {}
-    void Bar() const        {}
-    void Bar(int)           {}
-    void Bar(int) const     {}
+    void Bar() {}
+    void Bar() const {}
+    void Bar(int) {}
+    void Bar(int) const {}
     template <typename T>
-    void Template()         {}
+    void Template() {}
 };
 
 REFLECTABLE(Foo)
@@ -1044,7 +1601,7 @@ REFLECTABLE_INIT()
 
 Overload look-up:
 ```cpp
-auto f = type->function.find("Bar")->find("void(int) const");
+auto function = type->function.find("Bar")->find("void(int) const");
 ```
 
 </details>
@@ -1062,7 +1619,7 @@ std::any property_context = property->context(object_context);  // int*  (pointe
 int* raw = std::any_cast<int*>(property_context);
 ```
 
-Context equals `nullptr` if it cannot be derived from the property.
+Context equals `nullptr` if it cannot be deduced from the property.
 
 </details>
 
@@ -1089,10 +1646,10 @@ std::any child_context = child->cast(parent_context);  // Derived*
 
 ```cpp
 // Static type name
-std::string name = eightrefl::name_of<std::vector<int>>();    // "std::vector<int>"
-std::string name = eightrefl::name_of<int*>();                // "int*"
-std::string name = eightrefl::name_of<int const>();           // "int const"
-std::string name = eightrefl::name_of<void(int, float)>();    // "void(int, float)"
+std::string name = eightrefl::name_of<std::vector<int>>();  // "std::vector<int>"
+std::string name = eightrefl::name_of<int*>();              // "int*"
+std::string name = eightrefl::name_of<int const>();         // "int const"
+std::string name = eightrefl::name_of<void(int, float)>();  // "void(int, float)"
 
 // Type's custom registry
 eightrefl::registry_t* registry = eightrefl::registry_of<MyClass>();
@@ -1125,7 +1682,7 @@ eightrefl::type_t* type = eightrefl::global()->find(typeid(MyClass));
 <details>
 <summary><strong>EIGHTREFL_DISABLE_REFLECTION_FIXTURE</strong></summary>
 
-`REFLECTABLE_INIT()` generates `inline static auto xxfixture = (eightrefl::reflectable<R>(), true)`, which guarantees automatic reflection during TU initialization.
+`REFLECTABLE_INIT()` generates `inline static auto xxfixture = eightrefl::fixture_of<R>()`, which guarantees automatic reflection during TU initialization.
 
 Define `EIGHTREFL_DISABLE_REFLECTION_FIXTURE` to disable this and manage initialization order manually:
 

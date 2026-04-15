@@ -15,23 +15,23 @@
 #include <Eightrefl/Detail/Macro.hpp> // EIGHTREFL_DEPAREN
 
 // .property<R, variable_type_or_function_type>(external_name, &scope::internal_iname, &scope::ìnternal_oname)
-#define EIGHTREFL_PROPERTY_IMPL(scope, external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
+#define EIGHTREFL_PROPERTY_IMPL(scope, external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/) \
     { \
         auto [xxi, xxo] = eightrefl::meta::access_traits<scope>::template property<__VA_ARGS__>::of(&scope::EIGHTREFL_DEPAREN(internal_iname), &scope::EIGHTREFL_DEPAREN(internal_oname)); \
         auto xxproperty = eightrefl::find_or_add_property<CleanR __VA_OPT__(, __VA_ARGS__)>(xxtype, external_name, xxi, xxo, injection); \
         xxmeta = &xxproperty->meta; \
     }
 
-#define PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
+#define PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/) \
     EIGHTREFL_PROPERTY_IMPL(CleanR, external_name, internal_iname, internal_oname, __VA_ARGS__)
 
 #define PROPERTY(name, ... /*variable_type_or_function_type*/) \
     PROPERTY_AS(EIGHTREFL_TO_STRING(name), name, name, __VA_ARGS__)
 
-#define EXTERNAL_PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type*/) \
+#define EXTERNAL_PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/) \
     EIGHTREFL_PROPERTY_IMPL(, external_name, internal_iname, internal_oname, __VA_ARGS__)
 
-#define EXTERNAL_PROPERTY(name, ... /*variable_type_or_function_type*/) \
+#define EXTERNAL_PROPERTY(name, ... /*variable_type_or_function_type(s)*/) \
     EXTERNAL_PROPERTY_AS(EIGHTREFL_TO_STRING(name), name, name, __VA_ARGS__)
 
 
@@ -136,7 +136,7 @@ auto handler_property_get(PropertyType(* property)(void))
     };
 }
 
-inline auto handler_property_get(std::nullptr_t)
+constexpr auto handler_property_get(std::nullptr_t)
 {
     return nullptr;
 }
@@ -210,7 +210,7 @@ auto handler_property_set(void(* property)(PropertyType))
     };
 }
 
-inline auto handler_property_set(std::nullptr_t)
+constexpr auto handler_property_set(std::nullptr_t)
 {
     return nullptr;
 }
@@ -308,7 +308,7 @@ auto handler_property_context(PropertyType(* property)(void))
     }
 }
 
-inline auto handler_property_context(std::nullptr_t)
+constexpr auto handler_property_context(std::nullptr_t)
 {
     return nullptr;
 }
