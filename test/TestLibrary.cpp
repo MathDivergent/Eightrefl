@@ -227,40 +227,56 @@ TEST(TestLibrary, TestTypedProperty)
 
     ASSERT("type", type != nullptr);
 
-    auto function_property = type->property.find("FunctionProperty");
+    {
+        auto function_property = type->property.find("FunctionProperty");
 
-    ASSERT("function_property", function_property != nullptr);
-    EXPECT("function_property-get", function_property->get != nullptr);
-    EXPECT("function_property-set", function_property->set != nullptr);
-    EXPECT("function_property-context", function_property->context != nullptr);
+        ASSERT("function_property", function_property != nullptr);
+        EXPECT("function_property-get", function_property->get != nullptr);
+        EXPECT("function_property-set", function_property->set != nullptr);
+        EXPECT("function_property-pointer-get", function_property->pointer.first.has_value() && std::any_cast<int const&(TestTypedPropertyStruct::*)()>(&function_property->pointer.first) != nullptr);
+        EXPECT("function_property-pointer-set", function_property->pointer.second.has_value() && std::any_cast<void(TestTypedPropertyStruct::*)(int)>(&function_property->pointer.second) != nullptr);
+        EXPECT("function_property-context", function_property->context != nullptr);
+    }
+    {
+        auto other_function_property = type->property.find("OtherFunctionProperty");
 
-    auto other_function_property = type->property.find("OtherFunctionProperty");
+        ASSERT("other_function_property", other_function_property != nullptr);
+        EXPECT("other_function_property-get", other_function_property->get == nullptr);
+        EXPECT("other_function_property-set", other_function_property->set != nullptr);
+        EXPECT("other_function_property-pointer-get", !other_function_property->pointer.first.has_value());
+        EXPECT("other_function_property-pointer-set", other_function_property->pointer.second.has_value() && std::any_cast<void(TestTypedPropertyStruct::*)(int&)>(&other_function_property->pointer.second) != nullptr);
+        EXPECT("other_function_property-context", other_function_property->context == nullptr);
+    }
+    {
+        auto template_function_property = type->property.find("TemplateFunctionProperty<char>");
 
-    ASSERT("other_function_property", other_function_property != nullptr);
-    EXPECT("other_function_property-get", other_function_property->get == nullptr);
-    EXPECT("other_function_property-set", other_function_property->set != nullptr);
-    EXPECT("other_function_property-context", other_function_property->context == nullptr);
+        ASSERT("template_function_property", template_function_property != nullptr);
+        EXPECT("template_function_property-get", template_function_property->get != nullptr);
+        EXPECT("template_function_property-set", template_function_property->set == nullptr);
+        EXPECT("template_function_property-pointer-get", template_function_property->pointer.first.has_value() && std::any_cast<char(TestTypedPropertyStruct::*)()>(&template_function_property->pointer.first) != nullptr);
+        EXPECT("template_function_property-pointer-set", !template_function_property->pointer.second.has_value());
+        EXPECT("template_function_property-context", template_function_property->context == nullptr);
+    }
+    {
+        auto property = type->property.find("Property");
 
-    auto template_function_property = type->property.find("TemplateFunctionProperty<char>");
+        ASSERT("property", property != nullptr);
+        EXPECT("property-get", property->get != nullptr);
+        EXPECT("property-set", property->set != nullptr);
+        EXPECT("property-pointer-get", property->pointer.first.has_value() && std::any_cast<int TestTypedPropertyStruct::*>(&property->pointer.first) != nullptr);
+        EXPECT("property-pointer-set", property->pointer.second.has_value() && std::any_cast<int TestTypedPropertyStruct::*>(&property->pointer.second) != nullptr);
+        EXPECT("property-context", property->context != nullptr);
+    }
+    {
+        auto const_property = type->property.find("ConstProperty");
 
-    ASSERT("template_function_property", template_function_property != nullptr);
-    EXPECT("template_function_property-get", template_function_property->get != nullptr);
-    EXPECT("template_function_property-set", template_function_property->set == nullptr);
-    EXPECT("template_function_property-context", template_function_property->context == nullptr);
-
-    auto property = type->property.find("Property");
-
-    ASSERT("property", property != nullptr);
-    EXPECT("property-get", property->get != nullptr);
-    EXPECT("property-set", property->set != nullptr);
-    EXPECT("property-context", property->context != nullptr);
-
-    auto const_property = type->property.find("ConstProperty");
-
-    ASSERT("const_property", const_property != nullptr);
-    EXPECT("const_property-get", const_property->get != nullptr);
-    EXPECT("const_property-set", const_property->set == nullptr);
-    EXPECT("const_property-context", const_property->context != nullptr);
+        ASSERT("const_property", const_property != nullptr);
+        EXPECT("const_property-get", const_property->get != nullptr);
+        EXPECT("const_property-set", const_property->set == nullptr);
+        EXPECT("const_property-pointer-get", const_property->pointer.first.has_value() && std::any_cast<int const*>(&const_property->pointer.first) != nullptr);
+        EXPECT("const_property-pointer-set", !const_property->pointer.second.has_value());
+        EXPECT("const_property-context", const_property->context != nullptr);
+    }
 }
 
 

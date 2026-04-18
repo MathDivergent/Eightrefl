@@ -15,6 +15,7 @@
         eightrefl::find_or_add_meta<CleanR>(*xxmeta, external_name __VA_OPT__(, __VA_ARGS__), injection); \
     }
 
+
 namespace eightrefl
 {
 

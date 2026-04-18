@@ -134,6 +134,7 @@ registry_t* registry_of()
     }
 }
 
+
 template <typename ReflectableType>
 using clean_of = typename ::xxeightrefl_dirty<ReflectableType>::R;
 
@@ -165,9 +166,9 @@ bool fixture_of()
         "fixture: reflection declaration for this type not found"
     );
 
-#ifdef EIGHTREFL_DISABLE_REFLECTION_FIXTURE
+    #ifdef EIGHTREFL_DISABLE_REFLECTION_FIXTURE
     return false;
-#else
+    #else
     if constexpr (::xxeightrefl_traits_has_reflectable_lazy_evaluate<ReflectableType>::value)
     {
         return false;
@@ -177,7 +178,7 @@ bool fixture_of()
         reflectable<ReflectableType>();
         return true;
     }
-#endif // EIGHTREFL_DISABLE_REFLECTION_FIXTURE
+    #endif // EIGHTREFL_DISABLE_REFLECTION_FIXTURE
 }
 
 
@@ -225,6 +226,7 @@ type_t* find_or_add_type(InjectionType& injection)
     return xxtype;
 }
 
+
 template <typename ReflectableType, typename ParentReflectableType>
 parent_t* find_or_add_parent(type_t* type)
 {
@@ -271,6 +273,7 @@ parent_t* find_or_add_parent(type_t* type, InjectionType& injection)
 
     return xxparent;
 }
+
 
 namespace detail
 {
@@ -327,6 +330,7 @@ factory_t* find_or_add_factory(type_t* type, InjectionType& injection)
     return xxfactory;
 }
 
+
 template <typename DirtyFunctionType = void, typename FunctionTypePointer>
 function_t* find_or_add_function(type_t* type, std::string const& name, FunctionTypePointer pointer)
 {
@@ -369,6 +373,7 @@ function_t* find_or_add_function(type_t* type, std::string const& name, Function
 
     return xxfunction;
 }
+
 
 template <typename IODirtyType = void, typename ODirtyType = void /*unused*/,
           typename ITypePointer, typename OTypePointer>
@@ -449,6 +454,7 @@ property_t* find_or_add_bitfield(type_t* type, std::string const& name,
     return xxproperty;
 }
 
+
 template <typename DirtyDeleterType>
 deleter_t* find_or_add_deleter(type_t* type)
 {
@@ -483,6 +489,7 @@ deleter_t* find_or_add_deleter(type_t* type, InjectionType& injection)
 
     return xxdeleter;
 }
+
 
 template <typename MetaType>
 meta_t* find_or_add_meta(attribute_t<meta_t>& meta, std::string const& name, MetaType&& value)
@@ -534,6 +541,7 @@ meta_t* find_or_add_meta(attribute_t<meta_t>& meta, std::string const& name, Inj
 
     return xxmeta;
 }
+
 
 template <typename ReflectableType, class InjectionType>
 injection_t* find_or_add_injection(type_t* type)

@@ -17,6 +17,7 @@
         xxmeta = &xxfactory->meta; \
     }
 
+
 namespace eightrefl
 {
 

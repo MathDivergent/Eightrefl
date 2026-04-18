@@ -16,6 +16,7 @@
         xxmeta = &xxdeleter->meta; \
     }
 
+
 namespace eightrefl
 {
 

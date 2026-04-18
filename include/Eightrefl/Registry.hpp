@@ -16,6 +16,7 @@
     #define EIGHTREFL_REGISTRY_RESERVE_SIZE std::size_t(1024)
 #endif // EIGHTREFL_REGISTRY_RESERVE_SIZE
 
+
 namespace eightrefl
 {
 

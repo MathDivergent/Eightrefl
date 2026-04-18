@@ -47,7 +47,7 @@ See last stable library version 3.0.0 [here](https://github.com/MathDivergent/Ei
 
 ### Data structures
 
-Each reflected type is stored in a `type_t`, structure synopsis:
+Each reflected type is stored in a `type_t`; structure synopsis:
 
 ```cpp
 namespace eightrefl
@@ -135,7 +135,7 @@ extern EIGHTREFL_API registry_t* global();
 
 </details>
 
-`attribute_t<T>` is a wrapper over `std::unordered_map<std::string, T>` with `find` / `add` functions, structure synopsis:
+`attribute_t<T>` is a wrapper over `std::unordered_map<std::string, T>` with `find` / `add` functions; structure synopsis:
 
 ```cpp
 namespace eightrefl
@@ -451,11 +451,42 @@ constexpr auto handler_property_context(std::nullptr_t);
 namespace eightrefl
 {
 
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(PropertyType ReflectableType::* iproperty, PropertyType ReflectableType::* oproperty);
+
+template <typename ReflectableType, typename IPropertyType, typename OPropertyType>
+constexpr auto property_pointer(IPropertyType(ReflectableType::* iproperty)(void) const, void(ReflectableType::* oproperty)(OPropertyType));
+
+template <typename ReflectableType, typename IPropertyType, typename OPropertyType>
+constexpr auto property_pointer(IPropertyType(ReflectableType::* iproperty)(void) const, void(ReflectableType::* oproperty)(OPropertyType)&);
+
+template <typename ReflectableType, typename IPropertyType, typename OPropertyType>
+constexpr auto property_pointer(IPropertyType(ReflectableType::* iproperty)(void) const&, void(ReflectableType::* oproperty)(OPropertyType));
+
+template <typename ReflectableType, typename IPropertyType, typename OPropertyType>
+constexpr auto property_pointer(IPropertyType(ReflectableType::* iproperty)(void) const&, void(ReflectableType::* oproperty)(OPropertyType)&);
+
+template <typename ReflectableType, typename IPropertyType, typename OPropertyType>
+constexpr auto property_pointer(IPropertyType(ReflectableType::* iproperty)(void), void(ReflectableType::* oproperty)(OPropertyType));
+
+template <typename ReflectableType, typename IPropertyType, typename OPropertyType>
+constexpr auto property_pointer(IPropertyType(ReflectableType::* iproperty)(void), void(ReflectableType::* oproperty)(OPropertyType)&);
+
+template <typename ReflectableType, typename IPropertyType, typename OPropertyType>
+constexpr auto property_pointer(IPropertyType(ReflectableType::* iproperty)(void)&, void(ReflectableType::* oproperty)(OPropertyType));
+
+template <typename ReflectableType, typename IPropertyType, typename OPropertyType>
+constexpr auto property_pointer(IPropertyType(ReflectableType::* iproperty)(void)&, void(ReflectableType::* oproperty)(OPropertyType)&);
+
+template <typename PropertyType>
+constexpr auto property_pointer(PropertyType* iproperty, PropertyType* oproperty);
+
 template <typename IPropertyType, typename OPropertyType>
-constexpr auto property_pointer(IPropertyType iproperty, OPropertyType oproperty);
+constexpr auto property_pointer(IPropertyType(* iproperty)(void), void(* oproperty)(OPropertyType))
+
 
 template <typename ReflectableType, typename PropertyType>
-constexpr auto property_pointer(PropertyType const ReflectableType::* iproperty, std::nullptr_t);
+constexpr auto property_pointer(PropertyType ReflectableType::* iproperty, std::nullptr_t);
 
 template <typename ReflectableType, typename PropertyType>
 constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void) const, std::nullptr_t);
@@ -470,10 +501,25 @@ template <typename ReflectableType, typename PropertyType>
 constexpr auto property_pointer(PropertyType(ReflectableType::* iproperty)(void)&, std::nullptr_t);
 
 template <typename PropertyType>
-constexpr auto property_pointer(PropertyType(* iproperty)(void), std::nullptr_t);
+constexpr auto property_pointer(PropertyType* iproperty, std::nullptr_t);
 
 template <typename PropertyType>
-constexpr auto property_pointer(PropertyType const* iproperty, std::nullptr_t);
+constexpr auto property_pointer(PropertyType(* iproperty)(void), std::nullptr_t);
+
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(std::nullptr_t, PropertyType ReflectableType::* oproperty);
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(std::nullptr_t, PropertyType(ReflectableType::* oproperty)(void));
+
+template <typename ReflectableType, typename PropertyType>
+constexpr auto property_pointer(std::nullptr_t, PropertyType(ReflectableType::* oproperty)(void)&);
+template <typename PropertyType>
+constexpr auto property_pointer(std::nullptr_t, PropertyType* oproperty);
+
+template <typename PropertyType>
+constexpr auto property_pointer(std::nullptr_t, PropertyType(* oproperty)(void));
 
 } // namespace eightrefl
 ```

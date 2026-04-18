@@ -14,6 +14,7 @@
     #define EIGHTREFL_INJECTION_TRAITS_MAX_KEY_VALUE 4
 #endif // EIGHTREFL_INJECTION_TRAITS_MAX_KEY_VALUE
 
+
 template <std::size_t InjectionKeyValue>
 struct xxeightrefl_injection_traits;
 

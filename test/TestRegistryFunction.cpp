@@ -1,3 +1,4 @@
+// TODO: add check pointer
 #include <EightreflTestingBase.hpp>
 
 TEST_SPACE()
