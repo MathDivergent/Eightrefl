@@ -9,7 +9,6 @@
 #include <Eightrefl/Detail/Meta.hpp>
 #include <Eightrefl/Detail/Macro.hpp> // EIGHTREFL_DEPAREN
 
-// .meta(external_name, meta_expression)
 #define META(external_name, ... /*meta_expression*/) \
     { \
         eightrefl::find_or_add_meta<CleanR>(*xxmeta, external_name __VA_OPT__(, __VA_ARGS__), injection); \

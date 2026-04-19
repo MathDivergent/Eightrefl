@@ -14,13 +14,13 @@
 
 #include <Eightrefl/Detail/Macro.hpp> // EIGHTREFL_DEPAREN
 
-// .property<R, variable_type_or_function_type>(external_name, &scope::internal_iname, &scope::ìnternal_oname)
 #define EIGHTREFL_PROPERTY_IMPL(scope, external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/) \
     { \
         auto [xxi, xxo] = eightrefl::meta::access_traits<scope>::template property<__VA_ARGS__>::of(&scope::EIGHTREFL_DEPAREN(internal_iname), &scope::EIGHTREFL_DEPAREN(internal_oname)); \
         auto xxproperty = eightrefl::find_or_add_property<CleanR __VA_OPT__(, __VA_ARGS__)>(xxtype, external_name, xxi, xxo, injection); \
         xxmeta = &xxproperty->meta; \
     }
+
 
 #define PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/) \
     EIGHTREFL_PROPERTY_IMPL(CleanR, external_name, internal_iname, internal_oname, __VA_ARGS__)

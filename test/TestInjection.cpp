@@ -1,24 +1,9 @@
 #include <EightreflTestingBase.hpp>
 
-// will reflect injection to all types below
-// for correct registry you must add injection before all reflectable types you want
-REFLECTABLE_INJECTION_KEY(3, struct TestToStringInjection)
-
 TEST_SPACE()
 {
 
 struct TestInjectionStruct {};
-
-} // TEST_SPACE
-
-REFLECTABLE_DECLARATION(TestInjectionStruct)
-REFLECTABLE_DECLARATION_INIT()
-
-REFLECTABLE(TestInjectionStruct)
-    FACTORY(R())
-    FACTORY(R(R))
-REFLECTABLE_INIT()
-
 
 template <typename T>
 struct ToString
@@ -38,10 +23,21 @@ struct TestToStringInjection : eightrefl::injectable_t
     }
 };
 
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestInjectionStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestInjectionStruct)
+    FACTORY(R())
+    FACTORY(R(R))
+    INJECTION(TestToStringInjection)
+REFLECTABLE_INIT()
+
 REFLECTABLE_DECLARATION(TestToStringInjection)
 REFLECTABLE_DECLARATION_INIT()
 
-TEST(TestLibrary, TestDefaultInjection)
+TEST(TestLibrary, TestInjection)
 {
     auto type = eightrefl::global()->find("TestInjectionStruct");
 
@@ -66,6 +62,9 @@ TEST(TestLibrary, TestDefaultInjection)
 }
 
 
+TEST_SPACE()
+{
+
 struct TestVirusInjection : eightrefl::injectable_t
 {
     template <typename ReflectableType, typename FunctionTypePointer>
@@ -75,10 +74,12 @@ struct TestVirusInjection : eightrefl::injectable_t
     }
 };
 
+} // TEST_SPACE
+
 REFLECTABLE_DECLARATION(TestVirusInjection)
 REFLECTABLE_DECLARATION_INIT()
 
-TEST(TestLibrary, TestDynamicInjection)
+TEST(TestLibrary, TestManualInjection)
 {
     auto type = eightrefl::global()->find("TestInjectionStruct");
 

@@ -10,7 +10,7 @@
 #include <Eightrefl/Detail/Meta.hpp>
 
 // .parent<R, reflectable_type>()
-#define PARENT(... /*reflectable_type*/) \
+#define PARENT(... /*reflectable_parent_type*/) \
     { \
         auto xxparent = eightrefl::find_or_add_parent<CleanR, __VA_ARGS__>(xxtype, injection); \
         xxmeta = &xxparent->meta; \
@@ -28,12 +28,12 @@ struct EIGHTREFL_API parent_t
     attribute_t<meta_t> meta{};
 };
 
-template <typename ReflectableType, typename ParentReflectableType>
+template <typename ReflectableType, typename ReflectableParentType>
 auto handler_parent_cast()
 {
     return [](std::any const& child_context) -> std::any
     {
-        return static_cast<ParentReflectableType*>(std::any_cast<ReflectableType*>(child_context));
+        return static_cast<ReflectableParentType*>(std::any_cast<ReflectableType*>(child_context));
     };
 }
 

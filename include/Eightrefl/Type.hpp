@@ -58,19 +58,19 @@ template <> inline auto handler_type_context<std::any>()
     };
 }
 
-template <> inline auto handler_type_context<void>()
+template <> constexpr auto handler_type_context<void>()
 {
     return nullptr;
 }
 
 
 template <typename ReflectableType>
-auto type_size()
+constexpr auto type_size()
 {
     return sizeof(ReflectableType);
 }
 
-template <> inline auto type_size<void>()
+template <> constexpr auto type_size<void>()
 {
     return std::size_t(0);
 }

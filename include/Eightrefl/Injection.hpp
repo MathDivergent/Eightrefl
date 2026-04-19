@@ -1,24 +1,21 @@
 #ifndef EIGHTREFL_INJECTION_HPP
 #define EIGHTREFL_INJECTION_HPP
 
-#include <cstddef> // size_t
-
 #include <any> // any
 #include <functional> // function
 
+#include <Eightrefl/Attribute.hpp>
+#include <Eightrefl/Meta.hpp>
 #include <Eightrefl/Utility.hpp>
 
 #include <Eightrefl/Detail/Meta.hpp>
 
-#ifndef EIGHTREFL_INJECTION_TRAITS_MAX_KEY_VALUE
-    #define EIGHTREFL_INJECTION_TRAITS_MAX_KEY_VALUE 4
-#endif // EIGHTREFL_INJECTION_TRAITS_MAX_KEY_VALUE
+#define INJECTION(... /*reflectable_injection_type*/) \
+    { \
+        auto xxinjection = ::eightrefl::find_or_add_injection<CleanR, __VA_ARGS__>(xxtype, injection); \
+        xxmeta = &xxinjection->meta; \
+    }
 
-
-template <std::size_t InjectionKeyValue>
-struct xxeightrefl_injection_traits;
-
-static constexpr auto xxeighrefl_injection_traits_max_key = std::size_t(EIGHTREFL_INJECTION_TRAITS_MAX_KEY_VALUE);
 
 namespace eightrefl
 {
@@ -29,14 +26,14 @@ struct factory_t;
 struct function_t;
 struct property_t;
 struct deleter_t;
-struct meta_t;
+struct injection_t;
 
 struct EIGHTREFL_API injectable_t
 {
     template <typename DirtyReflectableType>
     void type(eightrefl::type_t&) {}
 
-    template <typename ReflectableType, typename ParentReflectableType>
+    template <typename ReflectableType, typename DirtyReflectableParentType>
     void parent(eightrefl::parent_t&) {}
 
     template <typename ReflectableType, typename FunctionTypePointer>
@@ -54,6 +51,9 @@ struct EIGHTREFL_API injectable_t
     template <typename ReflectableType, typename FunctionTypePointer>
     void deleter(eightrefl::deleter_t&) {}
 
+    template <typename ReflectableType, typename DirtyReflectableInjectionType>
+    void injection(eightrefl::injection_t&) {}
+
     template <typename ReflectableType, typename MetaType>
     void meta(eightrefl::meta_t&) {}
 };
@@ -62,6 +62,7 @@ struct EIGHTREFL_API injection_t
 {
     type_t* const type = nullptr;
     std::function<void(std::any const& injectable_context)> const call = nullptr;
+    attribute_t<meta_t> meta{};
 };
 
 template <typename ReflectionType, class InjectionType>

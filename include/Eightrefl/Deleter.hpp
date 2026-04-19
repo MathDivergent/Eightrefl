@@ -9,7 +9,6 @@
 #include <Eightrefl/Meta.hpp>
 #include <Eightrefl/Utility.hpp>
 
-// .deleter<R, function_type>()
 #define DELETER(... /*function_type*/) \
     { \
         auto xxdeleter = eightrefl::find_or_add_deleter<CleanR, __VA_ARGS__>(xxtype, injection); \
