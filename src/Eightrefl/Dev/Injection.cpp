@@ -3,6 +3,7 @@
 #include <Eightrefl/Dev/Injection.hpp>
 #include <Eightrefl/Dev/Type.hpp>
 #include <Eightrefl/Dev/Meta.hpp>
+#include <Eightrefl/Dev/Attribute.hpp>
 
 #include <Eightrefl/Standard/any.hpp>
 #include <Eightrefl/Standard/function.hpp>
