@@ -4,15 +4,18 @@
 #include <any> // any
 #include <functional> // function
 
-#include <Eightrefl/Type.hpp>
+#include <Eightrefl/Attribute.hpp>
+#include <Eightrefl/Meta.hpp>
 #include <Eightrefl/Utility.hpp>
 
-#ifndef EIGHTREFL_DEFAULT_INJECTION_COUNT
-    #define EIGHTREFL_DEFAULT_INJECTION_COUNT 4
-#endif // EIGHTREFL_INJECTION_MAX_KEY_SIZE
+#include <Eightrefl/Detail/Meta.hpp>
 
-template <std::size_t InjectionIndexValue>
-struct xxeightrefl_injection;
+#define INJECTION(... /*reflectable_injection_type*/) \
+    { \
+        auto xxinjection = ::eightrefl::find_or_add_injection<CleanR, __VA_ARGS__>(xxtype, injection); \
+        xxmeta = &xxinjection->meta; \
+    }
+
 
 namespace eightrefl
 {
@@ -23,36 +26,43 @@ struct factory_t;
 struct function_t;
 struct property_t;
 struct deleter_t;
-struct meta_t;
+struct injection_t;
 
 struct EIGHTREFL_API injectable_t
 {
-    template <typename ReflectableType>
+    template <typename DirtyReflectableType>
     void type(eightrefl::type_t&) {}
 
-    template <typename ReflectableType, typename ParentReflectableType>
+    template <typename ReflectableType, typename DirtyReflectableParentType>
     void parent(eightrefl::parent_t&) {}
 
-    template <typename ReflectableType, typename FunctionType>
+    template <typename ReflectableType, typename FunctionTypePointer>
     void factory(eightrefl::factory_t&) {}
 
-    template <typename ReflectableType, typename FunctionType>
+    template <typename ReflectableType, typename FunctionTypePointer>
     void function(eightrefl::function_t&) {}
 
-    template <typename ReflectableType, typename GetterType, typename SetterType>
+    template <typename ReflectableType, typename ITypePointer, typename OTypePointer>
     void property(eightrefl::property_t&) {}
 
-    template <typename ReflectableType, typename FunctionType>
+    template <typename ReflectableType, typename BitfieldType>
+    void bitfield(eightrefl::property_t&) {}
+
+    template <typename ReflectableType, typename FunctionTypePointer>
     void deleter(eightrefl::deleter_t&) {}
+
+    template <typename ReflectableType, typename DirtyReflectableInjectionType>
+    void injection(eightrefl::injection_t&) {}
 
     template <typename ReflectableType, typename MetaType>
     void meta(eightrefl::meta_t&) {}
 };
 
-struct injection_t
+struct EIGHTREFL_API injection_t
 {
     type_t* const type = nullptr;
     std::function<void(std::any const& injectable_context)> const call = nullptr;
+    attribute_t<meta_t> meta{};
 };
 
 template <typename ReflectionType, class InjectionType>

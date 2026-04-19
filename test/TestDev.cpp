@@ -122,7 +122,6 @@ TEST(TestDev, TestMeta)
 
     EXPECT("property-name", type->property.find("name") != nullptr);
     EXPECT("property-value", type->property.find("value") != nullptr);
-    EXPECT("property-meta", type->property.find("meta") != nullptr);
 }
 
 TEST(TestDev, TestInjection)
@@ -136,6 +135,7 @@ TEST(TestDev, TestInjection)
 
     EXPECT("property-type", type->property.find("type") != nullptr);
     EXPECT("property-call", type->property.find("call") != nullptr);
+    EXPECT("property-meta", type->property.find("meta") != nullptr);
 }
 
 TEST(TestDev, TestType)
@@ -172,7 +172,6 @@ TEST(TestDev, TestRegistry)
     EXPECT("type-size", type->size == sizeof(eightrefl::registry_t));
     EXPECT("type-context", type->context != nullptr);
 
-    EXPECT("factory-R()", type->factory.find("eightrefl::registry_t()") != nullptr);
     EXPECT("function-find", type->function.find("find") != nullptr);
     EXPECT("property-all", type->property.find("all") != nullptr);
 

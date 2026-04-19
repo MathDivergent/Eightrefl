@@ -195,8 +195,8 @@ TEST_SPACE()
 
 struct TestTypedPropertyStruct
 {
-    int& FunctionProperty() { return Property; }
-    void FunctionProperty(int& value) { Property = value; }
+    int const& FunctionProperty() { return Property; }
+    void FunctionProperty(int value) { Property = value; }
 
     int& OtherFunctionProperty() { return Property; }
     int const& OtherFunctionProperty() const { return Property; }
@@ -214,8 +214,8 @@ REFLECTABLE_DECLARATION(TestTypedPropertyStruct)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestTypedPropertyStruct)
-    PROPERTY(FunctionProperty, int&())
-    PROPERTY(OtherFunctionProperty, int const&() const)
+    PROPERTY(FunctionProperty, int const&(), void(int))
+    PROPERTY(OtherFunctionProperty, void(int&))
     PROPERTY(TemplateFunctionProperty<char>, char())
     PROPERTY(Property, int)
     PROPERTY(ConstProperty, int const)
@@ -227,40 +227,56 @@ TEST(TestLibrary, TestTypedProperty)
 
     ASSERT("type", type != nullptr);
 
-    auto function_property = type->property.find("FunctionProperty");
+    {
+        auto function_property = type->property.find("FunctionProperty");
 
-    ASSERT("function_property", function_property != nullptr);
-    EXPECT("function_property-get", function_property->get != nullptr);
-    EXPECT("function_property-set", function_property->set != nullptr);
-    EXPECT("function_property-context", function_property->context != nullptr);
+        ASSERT("function_property", function_property != nullptr);
+        EXPECT("function_property-get", function_property->get != nullptr);
+        EXPECT("function_property-set", function_property->set != nullptr);
+        EXPECT("function_property-pointer-get", function_property->pointer.first.has_value() && std::any_cast<int const&(TestTypedPropertyStruct::*)()>(&function_property->pointer.first) != nullptr);
+        EXPECT("function_property-pointer-set", function_property->pointer.second.has_value() && std::any_cast<void(TestTypedPropertyStruct::*)(int)>(&function_property->pointer.second) != nullptr);
+        EXPECT("function_property-context", function_property->context != nullptr);
+    }
+    {
+        auto other_function_property = type->property.find("OtherFunctionProperty");
 
-    auto other_function_property = type->property.find("OtherFunctionProperty");
+        ASSERT("other_function_property", other_function_property != nullptr);
+        EXPECT("other_function_property-get", other_function_property->get == nullptr);
+        EXPECT("other_function_property-set", other_function_property->set != nullptr);
+        EXPECT("other_function_property-pointer-get", !other_function_property->pointer.first.has_value());
+        EXPECT("other_function_property-pointer-set", other_function_property->pointer.second.has_value() && std::any_cast<void(TestTypedPropertyStruct::*)(int&)>(&other_function_property->pointer.second) != nullptr);
+        EXPECT("other_function_property-context", other_function_property->context == nullptr);
+    }
+    {
+        auto template_function_property = type->property.find("TemplateFunctionProperty<char>");
 
-    ASSERT("other_function_property", other_function_property != nullptr);
-    EXPECT("other_function_property-get", other_function_property->get != nullptr);
-    EXPECT("other_function_property-set", other_function_property->set == nullptr);
-    EXPECT("other_function_property-context", other_function_property->context != nullptr);
+        ASSERT("template_function_property", template_function_property != nullptr);
+        EXPECT("template_function_property-get", template_function_property->get != nullptr);
+        EXPECT("template_function_property-set", template_function_property->set == nullptr);
+        EXPECT("template_function_property-pointer-get", template_function_property->pointer.first.has_value() && std::any_cast<char(TestTypedPropertyStruct::*)()>(&template_function_property->pointer.first) != nullptr);
+        EXPECT("template_function_property-pointer-set", !template_function_property->pointer.second.has_value());
+        EXPECT("template_function_property-context", template_function_property->context == nullptr);
+    }
+    {
+        auto property = type->property.find("Property");
 
-    auto template_function_property = type->property.find("TemplateFunctionProperty<char>");
+        ASSERT("property", property != nullptr);
+        EXPECT("property-get", property->get != nullptr);
+        EXPECT("property-set", property->set != nullptr);
+        EXPECT("property-pointer-get", property->pointer.first.has_value() && std::any_cast<int TestTypedPropertyStruct::*>(&property->pointer.first) != nullptr);
+        EXPECT("property-pointer-set", property->pointer.second.has_value() && std::any_cast<int TestTypedPropertyStruct::*>(&property->pointer.second) != nullptr);
+        EXPECT("property-context", property->context != nullptr);
+    }
+    {
+        auto const_property = type->property.find("ConstProperty");
 
-    ASSERT("template_function_property", template_function_property != nullptr);
-    EXPECT("template_function_property-get", template_function_property->get != nullptr);
-    EXPECT("template_function_property-set", template_function_property->set == nullptr);
-    EXPECT("template_function_property-context", template_function_property->context == nullptr);
-
-    auto property = type->property.find("Property");
-
-    ASSERT("property", property != nullptr);
-    EXPECT("property-get", property->get != nullptr);
-    EXPECT("property-set", property->set != nullptr);
-    EXPECT("property-context", property->context != nullptr);
-
-    auto const_property = type->property.find("ConstProperty");
-
-    ASSERT("const_property", const_property != nullptr);
-    EXPECT("const_property-get", const_property->get != nullptr);
-    EXPECT("const_property-set", const_property->set == nullptr);
-    EXPECT("const_property-context", const_property->context != nullptr);
+        ASSERT("const_property", const_property != nullptr);
+        EXPECT("const_property-get", const_property->get != nullptr);
+        EXPECT("const_property-set", const_property->set == nullptr);
+        EXPECT("const_property-pointer-get", const_property->pointer.first.has_value() && std::any_cast<int const*>(&const_property->pointer.first) != nullptr);
+        EXPECT("const_property-pointer-set", !const_property->pointer.second.has_value());
+        EXPECT("const_property-context", const_property->context != nullptr);
+    }
 }
 
 
@@ -289,8 +305,8 @@ REFLECTABLE_DECLARATION_INIT()
 // without macro using we can put function get and variable set to one or inverse,
 // just if u want max flexibility, please, use no macro version
 REFLECTABLE(TestNamedPropertyStruct)
-    NAMED_PROPERTY("IsActivated", IsActivated, Activate)
-    NAMED_PROPERTY("Flag", bIsActivated, bIsActivatedBuffer)
+    PROPERTY_AS("IsActivated", IsActivated, Activate)
+    PROPERTY_AS("Flag", bIsActivated, bIsActivatedBuffer)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestNamedProperty)
@@ -359,7 +375,7 @@ bool is_parent_of(eightrefl::type_t const* parent, eightrefl::type_t const* type
     }
     for (auto& [name, search] : type->parent.all)
     {
-        if (is_parent_of(parent, search->type))
+        if (is_parent_of(parent, search.type))
         {
             return true;
         }
@@ -375,7 +391,7 @@ bool is_child_of(eightrefl::type_t const* child, eightrefl::type_t const* type)
     }
     for (auto& [name, search] : type->child.all)
     {
-        if (is_child_of(child, search->type))
+        if (is_child_of(child, search.type))
         {
             return true;
         }
@@ -865,7 +881,7 @@ REFLECTABLE(TestObjectContextStruct)
     FUNCTION(Function10)
 
     FUNCTION(StaticMemberFunction)
-    FREE_FUNCTION(NonMemberFunction)
+    EXTERNAL_FUNCTION(NonMemberFunction)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestTypeContext)
@@ -1182,6 +1198,8 @@ TEST(TestLibrary, TestPointerDereferenceType)
 
     ASSERT("type", type != nullptr);
 
+    eightrefl::find_or_add_meta(type->meta, "*", eightrefl::registry_of<TestPointerDereferenceTypeStruct>()->find(eightrefl::name_of<TestPointerDereferenceTypeStruct>()));
+
     auto meta = type->meta.find("*");
     ASSERT("type.meta", meta != nullptr);
 
@@ -1248,3 +1266,80 @@ TEST(TestLibrary, TestMemberPointer)
     }
 }
 #endif // EIGHTREFL_MEMBER_ENABLE
+
+
+TEST_SPACE()
+{
+
+struct TestNoAutoFixtureStruct
+{
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestNoAutoFixtureStruct)
+    REFLECTABLE_LAZY_EVALUATE()
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestNoAutoFixtureStruct)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestNoAutoFixture)
+{
+    {
+        auto type = eightrefl::global()->find("TestNoAutoFixtureStruct");
+
+        ASSERT("type-no_fixture", type == nullptr);
+    }
+
+    eightrefl::find_or_add_type<TestNoAutoFixtureStruct>();
+
+    {
+        auto type = eightrefl::global()->find("TestNoAutoFixtureStruct");
+
+        ASSERT("type-with_fixture", type != nullptr);
+    }
+}
+
+
+TEST_SPACE()
+{
+
+struct TestRelativeFixtureStruct
+{
+};
+
+struct TestAutoFixtureStruct
+{
+    TestRelativeFixtureStruct Property;
+};
+
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestRelativeFixtureStruct)
+    REFLECTABLE_LAZY_EVALUATE()
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestRelativeFixtureStruct)
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(TestAutoFixtureStruct)
+REFLECTABLE_DECLARATION_INIT()
+
+REFLECTABLE(TestAutoFixtureStruct)
+    PROPERTY(Property)
+REFLECTABLE_INIT()
+
+TEST(TestLibrary, TestAutoAndRelativeFixture)
+{
+    {
+        auto type = eightrefl::global()->find("TestRelativeFixtureStruct");
+
+        ASSERT("type-auto_fixture", type != nullptr);
+    }
+    {
+        auto type = eightrefl::global()->find("TestAutoFixtureStruct");
+
+        ASSERT("type-relative_fixture", type != nullptr);
+    }
+}

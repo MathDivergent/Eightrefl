@@ -5,17 +5,6 @@ TEST_SPACE()
 
 struct TestInjectionStruct {};
 
-} // TEST_SPACE
-
-REFLECTABLE_DECLARATION(TestInjectionStruct)
-REFLECTABLE_DECLARATION_INIT()
-
-REFLECTABLE(TestInjectionStruct)
-    FACTORY(R())
-    FACTORY(R(R))
-REFLECTABLE_INIT()
-
-
 template <typename T>
 struct ToString
 {
@@ -27,19 +16,28 @@ struct ToString
 
 struct TestToStringInjection : eightrefl::injectable_t
 {
-    template <typename ReflectableType>
+    template <typename DirtyReflectableType>
     void type(eightrefl::type_t& type)
     {
-        eightrefl::find_or_add_meta(type.meta, "ToString", ToString<ReflectableType>());
+        eightrefl::find_or_add_meta(type.meta, "ToString", ToString<DirtyReflectableType>());
     }
 };
 
-// will reflect injection to all types
-// for correct registry u must add injection before all library includes
-REFLECTABLE_INJECTION_DECLARATION(0, TestToStringInjection)
+} // TEST_SPACE
+
+REFLECTABLE_DECLARATION(TestInjectionStruct)
 REFLECTABLE_DECLARATION_INIT()
 
-TEST(TestLibrary, TestDefaultInjection)
+REFLECTABLE(TestInjectionStruct)
+    FACTORY(R())
+    FACTORY(R(R))
+    INJECTION(TestToStringInjection)
+REFLECTABLE_INIT()
+
+REFLECTABLE_DECLARATION(TestToStringInjection)
+REFLECTABLE_DECLARATION_INIT()
+
+TEST(TestLibrary, TestInjection)
 {
     auto type = eightrefl::global()->find("TestInjectionStruct");
 
@@ -64,19 +62,24 @@ TEST(TestLibrary, TestDefaultInjection)
 }
 
 
+TEST_SPACE()
+{
+
 struct TestVirusInjection : eightrefl::injectable_t
 {
-    template <typename ReflectableType, typename FunctionType>
+    template <typename ReflectableType, typename FunctionTypePointer>
     void factory(eightrefl::factory_t& factory)
     {
         eightrefl::find_or_add_meta(factory.meta, "IsDefaultConstructible", factory.arguments.size() == 0);
     }
 };
 
+} // TEST_SPACE
+
 REFLECTABLE_DECLARATION(TestVirusInjection)
 REFLECTABLE_DECLARATION_INIT()
 
-TEST(TestLibrary, TestDynamicInjection)
+TEST(TestLibrary, TestManualInjection)
 {
     auto type = eightrefl::global()->find("TestInjectionStruct");
 

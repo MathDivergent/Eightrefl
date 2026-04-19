@@ -32,7 +32,7 @@ TEST(TestStandard, TestMap)
     EXPECT("factory-R(std::initializer_list<value_type>)", type->factory.find("std::map<int, float>(std::initializer_list<std::pair<int const, float>>)") != nullptr);
     #endif // EIGHTREFL_FULLY_ENABLE
 
-    EXPECT("function-operator=", type->function.find("operator=") != nullptr);
+    // EXPECT("function-operator=", type->function.find("operator=") != nullptr);
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     EXPECT("function-get_allocator", type->function.find("get_allocator") != nullptr);

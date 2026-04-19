@@ -26,11 +26,13 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::priority_queue<ValueType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::priority_queue<" + eightrefl::name_of<ValueType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename ValueType, class ContainerType>), std::priority_queue<ValueType, ContainerType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::priority_queue<" + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<ContainerType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -39,8 +41,12 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::priority_queue<ValueType, ContainerType, ComparatorType>
 )
     REFLECTABLE_REGISTRY(eightrefl::standard())
-    REFLECTABLE_NAME("std::priority_queue<" + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<ContainerType>() + ", "
-                                            + eightrefl::name_of<ComparatorType>() + ">")
+    REFLECTABLE_NAME
+    (
+        "std::priority_queue<" + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<ContainerType>() + ", "
+                               + eightrefl::name_of<ComparatorType>() + ">"
+    )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE

@@ -7,27 +7,25 @@
 #include <functional> // function
 
 #include <Eightrefl/Attribute.hpp>
+#include <Eightrefl/Meta.hpp>
 #include <Eightrefl/Utility.hpp>
 
-// .factory<function_type>()
 #define FACTORY(... /*function_type*/) \
     { \
-        using xxtraits = eightrefl::meta::function_traits<__VA_ARGS__>; \
-        auto xxfactory = eightrefl::find_or_add_factory<typename xxtraits::dirty_pointer>(xxtype); \
-        injection.template factory<CleanR, typename xxtraits::pointer>(*xxfactory); \
+        auto xxfactory = eightrefl::find_or_add_factory<CleanR, __VA_ARGS__>(xxtype, injection); \
         xxmeta = &xxfactory->meta; \
     }
+
 
 namespace eightrefl
 {
 
 struct type_t;
-struct meta_t;
 
 struct EIGHTREFL_API factory_t
 {
     std::string const name{};
-    std::function<std::any(std::vector<std::any> const& args)> const call = nullptr;
+    std::function<std::any(std::vector<std::any> const& arguments)> const call = nullptr;
     std::vector<type_t*> const arguments{};
     type_t* const result = nullptr;
     attribute_t<meta_t> meta{};
@@ -41,6 +39,12 @@ auto handler_factory_call_impl(std::index_sequence<ArgumentIndexValues...>)
 {
     return [](std::vector<std::any> const& arguments) -> std::any
     {
+        #ifdef EIGHTREFL_DEBUG_ENABLE
+        if (arguments.size() != sizeof...(ArgumentTypes))
+        {
+            throw "The handler_factory_call: number of arguments not valid.";
+        }
+        #endif // EIGHTREFL_DEBUG_ENABLE
         if constexpr (std::is_aggregate_v<ReflectableType>)
         {
             return std::any{ std::in_place_type<ReflectableType>, utility::forward<ArgumentTypes>(arguments[ArgumentIndexValues])... };
