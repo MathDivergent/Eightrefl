@@ -6,21 +6,18 @@
 #include <functional> // function
 
 #include <Eightrefl/Attribute.hpp>
+#include <Eightrefl/Meta.hpp>
 #include <Eightrefl/Utility.hpp>
 
-// .deleter<R, function_type>()
 #define DELETER(... /*function_type*/) \
     { \
-        using xxtraits = eightrefl::meta::deleter_traits<__VA_ARGS__>; \
-        auto xxdeleter = eightrefl::find_or_add_deleter<typename xxtraits::dirty_pointer>(xxtype); \
-        injection.template deleter<CleanR, typename xxtraits::pointer>(*xxdeleter); \
+        auto xxdeleter = eightrefl::find_or_add_deleter<CleanR, __VA_ARGS__>(xxtype, injection); \
         xxmeta = &xxdeleter->meta; \
     }
 
+
 namespace eightrefl
 {
-
-struct meta_t;
 
 struct EIGHTREFL_API deleter_t
 {

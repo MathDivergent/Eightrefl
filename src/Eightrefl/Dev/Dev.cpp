@@ -2,6 +2,8 @@
 #ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Dev/Dev.hpp>
 
+#include <Eightrefl/Reflectable.hpp>
+
 #include <Eightrefl/Registry.hpp>
 
 namespace eightrefl

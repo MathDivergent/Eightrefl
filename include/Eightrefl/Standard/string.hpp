@@ -31,36 +31,43 @@ TEMPLATE_REFLECTABLE_CLEAN
 
 REFLECTABLE_DECLARATION(std::string)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE_DECLARATION(std::wstring)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 #ifdef EIGHTREFL_FULLY_ENABLE
 #if __cplusplus >= 202002L
 REFLECTABLE_DECLARATION(std::u8string)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 #endif // if
 
 REFLECTABLE_DECLARATION(std::u16string)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE_DECLARATION(std::u32string)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 #endif // EIGHTREFL_FULLY_ENABLE
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename CharType>, std::basic_string<CharType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::basic_string<" + eightrefl::name_of<CharType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename CharType, typename TraitsType>), std::basic_string<CharType, TraitsType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::basic_string<" + eightrefl::name_of<CharType>() + ", " + eightrefl::name_of<TraitsType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -69,7 +76,12 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::basic_string<CharType, TraitsType, AllocatorType>
 )
     REFLECTABLE_REGISTRY(eightrefl::standard())
-    REFLECTABLE_NAME("std::basic_string<" + eightrefl::name_of<CharType>() + ", " + eightrefl::name_of<TraitsType>() + ", " + eightrefl::name_of<AllocatorType>() + ">")
+    REFLECTABLE_NAME
+    (
+        "std::basic_string<" + eightrefl::name_of<CharType>() + ", " + eightrefl::name_of<TraitsType>() + ", "
+                             + eightrefl::name_of<AllocatorType>() + ">"
+    )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE

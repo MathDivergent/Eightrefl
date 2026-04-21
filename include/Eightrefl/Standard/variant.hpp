@@ -28,6 +28,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::variant<" + ( eightrefl::name_of<ArgumentType>() + ... + (", " + eightrefl::name_of<ArgumentTypes>()) ) + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE

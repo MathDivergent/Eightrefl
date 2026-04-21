@@ -1,6 +1,8 @@
 #ifdef EIGHTREFL_STANDARD_ENABLE
 #include <Eightrefl/Standard/any.hpp>
 
+#include <Eightrefl/Reflectable.hpp>
+
 #include <Eightrefl/BuiltIn/Core.hpp>
 
 // as function return type
