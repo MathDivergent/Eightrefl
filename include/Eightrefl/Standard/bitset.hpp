@@ -16,7 +16,7 @@
 #include <Eightrefl/Standard/Standard.hpp>
 
 #ifdef EIGHTREFL_FULLY_ENABLE
-TEMPLATE_REFLECTABLE_USING
+TEMPLATE_REFLECTABLE_DIRTY
 (
     template <class StdBitsetType>, std_bitset_reference,
     std_bitset_reference<StdBitsetType>, typename eightrefl::clean_of<StdBitsetType>::reference
@@ -25,6 +25,7 @@ TEMPLATE_REFLECTABLE_USING
 TEMPLATE_REFLECTABLE_DECLARATION(template <class StdBitsetType>, std_bitset_reference<StdBitsetType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME(eightrefl::name_of<StdBitsetType>() + "::reference")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <class StdBitsetType>, std_bitset_reference<StdBitsetType>)
@@ -47,6 +48,7 @@ REFLECTABLE_INIT()
 TEMPLATE_REFLECTABLE_DECLARATION(template <std::size_t SizeValue>, std::bitset<SizeValue>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::bitset<" + std::to_string(SizeValue) + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <std::size_t SizeValue>, std::bitset<SizeValue>)

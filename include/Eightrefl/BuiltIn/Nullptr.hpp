@@ -3,13 +3,13 @@
 
 #include <cstddef> // nullptr_t
 
-#include <Eightrefl/Reflectable.hpp>
+#include <Eightrefl/ReflectableDeclaration.hpp>
 
 #include <Eightrefl/BuiltIn/BuiltIn.hpp>
 
 REFLECTABLE_DECLARATION(std::nullptr_t)
     REFLECTABLE_REGISTRY(eightrefl::builtin())
-    BUILTIN_REFLECTABLE()
+    REFLECTABLE_BUILTIN()
 REFLECTABLE_DECLARATION_INIT()
 
 #endif // EIGHTREFL_BUILTIN_NULLPTR_HPP

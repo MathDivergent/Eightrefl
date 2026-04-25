@@ -18,31 +18,37 @@ TEMPLATE_REFLECTABLE_CLEAN
 
 REFLECTABLE_DECLARATION(std::char_traits<char>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE_DECLARATION(std::char_traits<wchar_t>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 #ifdef EIGHTREFL_FULLY_ENABLE
 #if __cplusplus >= 202002L
 REFLECTABLE_DECLARATION(std::char_traits<char8_t>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 #endif // if
 
 REFLECTABLE_DECLARATION(std::char_traits<char16_t>)
    REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE_DECLARATION(std::char_traits<char32_t>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 #endif // EIGHTREFL_FULLY_ENABLE
 
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename CharType>, std::char_traits<CharType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::char_traits<" + eightrefl::name_of<CharType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename CharType>, std::char_traits<CharType>)

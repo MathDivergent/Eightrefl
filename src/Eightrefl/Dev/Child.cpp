@@ -3,6 +3,8 @@
 #include <Eightrefl/Dev/Child.hpp>
 #include <Eightrefl/Dev/Type.hpp>
 
+#include <Eightrefl/Reflectable.hpp>
+
 #include <Eightrefl/Standard/any.hpp>
 #include <Eightrefl/Standard/function.hpp>
 

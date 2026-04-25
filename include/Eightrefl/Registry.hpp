@@ -8,11 +8,14 @@
 #include <typeindex> // type_index
 #endif // EIGHTREFL_RTTI_ENABLE
 
+#include <new> // nothrow
+
 #include <Eightrefl/Type.hpp>
 
 #ifndef EIGHTREFL_REGISTRY_RESERVE_SIZE
     #define EIGHTREFL_REGISTRY_RESERVE_SIZE std::size_t(1024)
 #endif // EIGHTREFL_REGISTRY_RESERVE_SIZE
+
 
 namespace eightrefl
 {
@@ -20,11 +23,13 @@ namespace eightrefl
 struct EIGHTREFL_API registry_t
 {
     std::unordered_map<std::string, type_t*> all{};
-
     #ifdef EIGHTREFL_RTTI_ENABLE
     std::unordered_map<std::type_index, type_t*> rtti_all{};
     #endif // EIGHTREFL_RTTI_ENABLE
+
     registry_t();
+    registry_t(registry_t const&) = delete;
+    registry_t& operator=(registry_t const&) = delete;
     ~registry_t();
 
     type_t* find(std::string const& name) const;
@@ -38,7 +43,7 @@ struct EIGHTREFL_API registry_t
         auto& type = all[name];
         if (type != nullptr) return type;
 
-        type = new type_t
+        type = new (std::nothrow) type_t
         {
             .name = name,
             .registry = this,

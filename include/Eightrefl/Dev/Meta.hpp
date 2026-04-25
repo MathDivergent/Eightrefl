@@ -3,7 +3,7 @@
 
 #ifdef EIGHTREFL_DEV_ENABLE
 #ifdef EIGHTREFL_STANDARD_ENABLE
-#include <Eightrefl/Reflectable.hpp>
+#include <Eightrefl/ReflectableDeclaration.hpp>
 
 #include <Eightrefl/Dev/Dev.hpp>
 

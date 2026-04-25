@@ -33,6 +33,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::set<KeyType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::set<" + eightrefl::name_of<KeyType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -42,6 +43,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::set<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ComparatorType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -52,8 +54,10 @@ TEMPLATE_REFLECTABLE_DECLARATION
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME
     (
-        "std::set<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<AllocatorType>() + ">"
+        "std::set<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ComparatorType>() + ", "
+                    + eightrefl::name_of<AllocatorType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 
@@ -67,6 +71,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::multiset<KeyType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::multiset<" + eightrefl::name_of<KeyType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -76,6 +81,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
 )
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::multiset<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ComparatorType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -86,8 +92,10 @@ TEMPLATE_REFLECTABLE_DECLARATION
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME
     (
-        "std::multiset<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<AllocatorType>() + ">"
+        "std::multiset<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ComparatorType>() + ", "
+                         + eightrefl::name_of<AllocatorType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 
@@ -118,7 +126,7 @@ CONDITIONAL_REFLECTABLE(xxeightrefl_is_any_std_ordered_set<R>::value)
     FACTORY(R(std::initializer_list<typename R::value_type>))
     #endif // EIGHTREFL_FULLY_ENABLE
 
-    FUNCTION(operator=, R&(R const&))
+    // if constexpr (std::is_copy_assignable_v<typename R::key_type>) FUNCTION(operator=, R&(R const&))
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     FUNCTION(operator=, R&(std::initializer_list<typename R::value_type>))

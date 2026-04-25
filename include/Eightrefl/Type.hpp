@@ -8,23 +8,20 @@
 #include <functional> // function
 
 #include <Eightrefl/Attribute.hpp>
+#include <Eightrefl/Injection.hpp>
+#include <Eightrefl/Child.hpp>
 
-template <typename ReflectableType, typename enable = void>
-struct xxeightrefl;
+#include <Eightrefl/Parent.hpp>
+#include <Eightrefl/Factory.hpp>
+#include <Eightrefl/Function.hpp>
+#include <Eightrefl/Property.hpp>
+#include <Eightrefl/Deleter.hpp>
+#include <Eightrefl/Meta.hpp>
 
 namespace eightrefl
 {
 
 struct registry_t;
-struct injection_t;
-struct child_t;
-
-struct parent_t;
-struct factory_t;
-struct function_t;
-struct property_t;
-struct deleter_t;
-struct meta_t;
 
 struct EIGHTREFL_API type_t
 {
@@ -61,18 +58,19 @@ template <> inline auto handler_type_context<std::any>()
     };
 }
 
-template <> inline auto handler_type_context<void>()
+template <> constexpr auto handler_type_context<void>()
 {
     return nullptr;
 }
 
+
 template <typename ReflectableType>
-auto type_size()
+constexpr auto type_size()
 {
     return sizeof(ReflectableType);
 }
 
-template <> inline auto type_size<void>()
+template <> constexpr auto type_size<void>()
 {
     return std::size_t(0);
 }

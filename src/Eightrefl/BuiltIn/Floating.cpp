@@ -1,6 +1,8 @@
 #include <Eightrefl/BuiltIn/Floating.hpp>
 #include <Eightrefl/BuiltIn/Function.hpp>
 
+#include <Eightrefl/Reflectable.hpp>
+
 REFLECTABLE(float)
     FACTORY(R())
     FACTORY(R(R))

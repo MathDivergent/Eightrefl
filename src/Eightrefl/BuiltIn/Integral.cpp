@@ -1,6 +1,8 @@
 #include <Eightrefl/BuiltIn/Integral.hpp>
 #include <Eightrefl/BuiltIn/Function.hpp>
 
+#include <Eightrefl/Reflectable.hpp>
+
 REFLECTABLE(signed char)
     FACTORY(R())
     FACTORY(R(R))

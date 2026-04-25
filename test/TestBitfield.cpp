@@ -48,8 +48,7 @@ TEST(TestLibrary, TestBitfield)
     ASSERT("property0-get", property0->get != nullptr);
 
     {
-        std::any value;
-        property0->get(object_context, value);
+        std::any value = property0->get(object_context);
 
         auto value_ptr = std::any_cast<std::uint8_t>(&value);
         ASSERT("property0-get-value", value_ptr != nullptr && *value_ptr == flag0);
@@ -63,8 +62,7 @@ TEST(TestLibrary, TestBitfield)
     ASSERT("property1-set", property1->set != nullptr);
 
     {
-        std::any value;
-        property1->get(object_context, value);
+        std::any value = property1->get(object_context);
 
         auto value_ptr = std::any_cast<std::uint8_t>(&value);
         EXPECT("property1-get-value", value_ptr != nullptr && *value_ptr == meta);
@@ -73,16 +71,14 @@ TEST(TestLibrary, TestBitfield)
         std::uint8_t other_meta = '*';
         property1->set(object_context, other_meta);
 
-        std::any other_value;
-        property1->get(object_context, other_value);
+        std::any other_value = property1->get(object_context);
 
         auto other_value_ptr = std::any_cast<std::uint8_t>(&other_value);
         EXPECT("property1-get-other_value", other_value_ptr != nullptr && *other_value_ptr == other_meta);
     }
 
     {
-        std::any value;
-        property0->get(object_context, value);
+        std::any value = property0->get(object_context);
 
         auto value_ptr = std::any_cast<std::uint8_t>(&value);
         EXPECT("property0-get-poset_value", value_ptr != nullptr && *value_ptr == flag0);

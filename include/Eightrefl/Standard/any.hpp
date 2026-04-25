@@ -4,12 +4,13 @@
 #ifdef EIGHTREFL_STANDARD_ENABLE
 #include <any> // any
 
-#include <Eightrefl/Reflectable.hpp>
+#include <Eightrefl/ReflectableDeclaration.hpp>
 
 #include <Eightrefl/Standard/Standard.hpp>
 
 REFLECTABLE_DECLARATION(std::any)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 #endif // EIGHTREFL_STANDARD_ENABLE
 
