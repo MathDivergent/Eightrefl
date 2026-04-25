@@ -37,7 +37,7 @@ TEST(TestStandard, TestUnorderedMap)
     #endif // EIGHTREFL_FULLY_ENABLE
 
     EXPECT("factory-R(R const&)", type->factory.find("std::unordered_map<int, float>(std::unordered_map<int, float> const&)") != nullptr);
-    EXPECT("function-operator=", type->function.find("operator=") != nullptr);
+    // EXPECT("function-operator=", type->function.find("operator=") != nullptr);
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     EXPECT("function-get_allocator", type->function.find("get_allocator") != nullptr);

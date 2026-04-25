@@ -1,7 +1,7 @@
 #ifndef EIGHTREFL_BUILTIN_CORE_HPP
 #define EIGHTREFL_BUILTIN_CORE_HPP
 
-#include <Eightrefl/BuiltIn/Aliasing.hpp>
+#include <Eightrefl/BuiltIn/Dirty.hpp>
 #include <Eightrefl/BuiltIn/Bool.hpp>
 #include <Eightrefl/BuiltIn/Char.hpp>
 #include <Eightrefl/BuiltIn/Floating.hpp>

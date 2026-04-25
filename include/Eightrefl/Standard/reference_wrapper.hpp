@@ -19,6 +19,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename ValueType>, std::reference_wrapper<ValueType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::reference_wrapper<" + eightrefl::name_of<ValueType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename ValueType>, std::reference_wrapper<ValueType>)
@@ -27,7 +28,7 @@ TEMPLATE_REFLECTABLE(template <typename ValueType>, std::reference_wrapper<Value
     FUNCTION(operator=, R&(R const&))
 
     #ifdef EIGHTREFL_FULLY_ENABLE
-    NAMED_FUNCTION(("operator " + eightrefl::name_of<ValueType&>()), operator eightrefl::clean_of<ValueType>&)
+    FUNCTION_AS(("operator " + eightrefl::name_of<ValueType&>()), operator eightrefl::clean_of<ValueType>&)
     #endif // EIGHTREFL_FULLY_ENABLE
 
     FUNCTION(get)

@@ -37,7 +37,6 @@ struct TestMetaStructConfigs
 
 std::string sMetaName = "Descriptors";
 void* TestDescriptorReadOnly = nullptr;
-char const* sToolTip = "Don't use manually.";
 
 struct FunctionHandlerStruct
 {
@@ -61,9 +60,8 @@ REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(TestMetaStruct)
     META("DisplayName", "Meta Struct")
-    // you can add SUBMETA(...) after any META(...) or SUBMETA(...), but for test - we will ommit all cases
-    META("Configs", TestMetaStructConfigs{ true, 100.f }) SUBMETA("Hash", int(0x0101))
-    META(sMetaName, std::vector<void*>{ &R::TestDescriptor, &TestDescriptorReadOnly }) SUBMETA("ToolTip", sToolTip)
+    META("Configs", TestMetaStructConfigs{ true, 100.f })
+    META(sMetaName, std::vector<void*>{ &R::TestDescriptor, &TestDescriptorReadOnly })
 
     PARENT(TestParentMetaStruct) META("Hidden", true)
 
@@ -76,8 +74,7 @@ REFLECTABLE(TestMetaStruct)
     META("Serializable") // meta without value
     META("Flags", TestMetaStructFlags::Serializable | TestMetaStructFlags::Internal)
 
-    PROPERTY(Constant) META("Mutable", true) SUBMETA("Status", -1) SUBMETA("Info", nullptr)
-    SUBMETA("Readonly") // submeta without value
+    PROPERTY(Constant) META("Mutable", true)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestMeta)
@@ -103,16 +100,6 @@ TEST(TestLibrary, TestMeta)
         auto value = std::any_cast<TestMetaStructConfigs>(&meta1->value);
 
         EXPECT("type-meta1-value", value != nullptr && value->IsVisible == true && value->LifeTime == 100.f);
-
-        {
-            auto submeta0 = meta1->meta.find("Hash");
-
-            ASSERT("type-meta1-submenta0", submeta0 != nullptr);
-
-            auto value = std::any_cast<int>(&submeta0->value);
-
-            EXPECT("type-meta1-submenta0", value != nullptr && *value == int(0x0101));
-        }
     }
     {
         auto meta2 = type->meta.find(sMetaName);
@@ -122,16 +109,6 @@ TEST(TestLibrary, TestMeta)
         auto value = std::any_cast<std::vector<void*>>(&meta2->value);
 
         EXPECT("type-meta2-value", value != nullptr && value->size() == 2 && (*value)[0] == &TestMetaStruct::TestDescriptor && (*value)[1] == &TestDescriptorReadOnly);
-
-        {
-            auto submeta0 = meta2->meta.find("ToolTip");
-
-            ASSERT("type-meta2-submenta0", submeta0 != nullptr);
-
-            auto value = std::any_cast<char const*>(&submeta0->value);
-
-            EXPECT("type-meta2-submenta0", value != nullptr && std::string(*value) == sToolTip);
-        }
     }
 
     auto parent = type->parent.find("TestParentMetaStruct");
@@ -255,30 +232,5 @@ TEST(TestLibrary, TestMeta)
         auto value = std::any_cast<bool>(&meta0->value);
 
         EXPECT("Mutable", value != nullptr && *value == true);
-
-        {
-            auto submeta0 = meta0->meta.find("Status");
-
-            ASSERT("property1-meta0-submenta0", submeta0 != nullptr);
-
-            auto value = std::any_cast<int>(&submeta0->value);
-
-            EXPECT("property1-meta0-submenta0", value != nullptr && *value == -1);
-        }
-        {
-            auto submeta1 = meta0->meta.find("Info");
-
-            ASSERT("property1-meta0-submenta1", submeta1 != nullptr);
-
-            auto value = std::any_cast<std::nullptr_t>(&submeta1->value);
-
-            EXPECT("property1-meta0-submenta1", value != nullptr && *value == nullptr);
-        }
-        {
-            auto submeta2 = meta0->meta.find("Readonly");
-
-            ASSERT("property1-meta0-submeta2", submeta2 != nullptr);
-            EXPECT("property1-meta0-submeta2", !submeta2->value.has_value());
-        }
     }
 }

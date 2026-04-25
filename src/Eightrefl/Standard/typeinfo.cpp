@@ -2,6 +2,8 @@
 #ifdef EIGHTREFL_RTTI_ENABLE
 #include <Eightrefl/Standard/typeinfo.hpp>
 
+#include <Eightrefl/Reflectable.hpp>
+
 #include <Eightrefl/BuiltIn/Core.hpp>
 
 REFLECTABLE(std::type_info)

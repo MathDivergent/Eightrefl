@@ -11,14 +11,14 @@
 // default allocator for unordered_map, unordered_multimap
 #include <Eightrefl/Standard/allocator.hpp>
 
-#ifndef EIGHTREFL_CORE_MININAL
+#ifdef EIGHTREFL_FULLY_ENABLE
 // as function argument type
 #include <Eightrefl/Standard/initializer_list.hpp>
 #include <Eightrefl/Standard/iterator.hpp>
 
 // as value type
 #include <Eightrefl/Standard/pair.hpp>
-#endif // EIGHTREFL_CORE_MININAL
+#endif // EIGHTREFL_FULLY_ENABLE
 
 // hash - as hasher
 // equal_to - as comparator
@@ -36,6 +36,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::unordered_map<KeyType, ValueType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::unordered_map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -44,7 +45,12 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::unordered_map<KeyType, ValueType, HasherType>
 )
     REFLECTABLE_REGISTRY(eightrefl::standard())
-    REFLECTABLE_NAME("std::unordered_map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<HasherType>() + ">")
+    REFLECTABLE_NAME
+    (
+        "std::unordered_map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
+                              + eightrefl::name_of<HasherType>() + ">"
+    )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -58,6 +64,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
         "std::unordered_map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
                               + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<HasherType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -68,9 +75,11 @@ TEMPLATE_REFLECTABLE_DECLARATION
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME
     (
-        "std::unordered_map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<HasherType>() + ", "
-                              + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<AllocatorType>() + ">"
+        "std::unordered_map<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
+                              + eightrefl::name_of<HasherType>() + ", " + eightrefl::name_of<ComparatorType>() + ", "
+                              + eightrefl::name_of<AllocatorType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 
@@ -84,6 +93,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename KeyType, typename ValueType>), std::unordered_multimap<KeyType, ValueType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::unordered_multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -92,7 +102,12 @@ TEMPLATE_REFLECTABLE_DECLARATION
     std::unordered_multimap<KeyType, ValueType, HasherType>
 )
     REFLECTABLE_REGISTRY(eightrefl::standard())
-    REFLECTABLE_NAME("std::unordered_multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<HasherType>() + ">")
+    REFLECTABLE_NAME
+    (
+        "std::unordered_multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>()
+                                   + ", " + eightrefl::name_of<HasherType>() + ">"
+    )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -106,6 +121,7 @@ TEMPLATE_REFLECTABLE_DECLARATION
         "std::unordered_multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
                                    + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<HasherType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE_DECLARATION
@@ -116,9 +132,11 @@ TEMPLATE_REFLECTABLE_DECLARATION
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME
     (
-        "std::unordered_multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", " + eightrefl::name_of<HasherType>() + ", "
-                                   + eightrefl::name_of<ComparatorType>() + ", " + eightrefl::name_of<AllocatorType>() + ">"
+        "std::unordered_multimap<" + eightrefl::name_of<KeyType>() + ", " + eightrefl::name_of<ValueType>() + ", "
+                                   + eightrefl::name_of<HasherType>() + ", " + eightrefl::name_of<ComparatorType>() + ", "
+                                   + eightrefl::name_of<AllocatorType>() + ">"
     )
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 
@@ -154,7 +172,7 @@ CONDITIONAL_REFLECTABLE(xxeightrefl_is_any_std_unordered_map<R>::value)
     #endif // EIGHTREFL_FULLY_ENABLE
 
     FACTORY(R(R const&))
-    FUNCTION(operator=, R&(R const&))
+    // if constexpr (std::is_copy_assignable_v<typename R::mapped_type>) FUNCTION(operator=, R&(R const&))
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     FUNCTION(get_allocator)
@@ -171,7 +189,7 @@ CONDITIONAL_REFLECTABLE(xxeightrefl_is_any_std_unordered_map<R>::value)
 
     #ifdef EIGHTREFL_FULLY_ENABLE
     FUNCTION(max_size)
-    #endif // EIGHTREFL_CORE_MININAL
+    #endif // EIGHTREFL_FULLY_ENABLE
 
     FUNCTION(clear)
 

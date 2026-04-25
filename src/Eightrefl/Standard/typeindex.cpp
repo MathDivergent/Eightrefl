@@ -2,6 +2,8 @@
 #ifdef EIGHTREFL_RTTI_ENABLE
 #include <Eightrefl/Standard/typeindex.hpp>
 
+#include <Eightrefl/Reflectable.hpp>
+
 #include <Eightrefl/BuiltIn/Core.hpp>
 
 // as function argument type

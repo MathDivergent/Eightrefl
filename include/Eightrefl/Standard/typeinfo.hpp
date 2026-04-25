@@ -5,12 +5,13 @@
 #ifdef EIGHTREFL_RTTI_ENABLE
 #include <typeinfo> // type_info
 
-#include <Eightrefl/Reflectable.hpp>
+#include <Eightrefl/ReflectableDeclaration.hpp>
 
 #include <Eightrefl/Standard/Standard.hpp>
 
 REFLECTABLE_DECLARATION(std::type_info)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 #endif // EIGHTREFL_RTTI_ENABLE
 #endif // EIGHTREFL_STANDARD_ENABLE

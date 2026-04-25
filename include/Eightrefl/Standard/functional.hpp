@@ -19,6 +19,7 @@ TEMPLATE_REFLECTABLE_CLEAN
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename KeyType>, std::hash<KeyType>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::hash<" + eightrefl::name_of<KeyType>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename KeyType>, std::hash<KeyType>)
@@ -34,6 +35,7 @@ TEMPLATE_REFLECTABLE_CLEAN(template <typename T>, std::equal_to<T>, std::equal_t
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, std::equal_to<T>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::equal_to<" + eightrefl::name_of<T>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename T>, std::equal_to<T>)
@@ -45,6 +47,7 @@ TEMPLATE_REFLECTABLE_CLEAN(template <typename T>, std::less<T>, std::less<eightr
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, std::less<T>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::less<" + eightrefl::name_of<T>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename T>, std::less<T>)
@@ -56,6 +59,7 @@ TEMPLATE_REFLECTABLE_CLEAN(template <typename T>, std::greater<T>, std::greater<
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, std::greater<T>)
     REFLECTABLE_REGISTRY(eightrefl::standard())
     REFLECTABLE_NAME("std::greater<" + eightrefl::name_of<T>() + ">")
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 TEMPLATE_REFLECTABLE(template <typename T>, std::greater<T>)

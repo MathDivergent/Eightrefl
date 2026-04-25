@@ -16,6 +16,7 @@ option(EIGHTREFL_RTTI_ENABLE "Build with RTTI by Default" OFF) # сompletely glo
 option(EIGHTREFL_STANDARD_ENABLE "Build with Standard by Default" OFF)
 option(EIGHTREFL_DEV_ENABLE "Build with Dev by Default" OFF)
 option(EIGHTREFL_MEMBER_ENABLE "Build with R::* support by Default" OFF)
+option(EIGHTREFL_DEBUG_ENABLE "Build with debug check by Default" ON)
 option(EIGHTREFL_BUILD_TEST_LIBS "Build testing libraies by Default" OFF)
 option(EIGHTREFL_WARNING_FLAGS_ENABLE "Build with warning checking by Default" ON)
 
@@ -100,6 +101,10 @@ endif()
 
 if(EIGHTREFL_MEMBER_ENABLE)
     target_compile_definitions(Eightrefl PUBLIC "EIGHTREFL_MEMBER_ENABLE")
+endif()
+
+if(EIGHTREFL_DEBUG_ENABLE)
+    target_compile_definitions(Eightrefl PUBLIC "EIGHTREFL_DEBUG_ENABLE")
 endif()
 
 if(EIGHTREFL_WARNING_FLAGS_ENABLE)

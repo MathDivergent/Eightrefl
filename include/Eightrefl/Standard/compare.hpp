@@ -5,20 +5,23 @@
 #if __cplusplus > 201703L
 #include <compare> // strong_ordering
 
-#include <Eightrefl/Reflectable.hpp>
+#include <Eightrefl/ReflectableDeclaration.hpp>
 
 #include <Eightrefl/Standard/Standard.hpp>
 
 REFLECTABLE_DECLARATION(std::partial_ordering)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE_DECLARATION(std::weak_ordering)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE_DECLARATION(std::strong_ordering)
     REFLECTABLE_REGISTRY(eightrefl::standard())
+    REFLECTABLE_STANDARD()
 REFLECTABLE_DECLARATION_INIT()
 #endif // if
 #endif // EIGHTREFL_STANDARD_ENABLE
