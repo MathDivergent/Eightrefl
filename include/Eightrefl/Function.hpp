@@ -5,18 +5,21 @@
 
 #include <string> // string
 #include <vector> // vector
-#include <any> // any
+#include <any> // any, any_cast
 #include <functional> // function
 
 #include <Eightrefl/Attribute.hpp>
 #include <Eightrefl/Meta.hpp>
 #include <Eightrefl/Utility.hpp>
 
-#include <Eightrefl/Detail/Macro.hpp> // EIGHTREFL_DEPAREN
+#include <Eightrefl/Traits/Access.hpp>
+#include <Eightrefl/Traits/Function.hpp>
+
+#include <Eightrefl/Detail/Macro.hpp>
 
 #define EIGHTREFL_FUNCTION_IMPL(scope, external_name, internal_name, ... /*function_type*/) \
     { \
-        auto xxpointer = eightrefl::meta::access_traits<scope>::template function<__VA_ARGS__>::of(&scope::EIGHTREFL_DEPAREN(internal_name)); \
+        auto xxpointer = ::xxeightrefl_access_traits<scope>::template function<__VA_ARGS__>::of(&scope::EIGHTREFL_DEPAREN(internal_name)); \
         auto xxfunction = eightrefl::find_or_add_function<CleanR __VA_OPT__(, __VA_ARGS__)>(xxtype, external_name, xxpointer, injection); \
         xxmeta = &xxfunction->meta; \
     }
@@ -55,7 +58,7 @@ namespace detail
 
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes,
           typename FunctionTypePointer, std::size_t... ArgumentIndexValues>
-auto handler_member_function_call_impl(FunctionTypePointer function, std::index_sequence<ArgumentIndexValues...>)
+auto handler_member_function_call(FunctionTypePointer function, std::index_sequence<ArgumentIndexValues...>)
 {
     return [function](std::any const& outer_context, std::vector<std::any> const& arguments) -> std::any
     {
@@ -82,7 +85,7 @@ auto handler_member_function_call_impl(FunctionTypePointer function, std::index_
 }
 
 template <typename ReturnType, typename... ArgumentTypes, std::size_t... ArgumentIndexValues>
-auto handler_external_function_call_impl(ReturnType(* function)(ArgumentTypes...), std::index_sequence<ArgumentIndexValues...>)
+auto handler_external_function_call(ReturnType(* function)(ArgumentTypes...), std::index_sequence<ArgumentIndexValues...>)
 {
     return [function](std::any const&, std::vector<std::any> const& arguments) -> std::any
     {
@@ -112,7 +115,7 @@ auto handler_external_function_call_impl(ReturnType(* function)(ArgumentTypes...
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
 auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes...) const)
 {
-    return detail::handler_member_function_call_impl<ReflectableType, ReturnType, ArgumentTypes...>
+    return detail::handler_member_function_call<ReflectableType, ReturnType, ArgumentTypes...>
     (
         function, std::index_sequence_for<ArgumentTypes...>{}
     );
@@ -121,7 +124,7 @@ auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
 auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes...) const&)
 {
-    return detail::handler_member_function_call_impl<ReflectableType, ReturnType, ArgumentTypes...>
+    return detail::handler_member_function_call<ReflectableType, ReturnType, ArgumentTypes...>
     (
         function, std::index_sequence_for<ArgumentTypes...>{}
     );
@@ -130,7 +133,7 @@ auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
 auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes...))
 {
-    return detail::handler_member_function_call_impl<ReflectableType, ReturnType, ArgumentTypes...>
+    return detail::handler_member_function_call<ReflectableType, ReturnType, ArgumentTypes...>
     (
         function, std::index_sequence_for<ArgumentTypes...>{}
     );
@@ -139,7 +142,7 @@ auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes
 template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
 auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes...)&)
 {
-    return detail::handler_member_function_call_impl<ReflectableType, ReturnType, ArgumentTypes...>
+    return detail::handler_member_function_call<ReflectableType, ReturnType, ArgumentTypes...>
     (
         function, std::index_sequence_for<ArgumentTypes...>{}
     );
@@ -148,7 +151,7 @@ auto handler_function_call(ReturnType(ReflectableType::* function)(ArgumentTypes
 template <typename ReturnType, typename... ArgumentTypes>
 auto handler_function_call(ReturnType(* function)(ArgumentTypes...))
 {
-    return detail::handler_external_function_call_impl(function, std::index_sequence_for<ArgumentTypes...>{});
+    return detail::handler_external_function_call(function, std::index_sequence_for<ArgumentTypes...>{});
 }
 
 } // namespace eightrefl

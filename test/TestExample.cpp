@@ -66,14 +66,24 @@ TEST(TestExample, TestSimple)
     #endif // EIGHTREFL_STANDARD_ENABLE
 
     std::any function_result = function->call(object_context, { string_context });
+    int function_result_as_value = eightrefl::forward<int>(function_result);
+
+    #ifdef EIGHTREFL_CANONICAL_PROPERTY_ENABLE
+    property->set(object_context, eightrefl::backward(function_result_as_value));
+    // close to this implementation: property->set(object_context, &function_result_as_value);
+    #else
     property->set(object_context, function_result);
+    #endif // EIGHTREFL_CANONICAL_PROPERTY_ENABLE
+
     std::any property_context = property->context(object_context);
-    EXPECT("result0", *std::any_cast<int*>(property_context) == std::any_cast<int>(function_result));
+
+    EXPECT("result0", eightrefl::forward<int&>(property_context) == function_result_as_value);
+    EXPECT("result1", *eightrefl::forward<int*>(property_context) == function_result_as_value);
 
     eightrefl::property_t* function_property = type->property.find("FunctionProperty");
     ASSERT("function_property", function_property != nullptr);
 
-    function_property->set(object_context, { 3.14f });
+    function_property->set(object_context, 3.14f);
     std::any property_value = function_property->get(object_context);
-    EXPECT("result1", std::any_cast<int>(property_value) == 3);
+    EXPECT("result2", eightrefl::forward<int>(property_value) == 3);
 }

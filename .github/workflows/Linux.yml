@@ -31,6 +31,7 @@ jobs:
     strategy:
       matrix:
         image: [ubuntu-22.04, ubuntu-latest]
+        config: [ON, OFF]
 
     runs-on: ${{ matrix.image }}
 
@@ -41,6 +42,7 @@ jobs:
       EIGHTREFL_STANDARD_ENABLE: ${{ github.event.inputs.EIGHTREFL_STANDARD_ENABLE || 'ON' }}
       EIGHTREFL_DEV_ENABLE: ${{ github.event.inputs.EIGHTREFL_DEV_ENABLE || 'ON' }}
       EIGHTREFL_MEMBER_ENABLE: ${{ github.event.inputs.EIGHTREFL_MEMBER_ENABLE || 'ON' }}
+      EIGHTREFL_CANONICAL_PROPERTY_ENABLE: ${{ matrix.config }}
 
     steps:
     - name: "Download project"
@@ -67,6 +69,7 @@ jobs:
           -DEIGHTREFL_STANDARD_ENABLE=${EIGHTREFL_STANDARD_ENABLE} \
           -DEIGHTREFL_DEV_ENABLE=${EIGHTREFL_DEV_ENABLE} \
           -DEIGHTREFL_MEMBER_ENABLE=${EIGHTREFL_MEMBER_ENABLE} \
+          -DEIGHTREFL_CANONICAL_PROPERTY_ENABLE=${EIGHTREFL_CANONICAL_PROPERTY_ENABLE} \
           -DEIGHTREFL_BUILD_TEST_LIBS=ON
         cmake --build Intermediate --parallel
 

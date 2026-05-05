@@ -6,9 +6,6 @@
 
 #include <Eightrefl/Attribute.hpp>
 #include <Eightrefl/Meta.hpp>
-#include <Eightrefl/Utility.hpp>
-
-#include <Eightrefl/Detail/Meta.hpp>
 
 #define INJECTION(... /*reflectable_injection_type*/) \
     { \
@@ -64,15 +61,6 @@ struct EIGHTREFL_API injection_t
     std::function<void(std::any const& injectable_context)> const call = nullptr;
     attribute_t<meta_t> meta{};
 };
-
-template <typename ReflectionType, class InjectionType>
-auto handler_injection_call()
-{
-    return [](std::any const& injectable_context)
-    {
-        ::xxeightrefl<ReflectionType>::evaluate(utility::forward<InjectionType&>(injectable_context));
-    };
-}
 
 } // namespace eightrefl
 

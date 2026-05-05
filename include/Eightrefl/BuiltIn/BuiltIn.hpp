@@ -1,7 +1,7 @@
 #ifndef EIGHTREFL_BUILTIN_BUILITIN_CPP
 #define EIGHTREFL_BUILTIN_BUILITIN_CPP
 
-#include <Eightrefl/Detail/Meta.hpp>
+#include <Eightrefl/Traits/ReflectableDeclaration.hpp>
 
 #define REFLECTABLE_BUILTIN() \
     struct xxbuiltin;

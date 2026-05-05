@@ -4,9 +4,11 @@
 #include <Eightrefl/ReflectableDeclaration.hpp>
 #include <Eightrefl/Type.hpp>
 
-#include <Eightrefl/Detail/Meta.hpp>
-#include <Eightrefl/Detail/Macro.hpp> // EIGHTREFL_DEPAREN
+#include <Eightrefl/Traits/Function.hpp>
+#include <Eightrefl/Traits/Property.hpp>
+#include <Eightrefl/Traits/Deleter.hpp>
 
+#include <Eightrefl/Detail/Macro.hpp>
 
 #define EIGHTREFL_REFLECTABLE_BODY_IMPL() \
     template <class InjectionType> static void evaluate(InjectionType& injection) { \
@@ -17,18 +19,18 @@
 #define REFLECTABLE(... /*reflectable_type*/) \
     template <> struct xxeightrefl<__VA_ARGS__> { \
         using R = __VA_ARGS__; \
-        using CleanR = typename ::xxeightrefl_dirty<R>::R; \
+        using CleanR = typename ::xxeightrefl_dirty_traits<R>::R; \
         EIGHTREFL_REFLECTABLE_BODY_IMPL()
 
 #define TEMPLATE_REFLECTABLE(type_template_header, ... /*reflectable_type_template*/) \
     EIGHTREFL_DEPAREN(type_template_header) struct xxeightrefl<__VA_ARGS__> { \
         using R = __VA_ARGS__; \
-        using CleanR = typename ::xxeightrefl_dirty<R>::R; \
+        using CleanR = typename ::xxeightrefl_dirty_traits<R>::R; \
         EIGHTREFL_REFLECTABLE_BODY_IMPL()
 
 #define CONDITIONAL_REFLECTABLE(... /*reflectable_type_condition*/) \
     template <typename R> struct xxeightrefl<R, std::enable_if_t<__VA_ARGS__>> { \
-        using CleanR = typename ::xxeightrefl_dirty<R>::R; \
+        using CleanR = typename ::xxeightrefl_dirty_traits<R>::R; \
         EIGHTREFL_REFLECTABLE_BODY_IMPL()
 
 
@@ -36,6 +38,10 @@
         } \
         inline static auto xxfixture = eightrefl::fixture_of<R>(); \
     };
+
+
+template <typename ReflectableType, typename enable = void>
+struct xxeightrefl;
 
 
 namespace eightrefl
@@ -64,7 +70,7 @@ bool fixture_of()
 {
     static_assert
     (
-        meta::is_complete<::xxeightrefl_traits<DirtyReflectableType>>::value,
+        detail::is_complete<::xxeightrefl_traits<DirtyReflectableType>>::value,
         "fixture: reflection declaration for this type not found"
     );
 
@@ -90,16 +96,16 @@ type_t* find_or_add_type()
     using dirty_reflectable_type = typename std::conditional_t
     <
         std::is_reference_v<DirtyReflectableType>,
-        meta::to_reflectable_reference<DirtyReflectableType>,
+        detail::to_reflectable_reference<DirtyReflectableType>,
         std::conditional_t
         <
             std::is_pointer_v<DirtyReflectableType>,
-            meta::to_reflectable_pointer<DirtyReflectableType>,
-            meta::to_reflectable_object<DirtyReflectableType>
+            detail::to_reflectable_pointer<DirtyReflectableType>,
+            detail::to_reflectable_object<DirtyReflectableType>
         >
     >::type;
 
-    using reflectable_type = typename ::xxeightrefl_dirty<dirty_reflectable_type>::R;
+    using reflectable_type = typename ::xxeightrefl_dirty_traits<dirty_reflectable_type>::R;
 
     if constexpr (::xxeightrefl_traits_has_reflectable_lazy_evaluate<dirty_reflectable_type>::value)
     {
@@ -132,7 +138,7 @@ type_t* find_or_add_type(InjectionType& injection)
 template <typename ReflectableType, typename DirtyReflectableParentType>
 parent_t* find_or_add_parent(type_t* type)
 {
-    using reflectable_parent_type = typename ::xxeightrefl_dirty<DirtyReflectableParentType>::R;
+    using reflectable_parent_type = typename ::xxeightrefl_dirty_traits<DirtyReflectableParentType>::R;
 
     static_assert
     (
@@ -199,7 +205,7 @@ auto function_return_type(ReturnType(*)(ArgumentTypes...))
 template <typename DirtyFactoryType>
 factory_t* find_or_add_factory(type_t* type)
 {
-    using function_traits = meta::function_traits<DirtyFactoryType>;
+    using function_traits = ::xxeightrefl_function_traits<DirtyFactoryType>;
     using dirty_type = typename function_traits::dirty_type;
     using dirty_type_pointer = typename function_traits::dirty_type_pointer;
     using type_pointer = typename function_traits::type_pointer;
@@ -226,7 +232,7 @@ template <typename ReflectableType,
           class InjectionType>
 factory_t* find_or_add_factory(type_t* type, InjectionType& injection)
 {
-    using function_traits = meta::function_traits<DirtyFactoryType>;
+    using function_traits = ::xxeightrefl_function_traits<DirtyFactoryType>;
 
     auto xxfactory = find_or_add_factory<DirtyFactoryType>(type);
     injection.template factory<ReflectableType, typename function_traits::type_pointer>(*xxfactory);
@@ -238,9 +244,9 @@ factory_t* find_or_add_factory(type_t* type, InjectionType& injection)
 template <typename DirtyFunctionType = void, typename FunctionTypePointer>
 function_t* find_or_add_function(type_t* type, std::string const& name, FunctionTypePointer pointer)
 {
-    using function_traits = meta::function_traits
+    using function_traits = ::xxeightrefl_function_traits
     <
-        typename meta::mark_dirty<FunctionTypePointer, DirtyFunctionType>::type
+        typename ::xxeightrefl_mark_dirty<FunctionTypePointer, DirtyFunctionType>::type
     >;
 
     using dirty_type = typename function_traits::dirty_type;
@@ -283,17 +289,17 @@ template <typename IODirtyType = void, typename ODirtyType = void /*unused*/,
           typename ITypePointer, typename OTypePointer>
 property_t* find_or_add_property(type_t* type, std::string const& name, ITypePointer ipointer, OTypePointer opointer)
 {
-    using property_traits = meta::property_traits
+    using property_traits = ::xxeightrefl_property_traits
     <
         typename std::conditional_t
         <
             std::is_null_pointer_v<ITypePointer>,
-            meta::mark_dirty<OTypePointer, IODirtyType>,
-            meta::mark_dirty<ITypePointer, IODirtyType>
+            ::xxeightrefl_mark_dirty<OTypePointer, IODirtyType>,
+            ::xxeightrefl_mark_dirty<ITypePointer, IODirtyType>
         >::type
     >;
 
-    using dirty_type = typename property_traits::type;
+    using dirty_type = typename property_traits::dirty_type;
 
     auto xxmeta = type->property.find(name);
     if (xxmeta == nullptr) xxmeta = type->property.add
@@ -362,7 +368,7 @@ property_t* find_or_add_bitfield(type_t* type, std::string const& name,
 template <typename DirtyDeleterType>
 deleter_t* find_or_add_deleter(type_t* type)
 {
-    using deleter_traits = meta::deleter_traits<DirtyDeleterType>;
+    using deleter_traits = ::xxeightrefl_deleter_traits<DirtyDeleterType>;
     using dirty_type = typename deleter_traits::dirty_type;
     using type_pointer = typename deleter_traits::type_pointer;
 
@@ -386,7 +392,7 @@ template <typename ReflectableType,
           class InjectionType>
 deleter_t* find_or_add_deleter(type_t* type, InjectionType& injection)
 {
-    using deleter_traits = eightrefl::meta::deleter_traits<DirtyDeleterType>;
+    using deleter_traits = ::xxeightrefl_deleter_traits<DirtyDeleterType>;
 
     auto xxdeleter = eightrefl::find_or_add_deleter<DirtyDeleterType>(type);
     injection.template deleter<ReflectableType, typename deleter_traits::type_pointer>(*xxdeleter);
@@ -447,10 +453,19 @@ meta_t* find_or_add_meta(attribute_t<meta_t>& meta, std::string const& name, Inj
 }
 
 
+template <typename ReflectionType, class InjectionType>
+auto handler_injection_call()
+{
+    return [](std::any const& injectable_context)
+    {
+        ::xxeightrefl<ReflectionType>::evaluate(utility::forward<InjectionType&>(injectable_context));
+    };
+}
+
 template <typename ReflectableType, class DirtyReflectableInjectionType>
 injection_t* find_or_add_injection(type_t* type)
 {
-    using reflectable_injection_type = ::xxeightrefl_dirty<DirtyReflectableInjectionType>::R;
+    using reflectable_injection_type = ::xxeightrefl_dirty_traits<DirtyReflectableInjectionType>::R;
 
     static_assert
     (

@@ -4,8 +4,9 @@
 #include <cstddef> // size_t
 
 #include <string> // string
-#include <any> // any
+#include <any> // any, any_cast
 #include <functional> // function
+#include <memory> // addressof
 
 #include <Eightrefl/Attribute.hpp>
 #include <Eightrefl/Injection.hpp>

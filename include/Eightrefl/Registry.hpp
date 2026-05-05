@@ -29,7 +29,9 @@ struct EIGHTREFL_API registry_t
 
     registry_t();
     registry_t(registry_t const&) = delete;
+    registry_t(registry_t&&) = delete;
     registry_t& operator=(registry_t const&) = delete;
+    registry_t& operator=(registry_t&&) = delete;
     ~registry_t();
 
     type_t* find(std::string const& name) const;

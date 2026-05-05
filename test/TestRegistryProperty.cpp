@@ -5,6 +5,9 @@ TEST_SPACE()
 
 struct TestPropertyReadonlyStruct
 {
+    TestPropertyReadonlyStruct() = default;
+    TestPropertyReadonlyStruct(TestPropertyReadonlyStruct const&) = default;
+
     TestPropertyReadonlyStruct& operator=(TestPropertyReadonlyStruct const&) = delete;
 };
 

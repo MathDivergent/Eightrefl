@@ -3,7 +3,7 @@
 
 #include <string> // string
 #include <vector> // vector
-#include <any> // any
+#include <any> // any, make_any
 #include <functional> // function
 
 #include <Eightrefl/Attribute.hpp>
@@ -35,7 +35,7 @@ namespace detail
 {
 
 template <typename ReflectableType, typename... ArgumentTypes, std::size_t... ArgumentIndexValues>
-auto handler_factory_call_impl(std::index_sequence<ArgumentIndexValues...>)
+auto handler_factory_call(std::index_sequence<ArgumentIndexValues...>)
 {
     return [](std::vector<std::any> const& arguments) -> std::any
     {
@@ -61,7 +61,7 @@ auto handler_factory_call_impl(std::index_sequence<ArgumentIndexValues...>)
 template <typename ReflectableType, typename... ArgumentTypes>
 auto handler_factory_call(ReflectableType(*)(ArgumentTypes...))
 {
-    return detail::handler_factory_call_impl<ReflectableType, ArgumentTypes...>
+    return detail::handler_factory_call<ReflectableType, ArgumentTypes...>
     (
         std::index_sequence_for<ArgumentTypes...>{}
     );
