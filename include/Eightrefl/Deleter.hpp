@@ -2,12 +2,13 @@
 #define EIGHTREFL_DELETER_HPP
 
 #include <string> // string
-#include <any> // any
+#include <any> // any, any_cast
 #include <functional> // function
 
 #include <Eightrefl/Attribute.hpp>
 #include <Eightrefl/Meta.hpp>
-#include <Eightrefl/Utility.hpp>
+
+#include <Eightrefl/Traits/Deleter.hpp>
 
 #define DELETER(... /*function_type*/) \
     { \

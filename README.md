@@ -8,7 +8,7 @@
 
 **Eightrefl** is a reflection library for C++20 that provides full type introspection **without requiring any changes to reflected class code**. Is an external module of the [Eightgine](https://github.com/MathDivergent/Eightgine) engine.
 
-See last stable library version 3.0.0 [here](https://github.com/MathDivergent/Eightrefl/releases).
+See last stable library version 3.1.0 [here](https://github.com/MathDivergent/Eightrefl/releases).
 
 ---
 
@@ -81,7 +81,7 @@ The interaction model is built around several key components that work together 
    - Supports multiple registries (global, builtin, standard, dev and etc.) for subsystem isolation.
 
 4. **`type_t`** - Represents a composition and aggregation of metadata and type information:
-   - Includes attributes like `injection_t`, `parent_t`, `child_t`, `factory_t`, `deleter_t`, `function_t`, `property_t`, `meta_t`.
+   - Includes attributes like `injection_t`, `child_t`, `parent_t`, `factory_t`, `function_t`, `property_t`, `deleter_t`, `meta_t`.
    - Contains core type info: name, registry, size, context function.
    - Is a readonly type except for `attribute_t` fields, which support add/read operations.
    - Architecturally cannot exist without a name and registry; all other fields are optional.
@@ -91,7 +91,7 @@ The interaction model is built around several key components that work together 
 
 5. **Functions like `find_or_add_*`** - Used exclusively for extending type attributes or metadata. Direct use for searching is valid but not entirely correct; the "find" in the name implies applying injections to attributes or metadata to avoid complete recreation and loss of previous injections.
 
-6. **`xxeightrefl_dirty<T>`** - Enables reflection of types that cannot be deduced from context (e.g., nested types in class templates) or when re-reflection with different type info and attributes is needed.
+6. **`xxeightrefl_dirty_traits<T>`** - Enables reflection of types that cannot be deduced from context (e.g., nested types in class templates) or when re-reflection with different type info and attributes is needed.
 
 </details>
 
@@ -103,17 +103,13 @@ The interaction model is built around several key components that work together 
 #define TEMPLATE_REFLECTABLE_DECLARATION(type_template_header, ... /*reflectable_type_template*/) /*...*/
 #define CONDITIONAL_REFLECTABLE_DECLARATION(... /*reflectable_type_condition*/) /*...*/
 
-#define REFLECTABLE_REGISTRY(... /*reflectable_registry_address*/) /*...*/
+#define REFLECTABLE_REGISTRY(... /*reflectable_registry_pointer*/) /*...*/
 #define REFLECTABLE_NAME(... /*reflectable_name_string*/) /*...*/
 #define REFLECTABLE_LAZY_EVALUATE() /*...*/
 
 #define REFLECTABLE_DECLARATION_INIT() /*...*/
 
 #define REFLECTABLE_ACCESS() /*...*/
-
-
-template <typename ReflectableType, typename enable = void>
-struct xxeightrefl_traits;
 
 
 namespace eightrefl
@@ -131,6 +127,27 @@ type_t* type_of();
 } // namespace eightrefl
 ```
 
+<details>
+<summary><strong>reflectable declaration traits synopsis</strong></summary>
+
+```cpp
+template <typename ReflectableType, typename enable = void>
+struct xxeightrefl_traits;
+
+
+template <typename, typename enable = void>
+struct xxeightrefl_traits_has_reflectable_name;
+
+template <typename, typename enable = void>
+struct xxeightrefl_traits_has_reflectable_registry;
+
+template <typename, typename enable = void>
+struct xxeightrefl_traits_has_reflectable_lazy_evaluate;
+```
+
+</details>
+
+
 ```cpp
 #define REFLECTABLE_CLEAN(dirty_type, ... /*clean_reflectable_type*/) /*...*/
 #define TEMPLATE_REFLECTABLE_CLEAN(type_template_header, dirty_type, ... /*clean_reflectable_type_template*/) /*...*/
@@ -138,12 +155,6 @@ type_t* type_of();
 #define REFLECTABLE_DIRTY(dirty_type, ... /*clean_reflectable_type*/) /*...*/
 #define TEMPLATE_REFLECTABLE_DIRTY(dirty_type_template_header, dirty_type, dirty_type_template, ... /*clean_reflectable_type_template*/) /*...*/
 
-
-template <typename ReflectableType, typename enable = void>
-struct xxeightrefl_dirty;
-
-template <typename ReflectableType>
-struct xxeightrefl_enable_dirty;
 
 namespace eightrefl
 {
@@ -153,6 +164,71 @@ using clean_of = /*...*/;
 
 } // namespace eightrefl
 ```
+
+<details>
+<summary><strong>reflectable declaration traits synopsis</strong></summary>
+
+```cpp
+template <typename ReflectableType, typename enable = void>
+struct xxeightrefl_dirty_traits;
+
+
+template <typename ReflectableType>
+struct xxeightrefl_enable_dirty;
+
+
+template <typename MemberPointerType, typename DirtyMemberPointerType = void>
+struct xxeightrefl_mark_dirty;
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_mark_dirty<ReturnType(ReflectableType::*)(ArgumentTypes...) const>;
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes,
+                                    typename DirtyReturnType, typename... DirtyArgumentTypes>
+struct xxeightrefl_mark_dirty<ReturnType(ReflectableType::*)(ArgumentTypes...) const, DirtyReturnType(DirtyArgumentTypes...) const>;
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_mark_dirty<ReturnType(ReflectableType::*)(ArgumentTypes...) const&>;
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes,
+                                    typename DirtyReturnType, typename... DirtyArgumentTypes>
+struct xxeightrefl_mark_dirty<ReturnType(ReflectableType::*)(ArgumentTypes...) const&, DirtyReturnType(DirtyArgumentTypes...) const&>;
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_mark_dirty<ReturnType(ReflectableType::*)(ArgumentTypes...)>;
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes,
+                                    typename DirtyReturnType, typename... DirtyArgumentTypes>
+struct xxeightrefl_mark_dirty<ReturnType(ReflectableType::*)(ArgumentTypes...), DirtyReturnType(DirtyArgumentTypes...)>;
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_mark_dirty<ReturnType(ReflectableType::*)(ArgumentTypes...)&>;
+
+template <typename ReflectableType, typename ReturnType, typename... ArgumentTypes,
+                                    typename DirtyReturnType, typename... DirtyArgumentTypes>
+struct xxeightrefl_mark_dirty<ReturnType(ReflectableType::*)(ArgumentTypes...)&, DirtyReturnType(DirtyArgumentTypes...)&>;
+
+template <typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_mark_dirty<ReturnType(*)(ArgumentTypes...)>;
+
+template <typename ReturnType, typename... ArgumentTypes,
+          typename DirtyReturnType, typename... DirtyArgumentTypes>
+struct xxeightrefl_mark_dirty<ReturnType(*)(ArgumentTypes...), DirtyReturnType(DirtyArgumentTypes...)>;
+
+template <typename ReflectableType, typename PropertyType>
+struct xxeightrefl_mark_dirty<PropertyType ReflectableType::*>;
+
+template <typename ReflectableType, typename PropertyType, typename DirtyPropertyType>
+struct xxeightrefl_mark_dirty<PropertyType ReflectableType::*, DirtyPropertyType>;
+
+template <typename PropertyType>
+struct xxeightrefl_mark_dirty<PropertyType*>;
+
+template <typename PropertyType, typename DirtyPropertyType>
+struct xxeightrefl_mark_dirty<PropertyType*, DirtyPropertyType>;
+```
+
+</details>
 
 </details>
 
@@ -165,6 +241,10 @@ using clean_of = /*...*/;
 #define CONDITIONAL_REFLECTABLE(... /*reflectable_type_condition*/) /*...*/
 
 #define REFLECTABLE_INIT() /*...*/
+
+
+template <typename ReflectableType, typename enable = void>
+struct xxeightrefl;
 
 
 namespace eightrefl
@@ -223,7 +303,10 @@ template <typename ReflectableType,
           class InjectionType>
 factory_t* find_or_add_factory(type_t* type, InjectionType& injection);
 
+} // namespace eightrefl
+```
 
+```cpp
 namespace eightrefl
 {
 
@@ -384,7 +467,9 @@ struct EIGHTREFL_API registry_t
 
     registry_t();
     registry_t(registry_t const&) = delete;
+    registry_t(registry_t&&) = delete;
     registry_t& operator=(registry_t const&) = delete;
+    registry_t& operator=(registry_t&&) = delete;
     ~registry_t();
 
     type_t* find(std::string const& name) const;
@@ -422,11 +507,14 @@ namespace eightrefl
 template <class ElementType>
 struct attribute_t
 {
+    std::unordered_map<std::string, ElementType> all{};
+
     attribute_t();
+    attribute_t(attribute_t const&) = default;
+    attribute_t& operator=(attribute_t const&) = delete;
+
     ElementType* find(std::string const& name);
     ElementType* add(std::string const& name, ElementType const& element);
-
-    std::unordered_map<std::string, ElementType> all{};
 };
 
 } // namespace eightrefl
@@ -633,6 +721,43 @@ auto handler_function_call(ReturnType(* function)(ArgumentTypes...));
 } // namespace eightrefl
 ```
 
+<details>
+<summary><strong>function_t traits synopsis</strong></summary>
+
+```cpp
+template <typename>
+struct xxeightrefl_function_traits;
+
+template <typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_function_traits<ReturnType(ArgumentTypes...) const>;
+
+template <typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_function_traits<ReturnType(ArgumentTypes...) const&>;
+
+template <typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_function_traits<ReturnType(ArgumentTypes...)>;
+
+template <typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_function_traits<ReturnType(ArgumentTypes...)&>;
+
+template <class ClassType, typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_function_traits<ReturnType(ClassType::*)(ArgumentTypes...) const>;
+
+template <class ClassType, typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_function_traits<ReturnType(ClassType::*)(ArgumentTypes...) const&>;
+
+template <class ClassType, typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_function_traits<ReturnType(ClassType::*)(ArgumentTypes...)>;
+
+template <class ClassType, typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_function_traits<ReturnType(ClassType::*)(ArgumentTypes...)&>;
+
+template <typename ReturnType, typename... ArgumentTypes>
+struct xxeightrefl_function_traits<ReturnType(*)(ArgumentTypes...)>;
+```
+
+</details>
+
 </details>
 
 `property_t` structure synopsis:
@@ -829,6 +954,71 @@ constexpr auto property_pointer(std::nullptr_t, PropertyType(* oproperty)(void))
 } // namespace eightrefl
 ```
 
+<details>
+<summary><strong>property_t traits synopsis</strong></summary>
+
+```cpp
+template <typename PropertyType>
+struct xxeightrefl_property_traits;
+
+template <typename PropertyType>
+struct xxeightrefl_property_traits<PropertyType(void) const>;
+
+template <typename PropertyType>
+struct xxeightrefl_property_traits<PropertyType(void) const&>;
+
+template <typename PropertyType>
+struct xxeightrefl_property_traits<PropertyType(void)>;
+
+template <typename PropertyType>
+struct xxeightrefl_property_traits<PropertyType(void)&>;
+
+template <typename PropertyType>
+struct xxeightrefl_property_traits<void(PropertyType)>;
+
+template <typename PropertyType>
+struct xxeightrefl_property_traits<void(PropertyType)&>;
+
+template <typename PropertyType>
+struct xxeightrefl_property_traits<PropertyType*>;
+
+template <typename ReflectableType, typename PropertyType>
+struct xxeightrefl_property_traits<PropertyType(ReflectableType::*)(void) const>;
+
+template <typename ReflectableType, typename PropertyType>
+struct xxeightrefl_property_traits<PropertyType(ReflectableType::*)(void) const&>;
+
+template <typename ReflectableType, typename PropertyType>
+struct xxeightrefl_property_traits<PropertyType(ReflectableType::*)(void)>;
+
+template <typename ReflectableType, typename PropertyType>
+struct xxeightrefl_property_traits<PropertyType(ReflectableType::*)(void)&>;
+
+template <typename ReflectableType, typename PropertyType>
+struct xxeightrefl_property_traits<void(ReflectableType::*)(PropertyType)>;
+
+template <typename ReflectableType, typename PropertyType>
+struct xxeightrefl_property_traits<void(ReflectableType::*)(PropertyType)&>;
+
+template <typename PropertyType>
+struct xxeightrefl_property_traits<PropertyType(*)(void)>;
+
+template <typename PropertyType>
+struct xxeightrefl_property_traits<void(*)(PropertyType)>;
+
+template <typename ReflectableType, typename PropertyType>
+struct xxeightrefl_property_traits<PropertyType ReflectableType::*>;
+
+
+template <typename PropertyType>
+struct xxeightrefl_property_is_gettable;
+
+template <typename PropertyType>
+struct xxeightrefl_property_is_settable;
+```
+
+</details>
+
 </details>
 
 `deleter_t` structure synopsis:
@@ -865,6 +1055,23 @@ auto handler_deleter_call(CustomDeleterType(*)(ReflectableType*));
 
 } // namespace eightrefl
 ```
+
+<details>
+<summary><strong>deleter_t traits synopsis</strong></summary>
+
+```cpp
+template <typename>
+struct xxeightrefl_deleter_traits;
+
+template <typename ReturnType, typename ReflectableType>
+struct xxeightrefl_deleter_traits<ReturnType(ReflectableType)>;
+
+template <typename ReturnType, typename ReflectableType>
+struct xxeightrefl_deleter_traits<ReturnType(*)(ReflectableType)>;
+
+```
+
+</details>
 
 </details>
 
@@ -903,7 +1110,7 @@ struct MyStruct
     void Print() const {}
 };
 
-// reflection declaration (in .hpp)
+// reflection declaration (in .hpp):
 REFLECTABLE_DECLARATION(MyStruct)
 REFLECTABLE_DECLARATION_INIT()
 ```
@@ -914,7 +1121,7 @@ REFLECTABLE_DECLARATION_INIT()
 
 #include <Eightrefl/Core.hpp>
 
-// reflection body (in .cpp)
+// reflection body (in .cpp):
 REFLECTABLE(MyStruct)
     FACTORY(R())
     PROPERTY(value)
@@ -930,21 +1137,39 @@ int main()
 {
     eightrefl::type_t* type = eightrefl::global()->find("MyStruct");
 
-    // object creation
+    // object creation:
     std::any object = type->factory.find("MyStruct()")->call({});
     std::any context = type->context(object);  // → MyStruct*
 
-    // set field value
-    type->property.find("value")->set(context, std::any{8});
+    // set field value (non-canonical):
+    type->property.find("value")->set(context, 8);
 
-    // read field value
+    // get field value (non-canonical):
     std::any result = type->property.find("value")->get(context);
-    // *std::any_cast<int*>(result) == 8
+    int value = eightrefl::forward<int>(result); // 8
 
-    // function call
+    // function call:
     type->function.find("Print")->find("void() const")->call(context, {});
 }
 ```
+
+<details>
+<summary><strong>canonical set / get </strong></summary>
+
+```cpp
+// set field value (canonical):
+type->property.find("value")->set(context, eightrefl::backward<int const&>(8));
+type->property.find("value")->set(context, eightrefl::backward<int&&>(8));
+int value = 8;
+type->property.find("value")->set(context, eightrefl::backward(value));
+
+// get field value (canonical):
+std::any result = type->property.find("value")->get(context);
+int& value = eightrefl::forward<int&>(result);
+int* value = eightrefl::forward<int*>(result);
+```
+
+</details>
 
 ---
 
@@ -971,7 +1196,7 @@ REFLECTABLE_DECLARATION_INIT()
 template <>
 struct xxeightrefl_traits<MyClass>
 {
-    using R = typename ::xxeightrefl_dirty<MyClass>::R;
+    using R = typename ::xxeightrefl_dirty_traits<MyClass>::R;
     [[maybe_unused]] static constexpr auto xxnative_name = "MyClass";
 };
 ```
@@ -995,7 +1220,7 @@ REFLECTABLE_DECLARATION_INIT()
 template <typename T>
 struct xxeightrefl_traits<MyBox<T>>
 {
-    using R = typename ::xxeightrefl_dirty<MyBox<T>>::R;
+    using R = typename ::xxeightrefl_dirty_traits<MyBox<T>>::R;
     struct xxlazy_evaluate;  // inserted automatically
     static auto name() { return "MyBox<" + eightrefl::name_of<T>() + ">"; }
 };
@@ -1018,7 +1243,7 @@ REFLECTABLE_DECLARATION_INIT()
 template <typename DirtyR>
 struct xxeightrefl_traits<DirtyR, std::enable_if_t<std::is_enum_v<DirtyR>>>
 {
-    using R = typename ::xxeightrefl_dirty<DirtyR>::R;
+    using R = typename ::xxeightrefl_dirty_traits<DirtyR>::R;
     struct xxlazy_evaluate;
     static auto name() { return /*...*/; }
 };
@@ -1065,7 +1290,7 @@ template <>
 struct xxeightrefl<MyClass>
 {
     using R = MyClass;
-    using CleanR = typename ::xxeightrefl_dirty<R>::R;
+    using CleanR = typename ::xxeightrefl_dirty_traits<R>::R;
 
     template <class InjectionType>
     static void evaluate(InjectionType&& injection)
@@ -1211,11 +1436,11 @@ Registers a member field or accessor pair.
 ```cpp
 REFLECTABLE(MyClass)
     PROPERTY(value)                                            // member field
-    PROPERTY(Name, std::string() const, void(std::string))     // get/set accessors
+    PROPERTY(Name, std::string() const, void(std::string))     // get / set accessors
     PROPERTY(Readonly)                                         // const field → set = nullptr
     PROPERTY(Writeonly, void(int))                             // set only → get = nullptr
-    PROPERTY_AS("bIsActivate", Activate, IsActivated)
-    PROPERTY_AS("flag", setF, getS, void(int), char const*())
+    PROPERTY_AS("bIsActivate", IsActivated, Activate)
+    PROPERTY_AS("flag", get_flag, set_flag, char const*(), void(int))
 REFLECTABLE_INIT()
 ```
 
@@ -1225,8 +1450,8 @@ eightrefl::find_or_add_property(xxtype, "value", &MyClass::value, &MyClass::valu
 eightrefl::find_or_add_property(xxtype, "Name", (std::string(MyClass::*) const)&MyClass::Name, (void(MyClass::*)(std::string))&MyClass::Name);
 eightrefl::find_or_add_property(xxtype, "Readonly", (int const MyClass::*)&MyClass::Readonly, nullptr);
 eightrefl::find_or_add_property(xxtype, "Writeonly", nullptr, (void(MyClass::*)(int))&MyClass::Writeonly);
-eightrefl::find_or_add_property(xxtype, "bIsActivate", nullptr, (void(MyClass::*)(int))&MyClass::Writeonly);
-eightrefl::find_or_add_property(xxtype, "flag", (void(MyClass::*)(int))&MyClass::setF, (char const*(MyClass::*)() const)&MyClass::getS);
+eightrefl::find_or_add_property(xxtype, "bIsActivate", &MyClass::IsActivated, &MyClass::Activate);
+eightrefl::find_or_add_property(xxtype, "flag", (char const*(MyClass::*)() const)&MyClass::get_flag, (void(MyClass::*)(int))&MyClass::set_flag);
 ```
 
 ---
@@ -1298,7 +1523,7 @@ Registers a destructor or custom memory releaser.
 
 ```cpp
 REFLECTABLE(MyClass)
-    DELETER(void(R*))           // standard destructor
+    DELETER(void(R*))           // standard destructor pattern
     DELETER(CustomDeleter(R*))  // custom deleter type
 REFLECTABLE_INIT()
 ```
@@ -1355,20 +1580,20 @@ Look-up: `type->meta.find("Version")`, `factory->meta.find("PostLoad")`.
 ### Usage
 
 ```cpp
-// Type lookup
+// type lookup:
 eightrefl::type_t* type = eightrefl::global()->find("MyClass");
 
 // Iterate all types
 for (auto& [name, type] : eightrefl::global()->all) { /* ... */ }
 
-// Custom registry
+// custom registry:
 eightrefl::registry_t* myRegistry();
 
 REFLECTABLE_DECLARATION(MyClass)
     REFLECTABLE_REGISTRY(myRegistry())
 REFLECTABLE_DECLARATION_INIT()
 
-// After init: myRegistry()->find("MyClass") != nullptr
+// after init: myRegistry()->find("MyClass") != nullptr
 //             eightrefl::global()->find("MyClass") == nullptr
 ```
 
@@ -1440,16 +1665,17 @@ const int as_value = eightrefl::forward<int const>(as_any);    // copy + const
 ### get/set chain
 
 ```cpp
-// get: returns a value in result via backward
-std::any result = property->get(context);
-// result: std::any stores T (value types) or T* (reference/pointer types)
+// function property example: int(), void(int)
 
-// set: expects std::any; pass via backward or directly
-property->set(context, std::make_any<int>(8));  // forward<int>(value) inside
+// get: returns a value in result via eightrefl::backward
+std::any result = property->get(context); // result: std::any stores T (value types) or T* (reference/pointer types)
+
+// set: expects std::any; pass via eightrefl::backward or directly
+property->set(context, 8);  // calls eightrefl::forward<int>(value) inside
 ```
 
 <details>
-<summary><strong>forward / backward synopsis</strong></summary>
+<summary><strong>backward / forward synopsis</strong></summary>
 
 ```cpp
 namespace eightrefl
@@ -1459,10 +1685,10 @@ inline namespace utility
 {
 
 template <typename ValueType>
-ValueType forward(std::any const& object);
+std::any backward(ValueType&& result);
 
 template <typename ValueType>
-std::any backward(ValueType&& result);
+ValueType forward(std::any const& object);
 
 } // inline namespace utility
 
@@ -1529,7 +1755,7 @@ struct injectable_t
 ### Injection (automatic)
 
 ```cpp
-// my_injection.hpp
+// to_string_injection.hpp
 struct ToStringInjection : eightrefl::injectable_t
 {
     template <typename ReflectableType>
@@ -1540,7 +1766,7 @@ struct ToStringInjection : eightrefl::injectable_t
     }
 };
 
-// my_injection.cpp
+// to_string_injection.cpp
 REFLECTABLE_DECLARATION(ToStringInjection)
 REFLECTABLE_DECLARATION_INIT()
 
@@ -1574,11 +1800,11 @@ REFLECTABLE_DECLARATION_INIT()
 ```
 
 ```cpp
-// Register manually after init:
+// register manually after init:
 auto type = eightrefl::global()->find("MyClass");
 eightrefl::find_or_add_injection<MyClass, FlagInjection>(type);
 
-// Execute:
+// inject:
 auto injection = type->injection.find("FlagInjection");
 auto injectable = std::make_any<FlagInjection>();
 injection->call(injection->type->context(injectable));
@@ -1590,16 +1816,15 @@ injection->call(injection->type->context(injectable));
 
 ### Concept
 
-- **Clean type** (`CleanR`) — the "clean" type whose members (`&CleanR::field`) are actually described in the reflection table.
+- **Clean type** (`CleanR`) — the "clean" type whose attributes are actually described in the reflection table.
 - **Dirty type** — an intermediary type or alias. Used when a type cannot be deduced from template context or when re-reflecting under another name is needed.
 
 ### Problems Dirty solves
 
 **1. Nested template types** cannot be deduced from context:
 ```cpp
-// Does not compile! Container<T>::Iterator is a dependent type
+// does not compile! Container<T>::Iterator is a dependent type:
 TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, Container<T>::Iterator)
-    // ...
 REFLECTABLE_DECLARATION_INIT()
 ```
 
@@ -1614,8 +1839,8 @@ REFLECTABLE_DECLARATION_INIT()
 ```cpp
 // dirty_type → clean_reflectable_type (does not declare a new type)
 REFLECTABLE_CLEAN(std_size_t, std::size_t)
-// ↑ Generates:
-//   struct std_size_t : xxeightrefl_enable_dirty<std::size_t> {};
+// ↑ generates:
+//   template <> struct xxeightrefl_dirty_traits<std_size_t> { using R = std::size_t; };
 ```
 
 ---
@@ -1626,9 +1851,9 @@ Declares a **new struct** `dirty_type` as a `clean_reflectable_type` wrapper and
 
 ```cpp
 REFLECTABLE_DIRTY(std_size_t, std::size_t)
-// ↑ Generates:
+// ↑ generates:
 //   struct std_size_t : xxeightrefl_enable_dirty<std::size_t> {};
-//   template <> struct xxeightrefl_dirty<std_size_t> { using R = std::size_t; };
+//   template <> struct xxeightrefl_dirty_traits<std_size_t> { using R = std::size_t; };
 
 REFLECTABLE_DECLARATION(std_size_t)
     REFLECTABLE_NAME("std::size_t")
@@ -1648,7 +1873,7 @@ REFLECTABLE_INIT()
 Template variants for nested types:
 
 ```cpp
-// Reflect Container<T>::Iterator via a dirty intermediary
+// reflect Container<T>::Iterator via a dirty intermediary:
 TEMPLATE_REFLECTABLE_DIRTY
 (
     template <typename T>,
@@ -1664,7 +1889,7 @@ REFLECTABLE_DECLARATION_INIT()
 TEMPLATE_REFLECTABLE(template <typename T>, ContainerIterator<T>)
 REFLECTABLE_INIT()
 
-// Now ContainerIterator<T> can be used in the Container<T> table:
+// now ContainerIterator<T> can be used in the Container<T> table:
 TEMPLATE_REFLECTABLE(template <typename T>, Container<T>)
     FUNCTION(Begin, ContainerIterator<T>())
 REFLECTABLE_INIT()
@@ -1688,7 +1913,7 @@ TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, std::vector<T>)
     REFLECTABLE_NAME("std::vector<" + eightrefl::name_of<T>() + ">")
 REFLECTABLE_DECLARATION_INIT()
 
-// Then when reflecting MyStruct:
+// then when reflecting MyStruct:
 REFLECTABLE(MyStruct)
     PROPERTY(items, std::vector<int>)
     // ↑ std::vector<int> will be reflected automatically here,
@@ -1754,6 +1979,7 @@ This allows **metaprogrammatic** traversal of the reflection structure itself th
 | `EIGHTREFL_STANDARD_ENABLE` | `OFF` | Enables reflection for standard library types (STL containers, utilities, etc.) |
 | `EIGHTREFL_DEV_ENABLE` | `OFF` | Enables reflection of the library's own types; useful for CLI debugging and configuration |
 | `EIGHTREFL_MEMBER_ENABLE` | `OFF` | Enables reflection support for data member pointers and member function pointers |
+| `EIGHTREFL_CANONICAL_PROPERTY_ENABLE` | `ON` | Enables canonical property semantics for non-functional data fields: getters like `T&()`, setters like `void(T&)`; otherwise getters like `T()`, setters like `void(T)` |
 | `EIGHTREFL_DEBUG_ENABLE` | `ON` | Enables additional runtime checks |
 | `EIGHTREFL_BUILD_FAST_LIBS` | `OFF` | Enables high-level optimization (`-O3`) for library builds; important when using `EIGHTREFL_STANDARD_ENABLE` with `EIGHTREFL_FULLY_ENABLE` |
 
@@ -1790,7 +2016,7 @@ REFLECTABLE_DECLARATION_INIT()
 template <>
 struct xxeightrefl_traits<MyBaseClass>
 {
-    using R = typename ::xxeightrefl_dirty<MyBaseClass>::R;
+    using R = typename ::xxeightrefl_dirty_traits<MyBaseClass>::R;
     [[maybe_unused]] static constexpr auto xxnative_name = "MyBaseClass";
 };
 ```
@@ -1827,7 +2053,7 @@ REFLECTABLE_DECLARATION_INIT()
 template <>
 struct xxeightrefl_traits<MyClass>
 {
-    using R = typename ::xxeightrefl_dirty<MyClass>::R;
+    using R = typename ::xxeightrefl_dirty_traits<MyClass>::R;
     [[maybe_unused]] static constexpr auto xxnative_name = "MyClass";
     static auto registry() { return MyRegistry(); }
     static auto name() { return "my_custom_class"; }
@@ -1849,7 +2075,7 @@ template <>
 struct xxeightrefl<MyBaseClass>
 {
     using R = MyClass;
-    using CleanR = typename ::xxeightrefl_dirty<R>::R;
+    using CleanR = typename ::xxeightrefl_dirty_traits<R>::R;
 
     template <class InjectionType>
     static void evaluate(InjectionType&& injection)
@@ -1885,7 +2111,7 @@ template <>
 struct xxeightrefl<MyClass>
 {
     using R = MyClass;
-    using CleanR = typename ::xxeightrefl_dirty<R>::R;
+    using CleanR = typename ::xxeightrefl_dirty_traits<R>::R;
 
     template <class InjectionType>
     static void evaluate(InjectionType&& injection)
@@ -1931,13 +2157,13 @@ struct xxeightrefl<MyClass>
 <details>
 <summary><strong>context() — access to field pointer</strong></summary>
 
-`property_t::context` returns a **pointer to the field itself**, unlike `get`, which returns a copy of the value (or `T*` for reference types):
+`property_t::context` returns a **pointer to the field itself**, unlike `get`, which returns a copy of the value or `T*` for reference types:
 
 ```cpp
 auto property = type->property.find("value");
 
 std::any object_context = type->context(object);                // MyClass*
-std::any property_context = property->context(object_context);  // int*  (pointer to field)
+std::any property_context = property->context(object_context);  // int* (pointer to field)
 int* raw = std::any_cast<int*>(property_context);
 ```
 
@@ -1951,11 +2177,11 @@ Context equals `nullptr` if it cannot be deduced from the property.
 When `PARENT(Base)` is used, the library automatically adds `child_t` into `Base::child`:
 
 ```cpp
-// up-cast (via parent_t::cast)
+// up-cast (via eightrefl::parent_t::cast)
 auto parent = child->parent.find("Base");
 std::any parent_context = parent->cast(child_context);  // Base*
 
-// down-cast (via child_t::cast)
+// down-cast (via eightrefl::child_t::cast)
 auto parent = eightrefl::global()->find("Base");
 auto child = parent->child.find("Derived");
 std::any child_context = child->cast(parent_context);  // Derived*
@@ -1967,22 +2193,22 @@ std::any child_context = child->cast(parent_context);  // Derived*
 <summary><strong>name_of and helper functions</strong></summary>
 
 ```cpp
-// Static type name
+// compile-time type name:
 std::string name = eightrefl::name_of<std::vector<int>>();  // "std::vector<int>"
 std::string name = eightrefl::name_of<int*>();              // "int*"
 std::string name = eightrefl::name_of<int const>();         // "int const"
 std::string name = eightrefl::name_of<void(int, float)>();  // "void(int, float)"
 
-// Type's custom registry
+// type's custom registry:
 eightrefl::registry_t* registry = eightrefl::registry_of<MyClass>();
 
-// Resolve dirty → clean type (compile-time)
+// resolve dirty → clean type (compile-time):
 using CleanT = eightrefl::clean_of<DirtyType>;
 
-// Explicit reflection initialization
+// explicit reflection registration:
 eightrefl::reflectable<MyClass>();
 
-// Initialization + object forwarding
+// registration + object forwarding:
 auto object = eightrefl::reflectable(MyClass{});
 ```
 
@@ -1996,7 +2222,7 @@ With `EIGHTREFL_RTTI_ENABLE=ON`, `std::type_index` look-up is available:
 ```cpp
 #include <typeindex>
 eightrefl::type_t* type = eightrefl::global()->find(typeid(MyClass));
-// useful for polymorphism: typeid(*ptr) → type_t*
+// useful for polymorphism: typeid(*pointer) → eightrefl::type_t*
 ```
 
 </details>
@@ -2023,6 +2249,8 @@ Useful in unit tests.
 
 See library testing [here](https://github.com/MathDivergent/Eightrefl/tree/main/test).
 
+---
+
 ## Upcoming
 
 - Add support for replacing `std::any`, `std::function`, `std::unordered_map`, and `std::string` with custom placeholder types.
@@ -2031,6 +2259,8 @@ See library testing [here](https://github.com/MathDivergent/Eightrefl/tree/main/
 - Include support for standard library iterators, moving from the full set to a minimal supported subset.
 - Documentation expansion, new examples, advanced-level library API.
 - Improve library stability with even greater automated test coverage.
+
+---
 
 ## License
 

@@ -12,6 +12,10 @@
 
 #include <Eightrefl/Dev/Dev.hpp>
 
+template <class ElementType>
+struct xxeightrefl_property_is_settable<eightrefl::attribute_t<ElementType>> : std::false_type {};
+
+
 TEMPLATE_REFLECTABLE_DECLARATION((template <typename MetaType>), eightrefl::attribute_t<MetaType>)
     REFLECTABLE_REGISTRY(eightrefl::dev())
     REFLECTABLE_NAME("eightrefl::attribute_t<" + eightrefl::name_of<MetaType>() + ">")

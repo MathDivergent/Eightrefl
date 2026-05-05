@@ -2,7 +2,7 @@
 #define EIGHTREFL_STANDARD_STANDARD_CPP
 
 #ifdef EIGHTREFL_STANDARD_ENABLE
-#include <Eightrefl/Detail/Meta.hpp>
+#include <Eightrefl/Traits/ReflectableDeclaration.hpp>
 
 #define REFLECTABLE_STANDARD() \
     struct xxstandard;

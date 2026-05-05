@@ -3,26 +3,28 @@
 
 #include <Eightrefl/Registry.hpp>
 
-#include <Eightrefl/Detail/Meta.hpp>
-#include <Eightrefl/Detail/Macro.hpp> // EIGHTREFL_DEPAREN
+#include <Eightrefl/Traits/ReflectableDeclaration.hpp>
+#include <Eightrefl/Traits/Dirty.hpp>
+
+#include <Eightrefl/Detail/Macro.hpp>
 
 #define REFLECTABLE_DECLARATION(... /*reflectable_type*/) \
     template <> struct xxeightrefl_traits<__VA_ARGS__> { \
-        using R = typename ::xxeightrefl_dirty<__VA_ARGS__>::R; \
+        using R = typename ::xxeightrefl_dirty_traits<__VA_ARGS__>::R; \
         [[maybe_unused]] static constexpr auto xxnative_name = #__VA_ARGS__;
 
 #define TEMPLATE_REFLECTABLE_DECLARATION(type_template_header, ... /*reflectable_type_template*/) \
     EIGHTREFL_DEPAREN(type_template_header) struct xxeightrefl_traits<__VA_ARGS__> { \
-        using R = typename ::xxeightrefl_dirty<__VA_ARGS__>::R; \
+        using R = typename ::xxeightrefl_dirty_traits<__VA_ARGS__>::R; \
         REFLECTABLE_LAZY_EVALUATE()
 
 #define CONDITIONAL_REFLECTABLE_DECLARATION(... /*reflectable_type_condition*/) \
     template <typename DirtyR> struct xxeightrefl_traits<DirtyR, std::enable_if_t<__VA_ARGS__>> { \
-        using R = typename ::xxeightrefl_dirty<DirtyR>::R; \
+        using R = typename ::xxeightrefl_dirty_traits<DirtyR>::R; \
         REFLECTABLE_LAZY_EVALUATE()
 
 
-#define REFLECTABLE_REGISTRY(... /*reflectable_registry_address*/) \
+#define REFLECTABLE_REGISTRY(... /*reflectable_registry_pointer*/) \
     static auto registry() { return __VA_ARGS__; }
 
 #define REFLECTABLE_NAME(... /*reflectable_name_string*/) \
@@ -43,6 +45,14 @@
 namespace eightrefl
 {
 
+namespace detail
+{
+
+template <typename, typename enable = void> struct is_complete : std::false_type {};
+template <typename Type> struct is_complete<Type, std::void_t<decltype(sizeof(Type))>> : std::true_type {};
+
+} // namespace detail
+
 struct type_t;
 
 template <typename DirtyReflectableType>
@@ -52,7 +62,7 @@ std::string name_of()
 
     static_assert
     (
-        meta::is_complete<reflectable_traits>::value,
+        detail::is_complete<reflectable_traits>::value,
         "name_of: reflection declaration for this type not found"
     );
 
@@ -73,7 +83,7 @@ registry_t* registry_of()
 
     static_assert
     (
-        meta::is_complete<reflectable_traits>::value,
+        detail::is_complete<reflectable_traits>::value,
         "registry_of: reflection declaration for this type not found"
     );
 
@@ -97,18 +107,18 @@ type_t* type_of()
 
 
 #define REFLECTABLE_CLEAN(dirty_type, ... /*clean_reflectable_type*/) \
-    template <> struct xxeightrefl_dirty<dirty_type> { using R = __VA_ARGS__; };
+    template <> struct xxeightrefl_dirty_traits<dirty_type> { using R = __VA_ARGS__; };
 
 #define TEMPLATE_REFLECTABLE_CLEAN(type_template_header, dirty_type, ... /*clean_reflectable_type_template*/) \
-    EIGHTREFL_DEPAREN(type_template_header) struct xxeightrefl_dirty<EIGHTREFL_DEPAREN(dirty_type)> { using R = __VA_ARGS__; };
+    EIGHTREFL_DEPAREN(type_template_header) struct xxeightrefl_dirty_traits<EIGHTREFL_DEPAREN(dirty_type)> { using R = __VA_ARGS__; };
 
 
 #define REFLECTABLE_DIRTY(dirty_type, ... /*clean_reflectable_type*/) \
-    struct dirty_type final : xxeightrefl_enable_dirty<__VA_ARGS__> {}; \
+    struct dirty_type final : ::xxeightrefl_enable_dirty<__VA_ARGS__> {}; \
     REFLECTABLE_CLEAN(dirty_type, __VA_ARGS__)
 
 #define TEMPLATE_REFLECTABLE_DIRTY(dirty_type_template_header, dirty_type, dirty_type_template, ... /*clean_reflectable_type_template*/) \
-    EIGHTREFL_DEPAREN(dirty_type_template_header) struct dirty_type : xxeightrefl_enable_dirty<__VA_ARGS__> {}; \
+    EIGHTREFL_DEPAREN(dirty_type_template_header) struct dirty_type : ::xxeightrefl_enable_dirty<__VA_ARGS__> {}; \
     TEMPLATE_REFLECTABLE_CLEAN(dirty_type_template_header, dirty_type_template, __VA_ARGS__)
 
 
@@ -116,7 +126,7 @@ namespace eightrefl
 {
 
 template <typename DirtyReflectableType>
-using clean_of = typename ::xxeightrefl_dirty<DirtyReflectableType>::R;
+using clean_of = typename ::xxeightrefl_dirty_traits<DirtyReflectableType>::R;
 
 } // namespace eightrefl
 

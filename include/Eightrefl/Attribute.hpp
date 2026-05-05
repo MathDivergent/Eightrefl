@@ -14,10 +14,15 @@ namespace eightrefl
 template <class ElementType>
 struct attribute_t
 {
+    std::unordered_map<std::string, ElementType> all{};
+
     attribute_t()
     {
         all.reserve(EIGHTREFL_ATTRIBUTE_RESERVE_SIZE);
     }
+
+    attribute_t(attribute_t const&) = default;
+    attribute_t& operator=(attribute_t const&) = delete;
 
     ElementType* find(std::string const& name)
     {
@@ -27,10 +32,8 @@ struct attribute_t
 
     ElementType* add(std::string const& name, ElementType const& meta)
     {
-        return &all.emplace(name, meta).first->second;
+        return &all.try_emplace(name, meta).first->second;
     }
-
-    std::unordered_map<std::string, ElementType> all{};
 };
 
 } // namespace eightrefl

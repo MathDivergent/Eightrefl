@@ -7,6 +7,10 @@
 
 #include <Eightrefl/Dev/Dev.hpp>
 
+template <>
+struct xxeightrefl_property_is_settable<std::unordered_map<std::string, eightrefl::factory_t>> : std::false_type {};
+
+
 REFLECTABLE_DECLARATION(eightrefl::factory_t)
     REFLECTABLE_REGISTRY(eightrefl::dev())
 REFLECTABLE_DECLARATION_INIT()

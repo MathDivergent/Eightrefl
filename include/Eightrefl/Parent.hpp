@@ -1,15 +1,12 @@
 #ifndef EIGHTREFL_PARENT_HPP
 #define EIGHTREFL_PARENT_HPP
 
-#include <any> // any
+#include <any> // any, any_cast
 #include <functional> // function
 
 #include <Eightrefl/Attribute.hpp>
 #include <Eightrefl/Meta.hpp>
 
-#include <Eightrefl/Detail/Meta.hpp>
-
-// .parent<R, reflectable_type>()
 #define PARENT(... /*reflectable_parent_type*/) \
     { \
         auto xxparent = eightrefl::find_or_add_parent<CleanR, __VA_ARGS__>(xxtype, injection); \

@@ -1,6 +1,5 @@
 #include <EightreflTestingBase.hpp>
 
-// TODO: add nameof member pointer
 TEST_SPACE()
 {
 
@@ -16,7 +15,6 @@ REFLECTABLE_DECLARATION(TestCustomNameOfStruct)
     REFLECTABLE_NAME("Test_CustomNameOf_Struct")
 REFLECTABLE_DECLARATION_INIT()
 
-// TODO: add member - function point
 TEST(TestLibrary, TestNameOf)
 {
     EXPECT("const-type", eightrefl::name_of<const int>() == "int const");

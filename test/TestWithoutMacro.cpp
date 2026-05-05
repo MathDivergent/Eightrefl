@@ -77,7 +77,7 @@ struct xxeightrefl<TestWithoutMacroStruct>
 // struct TestWithoutMacroStructAlias : TestWithoutMacroStruct {};
 
 // template <>
-// struct xxeightrefl_dirty<TestWithoutMacroStructAlias>
+// struct xxeightrefl_dirty_traits<TestWithoutMacroStructAlias>
 // {
 //     using R = TestWithoutMacroStruct;
 // };
