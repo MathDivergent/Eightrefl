@@ -8,7 +8,7 @@
 
 **Eightrefl** is a reflection library for C++20 that provides full type introspection **without requiring any changes to reflected class code**. Is an external module of the [Eightgine](https://github.com/MathDivergent/Eightgine) engine.
 
-See last stable library version 3.1.0 [here](https://github.com/MathDivergent/Eightrefl/releases).
+See last stable library version 3.1.1 [here](https://github.com/MathDivergent/Eightrefl/releases).
 
 ---
 
@@ -96,7 +96,7 @@ The interaction model is built around several key components that work together 
 </details>
 
 <details>
-<summary><strong>reflectable declaration registration synopsis</strong></summary>
+<summary><strong>reflectable declaration synopsis</strong></summary>
 
 ```cpp
 #define REFLECTABLE_DECLARATION(... /*reflectable_type*/) /*...*/
@@ -166,7 +166,7 @@ using clean_of = /*...*/;
 ```
 
 <details>
-<summary><strong>reflectable declaration traits synopsis</strong></summary>
+<summary><strong>reflectable dirty traits synopsis</strong></summary>
 
 ```cpp
 template <typename ReflectableType, typename enable = void>
@@ -1256,13 +1256,13 @@ struct xxeightrefl_traits<DirtyR, std::enable_if_t<std::is_enum_v<DirtyR>>>
 | Macro | Description |
 |-------|-------------|
 | `REFLECTABLE_NAME(... /*reflectable_name_string*/)` | Override the type name (string literal or `std::string` expression) |
-| `REFLECTABLE_REGISTRY(... /*reflectable_registry_address*/)` | Specify registry (default is `eightrefl::global()`) |
+| `REFLECTABLE_REGISTRY(... /*reflectable_registry_pointer*/)` | Specify registry (default is `eightrefl::global()`) |
 | `REFLECTABLE_LAZY_EVALUATE()` | Mark type as lazily reflected (automatic in template declaration) |
 
 ```cpp
 REFLECTABLE_DECLARATION(MyClass)
     REFLECTABLE_NAME("my_module::MyClass")
-    REFLECTABLE_REGISTRY(MyCustomRegistry())  // MyCustomRegistry() must return registry_t*
+    REFLECTABLE_REGISTRY(MyCustomRegistry())  // MyCustomRegistry() must return eightrefl::registry_t*
 REFLECTABLE_DECLARATION_INIT()
 ```
 
