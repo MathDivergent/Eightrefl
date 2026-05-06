@@ -22,8 +22,8 @@
         using CleanR = typename ::xxeightrefl_dirty_traits<R>::R; \
         EIGHTREFL_REFLECTABLE_BODY_IMPL()
 
-#define TEMPLATE_REFLECTABLE(type_template_header, ... /*reflectable_type_template*/) \
-    EIGHTREFL_DEPAREN(type_template_header) struct xxeightrefl<__VA_ARGS__> { \
+#define TEMPLATE_REFLECTABLE(reflectable_type_template_header, ... /*reflectable_type_template*/) \
+    EIGHTREFL_DEPAREN(reflectable_type_template_header) struct xxeightrefl<__VA_ARGS__> { \
         using R = __VA_ARGS__; \
         using CleanR = typename ::xxeightrefl_dirty_traits<R>::R; \
         EIGHTREFL_REFLECTABLE_BODY_IMPL()

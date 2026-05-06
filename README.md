@@ -6,9 +6,9 @@
 ![Tests](https://img.shields.io/badge/tests-automated-yellow)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](https://opensource.org/license/mit)
 
-**Eightrefl** is a reflection library for C++20 that provides full type introspection **without requiring any changes to reflected class code**. Is an external module of the [Eightgine](https://github.com/MathDivergent/Eightgine) engine.
+**Eightrefl** is a reflection library for C++20 that provides full type introspection **without requiring changes to reflected class code in typical external-reflection workflows**. It is an external module of the [Eightgine](https://github.com/MathDivergent/Eightgine) engine.
 
-See last stable library version 3.1.1 [here](https://github.com/MathDivergent/Eightrefl/releases).
+See last stable library version 3.1.2 [here](https://github.com/MathDivergent/Eightrefl/releases).
 
 ---
 
@@ -39,8 +39,8 @@ See last stable library version 3.1.1 [here](https://github.com/MathDivergent/Ei
 
 ## Core principles
 
-1. **External reflection** — no need to modify the reflected type. Reflection is described in separate external files.
-2. **Declaration/definition split** — the declaration (`xxeightrefl_traits` from the `#include <Eightrefl/CoreDeclaration.hpp>`) is placed in a `.hpp` file, while the reflection body (`xxeightrefl` from the `#include <Eightrefl/Core.hpp>`) is placed in a `.cpp` file.
+1. **External reflection** — no need to modify the reflected type. Reflection is described in separate external files. Reflecting private / protected members may still require adding `REFLECTABLE_ACCESS()` inside the reflected class.
+2. **Declaration/definition split** — the declaration (`xxeightrefl_traits` from the `#include <Eightrefl/CoreDeclaration.hpp>`) is placed in a `.hpp` file, while the reflection body (`xxeightrefl` from the `#include <Eightrefl/Core.hpp>`) is usually placed in a `.cpp` file (and in a `.hpp` file for lazy/template reflection scenarios).
 3. **Standard C++20** — no code generators or custom preprocessors.
 4. **`std::any` as a unified carrier** — all operations on objects are performed via `std::any`, which avoids compile-time coupling to specific types.
 
@@ -66,7 +66,7 @@ The interaction model is built around several key components that work together 
 
 1. **`xxeightrefl_traits<T>`** - This is the declaration of a reflectable type, containing essential information for type identification:
    - **Name**: Can include `xxnative_name` (default type name) and a custom user-defined name.
-   - **Registry reference**: Points to the registry where the type is stored (e.g., global, builtin, standard, dev and etc.).
+    - **Registry reference**: Points to the registry where the type is stored (e.g., global, builtin, standard, dev, etc.).
    - **Optional metadata**: Includes flags like lazy evaluation, whether it's part of the standard library, builtin types, or self-reflectable (dev) types.
    - Typically located in header files (.hpp) to allow sharing between other reflectable types during their registration in `xxeightrefl`. It serves as the entry point for type reflection setup.
 
@@ -78,7 +78,7 @@ The interaction model is built around several key components that work together 
 3. **`registry_t`** - Acts as the storage for registered types, managed both automatically (via `fixture_of`) and manually (via `reflectable`):
    - Provides an interface for adding and reading types; deletion is undefined behavior (UB).
    - Stores and owns pointers to `type_t`, so expanding the storage with potential reallocation does not affect type integrity.
-   - Supports multiple registries (global, builtin, standard, dev and etc.) for subsystem isolation.
+    - Supports multiple registries (global, builtin, standard, dev, etc.) for subsystem isolation.
 
 4. **`type_t`** - Represents a composition and aggregation of metadata and type information:
    - Includes attributes like `injection_t`, `child_t`, `parent_t`, `factory_t`, `function_t`, `property_t`, `deleter_t`, `meta_t`.
@@ -100,7 +100,7 @@ The interaction model is built around several key components that work together 
 
 ```cpp
 #define REFLECTABLE_DECLARATION(... /*reflectable_type*/) /*...*/
-#define TEMPLATE_REFLECTABLE_DECLARATION(type_template_header, ... /*reflectable_type_template*/) /*...*/
+#define TEMPLATE_REFLECTABLE_DECLARATION(reflectable_type_template_header, ... /*reflectable_type_template*/) /*...*/
 #define CONDITIONAL_REFLECTABLE_DECLARATION(... /*reflectable_type_condition*/) /*...*/
 
 #define REFLECTABLE_REGISTRY(... /*reflectable_registry_pointer*/) /*...*/
@@ -150,7 +150,7 @@ struct xxeightrefl_traits_has_reflectable_lazy_evaluate;
 
 ```cpp
 #define REFLECTABLE_CLEAN(dirty_type, ... /*clean_reflectable_type*/) /*...*/
-#define TEMPLATE_REFLECTABLE_CLEAN(type_template_header, dirty_type, ... /*clean_reflectable_type_template*/) /*...*/
+#define TEMPLATE_REFLECTABLE_CLEAN(dirty_type_template_header, dirty_type_template, ... /*clean_reflectable_type_template*/) /*...*/
 
 #define REFLECTABLE_DIRTY(dirty_type, ... /*clean_reflectable_type*/) /*...*/
 #define TEMPLATE_REFLECTABLE_DIRTY(dirty_type_template_header, dirty_type, dirty_type_template, ... /*clean_reflectable_type_template*/) /*...*/
@@ -237,7 +237,7 @@ struct xxeightrefl_mark_dirty<PropertyType*, DirtyPropertyType>;
 
 ```cpp
 #define REFLECTABLE(... /*reflectable_type*/) \
-#define TEMPLATE_REFLECTABLE(type_template_header, ... /*reflectable_type_template*/) /*...*/
+#define TEMPLATE_REFLECTABLE(reflectable_type_template_header, ... /*reflectable_type_template*/) /*...*/
 #define CONDITIONAL_REFLECTABLE(... /*reflectable_type_condition*/) /*...*/
 
 #define REFLECTABLE_INIT() /*...*/
@@ -1203,7 +1203,7 @@ struct xxeightrefl_traits<MyClass>
 
 ---
 
-#### `TEMPLATE_REFLECTABLE_DECLARATION(type_template_header, ... /*reflectable_type_template*/)` and `REFLECTABLE_DECLARATION_INIT()`
+#### `TEMPLATE_REFLECTABLE_DECLARATION(reflectable_type_template_header, ... /*reflectable_type_template*/)` and `REFLECTABLE_DECLARATION_INIT()`
 
 Declaration for a template type. Automatically includes `REFLECTABLE_LAZY_EVALUATE()`.
 
@@ -1213,7 +1213,7 @@ TEMPLATE_REFLECTABLE_DECLARATION(template <typename T>, MyBox<T>)
 REFLECTABLE_DECLARATION_INIT()
 ```
 
-> If `type_template_header` contains a comma (for example, `template <typename K, typename V>`), wrap it in parentheses: `(template <typename K, typename V>)`.
+> If `reflectable_type_template_header` contains a comma (for example, `template <typename K, typename V>`), wrap it in parentheses: `(template <typename K, typename V>)`.
 
 **Equivalent without macro:**
 ```cpp
@@ -1293,7 +1293,7 @@ struct xxeightrefl<MyClass>
     using CleanR = typename ::xxeightrefl_dirty_traits<R>::R;
 
     template <class InjectionType>
-    static void evaluate(InjectionType&& injection)
+    static void evaluate(InjectionType& injection)
     {
         auto xxtype = eightrefl::find_or_add_type<R>(injection);
         [[maybe_unused]] auto xxmeta = &xxtype->meta;
@@ -1333,7 +1333,7 @@ REFLECTABLE_INIT()
 
 #### `REFLECTABLE_ACCESS()`
 
-Placed **inside the class body** to grant access to private members.
+Placed **inside the class body** to grant access to private / protected members.
 
 ```cpp
 class MyClass {
@@ -1868,7 +1868,7 @@ REFLECTABLE_INIT()
 
 ---
 
-#### `TEMPLATE_REFLECTABLE_DIRTY(dirty_type_template_header, dirty_type, dirty_type_template, ... /*clean_reflectable_type_template*/)` or `TEMPLATE_REFLECTABLE_CLEAN(type_template_header, dirty_type, ... /*clean_reflectable_type_template*/)`
+#### `TEMPLATE_REFLECTABLE_DIRTY(dirty_type_template_header, dirty_type, dirty_type_template, ... /*clean_reflectable_type_template*/)` or `TEMPLATE_REFLECTABLE_CLEAN(dirty_type_template_header, dirty_type_template, ... /*clean_reflectable_type_template*/)`
 
 Template variants for nested types:
 
@@ -1996,7 +1996,7 @@ Compiled definitions:
 ## Extended documentation
 
 <details>
-<summary><strong>Reflection without macros</strong></summary>
+<summary><strong>reflection without macros</strong></summary>
 
 Each macro is syntactic sugar over C++ template structures. Full manual version (simplified):
 
@@ -2074,18 +2074,18 @@ REFLECTABLE_INIT()
 template <>
 struct xxeightrefl<MyBaseClass>
 {
-    using R = MyClass;
+    using R = MyBaseClass;
     using CleanR = typename ::xxeightrefl_dirty_traits<R>::R;
 
     template <class InjectionType>
-    static void evaluate(InjectionType&& injection)
+    static void evaluate(InjectionType& injection)
     {
         auto xxtype = eightrefl::find_or_add_type<R>(injection);
         [[maybe_unused]] auto xxmeta = &xxtype->meta;
     }
 
     inline static auto xxfixture = eightrefl::fixture_of<R>();
-}
+};
 ```
 
 ```cpp
@@ -2114,7 +2114,7 @@ struct xxeightrefl<MyClass>
     using CleanR = typename ::xxeightrefl_dirty_traits<R>::R;
 
     template <class InjectionType>
-    static void evaluate(InjectionType&& injection)
+    static void evaluate(InjectionType& injection)
     {
         auto xxtype = eightrefl::find_or_add_type<R>(injection);
         [[maybe_unused]] auto xxmeta = &xxtype->meta;
@@ -2240,6 +2240,50 @@ eightrefl::reflectable(object);     // explicit call
 ```
 
 Useful in unit tests.
+
+</details>
+
+<details>
+<summary><strong>dynamic (runtime) type registration</strong></summary>
+
+The library architecture allows you to dynamically register types at runtime (e.g., when loading modules or plugins) without rebuilding the main application, and to immediately access them through the reflection API.
+
+**Example:**
+
+Module or plugin:
+```cpp
+// MyType.hpp
+REFLECTABLE_DECLARATION(MyType)
+REFLECTABLE_DECLARATION_INIT()
+
+// MyType.cpp
+REFLECTABLE(MyType)
+REFLECTABLE_INIT()
+```
+
+Main application:
+```cpp
+// main.cpp
+#include <Eightrefl/CoreDeclaration.hpp>
+
+extern void* LoadModule(char const* fpathnoextension);
+
+int main()
+{
+    LoadModule("MyModule");
+
+    // if the type is registered in the global registry:
+    eightrefl::type_t* type = eightrefl::global()->find("MyType");
+
+    // if in a custom plugin registry:
+    // eightrefl::type_t* type = MyModuleRegistry()->find("MyType");
+
+    if (type)
+    {
+        // use the reflection API
+    }
+}
+```
 
 </details>
 

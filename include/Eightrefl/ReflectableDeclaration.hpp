@@ -13,8 +13,8 @@
         using R = typename ::xxeightrefl_dirty_traits<__VA_ARGS__>::R; \
         [[maybe_unused]] static constexpr auto xxnative_name = #__VA_ARGS__;
 
-#define TEMPLATE_REFLECTABLE_DECLARATION(type_template_header, ... /*reflectable_type_template*/) \
-    EIGHTREFL_DEPAREN(type_template_header) struct xxeightrefl_traits<__VA_ARGS__> { \
+#define TEMPLATE_REFLECTABLE_DECLARATION(reflectable_type_template_header, ... /*reflectable_type_template*/) \
+    EIGHTREFL_DEPAREN(reflectable_type_template_header) struct xxeightrefl_traits<__VA_ARGS__> { \
         using R = typename ::xxeightrefl_dirty_traits<__VA_ARGS__>::R; \
         REFLECTABLE_LAZY_EVALUATE()
 
@@ -109,8 +109,8 @@ type_t* type_of()
 #define REFLECTABLE_CLEAN(dirty_type, ... /*clean_reflectable_type*/) \
     template <> struct xxeightrefl_dirty_traits<dirty_type> { using R = __VA_ARGS__; };
 
-#define TEMPLATE_REFLECTABLE_CLEAN(type_template_header, dirty_type, ... /*clean_reflectable_type_template*/) \
-    EIGHTREFL_DEPAREN(type_template_header) struct xxeightrefl_dirty_traits<EIGHTREFL_DEPAREN(dirty_type)> { using R = __VA_ARGS__; };
+#define TEMPLATE_REFLECTABLE_CLEAN(dirty_type_template_header, dirty_type_template, ... /*clean_reflectable_type_template*/) \
+    EIGHTREFL_DEPAREN(dirty_type_template_header) struct xxeightrefl_dirty_traits<EIGHTREFL_DEPAREN(dirty_type_template)> { using R = __VA_ARGS__; };
 
 
 #define REFLECTABLE_DIRTY(dirty_type, ... /*clean_reflectable_type*/) \
