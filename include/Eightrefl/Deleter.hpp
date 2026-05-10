@@ -10,7 +10,7 @@
 
 #include <Eightrefl/Traits/Deleter.hpp>
 
-#define DELETER(... /*function_type*/) \
+#define DELETER(... /*reflectable_function_type*/) \
     { \
         auto xxdeleter = eightrefl::find_or_add_deleter<CleanR, __VA_ARGS__>(xxtype, injection); \
         xxmeta = &xxdeleter->meta; \

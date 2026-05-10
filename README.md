@@ -8,7 +8,7 @@
 
 **Eightrefl** is a reflection library for C++20 that provides full type introspection **without requiring changes to reflected class code in typical external-reflection workflows**. It is an external module of the [Eightgine](https://github.com/MathDivergent/Eightgine) engine.
 
-See last stable library version 3.1.2 [here](https://github.com/MathDivergent/Eightrefl/releases).
+See last stable library version 3.1.3 [here](https://github.com/MathDivergent/Eightrefl/releases).
 
 ---
 
@@ -637,7 +637,7 @@ auto handler_parent_cast();
 `factory_t` structure synopsis:
 
 ```cpp
-#define FACTORY(... /*function_type*/) /*...*/
+#define FACTORY(... /*reflectable_function_type*/) /*...*/
 
 
 namespace eightrefl
@@ -673,11 +673,11 @@ auto handler_factory_call(ReflectableType(*)(ArgumentTypes...));
 `function_t` structure synopsis:
 
 ```cpp
-#define FUNCTION_AS(external_name, internal_name, ... /*function_type*/) /*...*/
-#define FUNCTION(name, ... /*function_type*/) /*...*/
+#define FUNCTION_AS(external_name, internal_name, ... /*reflectable_function_type*/) /*...*/
+#define FUNCTION(name, ... /*reflectable_function_type*/) /*...*/
 
-#define EXTERNAL_FUNCTION_AS(external_name, internal_name, ... /*function_type*/) /*...*/
-#define EXTERNAL_FUNCTION(name, ... /*function_type*/) /*...*/
+#define EXTERNAL_FUNCTION_AS(external_name, internal_name, ... /*reflectable_function_type*/) /*...*/
+#define EXTERNAL_FUNCTION(name, ... /*reflectable_function_type*/) /*...*/
 
 
 namespace eightrefl
@@ -763,11 +763,11 @@ struct xxeightrefl_function_traits<ReturnType(*)(ArgumentTypes...)>;
 `property_t` structure synopsis:
 
 ```cpp
-#define PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/) /*...*/
-#define PROPERTY(name, ... /*variable_type_or_function_type*/) /*...*/
+#define PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*reflectable_type_or_function_type(s)*/) /*...*/
+#define PROPERTY(name, ... /*reflectable_type_or_function_type*/) /*...*/
 
-#define EXTERNAL_PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/) /*...*/
-#define EXTERNAL_PROPERTY(name, ... /*variable_type_or_function_type(s)*/) /*...*/
+#define EXTERNAL_PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*reflectable_type_or_function_type(s)*/) /*...*/
+#define EXTERNAL_PROPERTY(name, ... /*reflectable_type_or_function_type(s)*/) /*...*/
 
 #define BITFIELD_AS(external_name, internal_name) /*...*/
 #define BITFIELD(name) /*...*/
@@ -1024,7 +1024,7 @@ struct xxeightrefl_property_is_settable;
 `deleter_t` structure synopsis:
 
 ```cpp
-#define DELETER(... /*function_type*/) /*...*/
+#define DELETER(... /*reflectable_function_type*/) /*...*/
 
 
 namespace eightrefl
@@ -1297,7 +1297,7 @@ struct xxeightrefl<MyClass>
     {
         auto xxtype = eightrefl::find_or_add_type<R>(injection);
         [[maybe_unused]] auto xxmeta = &xxtype->meta;
-        // FACTORY, PROPERTY, FUNCTION, ...
+        /*...*/
     }
 
     inline static auto xxfixture = eightrefl::fixture_of<R>();
@@ -1336,7 +1336,8 @@ REFLECTABLE_INIT()
 Placed **inside the class body** to grant access to private / protected members.
 
 ```cpp
-class MyClass {
+class MyClass
+{
 private:
     int secret_ = 0;
     REFLECTABLE_ACCESS()  // friend xxeightrefl<MyClass>
@@ -1351,7 +1352,7 @@ All these macros are used between `REFLECTABLE(...)` (or `TEMPLATE_REFLECTABLE(.
 
 ---
 
-#### `FACTORY(... /*function_type*/)`
+#### `FACTORY(... /*reflectable_function_type*/)`
 
 Registers a constructor. The name is formed as a function signature.
 
@@ -1364,7 +1365,7 @@ REFLECTABLE(MyClass)
 REFLECTABLE_INIT()
 ```
 
-**Equivalent without macro:**
+**Equivalent without macro (simplified):**
 ```cpp
 eightrefl::find_or_add_factory<MyClass()>(xxtype);
 eightrefl::find_or_add_factory<MyClass(int)>(xxtype);
@@ -1376,9 +1377,9 @@ Look-up: `type->factory.find("MyClass(int)")`.
 
 ---
 
-#### `FUNCTION(name, ... /*function_type*/)` or `FUNCTION_AS(external_name, internal_name, ... /*function_type*/)`
+#### `FUNCTION(name, ... /*reflectable_function_type*/)` or `FUNCTION_AS(external_name, internal_name, ... /*reflectable_function_type*/)`
 
-Registers a member function or static function. `function_type` is required for overloads or templates.
+Registers a member function or static function. `reflectable_function_type` is required for overloads or templates.
 
 ```cpp
 REFLECTABLE(MyClass)
@@ -1399,7 +1400,7 @@ Look-up: `type->function.find("Overload")->find("void(int)")`.
 eightrefl::find_or_add_function(xxtype, "Print", &MyClass::Print);
 eightrefl::find_or_add_function(xxtype, "Overload", (void(MyClass::*)(int))&MyClass::Overload);
 eightrefl::find_or_add_function(xxtype, "Overload", (void(MyClass::*)(float))&MyClass::Overload);
-eightrefl::find_or_add_function(xxtype, "Overload", (void(MyClass::*)(int)const)&MyClass::Overload);
+eightrefl::find_or_add_function(xxtype, "Overload", (void(MyClass::*)(int) const)&MyClass::Overload);
 eightrefl::find_or_add_function(xxtype, "Template<int>", (void(MyClass::*)())&MyClass::Template<int>);
 eightrefl::find_or_add_function(xxtype, "Template<int, bool>", (void(MyClass::*)())&MyClass::Template<int, bool>);
 eightrefl::find_or_add_function(xxtype, "@wild", &MyClass::Print);
@@ -1407,7 +1408,7 @@ eightrefl::find_or_add_function(xxtype, "@wild", &MyClass::Print);
 
 ---
 
-#### `EXTERNAL_FUNCTION(name, .../*function_type*/)` or `EXTERNAL_FUNCTION_AS(external_name, internal_name, ... /*function_type*/)`
+#### `EXTERNAL_FUNCTION(name, .../*reflectable_function_type*/)` or `EXTERNAL_FUNCTION_AS(external_name, internal_name, ... /*reflectable_function_type*/)`
 
 Registers a **free function** (not a class member) in a type’s reflection table.
 
@@ -1429,7 +1430,7 @@ eightrefl::find_or_add_function(xxtype, "Serialize", (void(*)(MyClass const&, in
 
 ---
 
-#### `PROPERTY(name, ... /*variable_type_or_function_type(s)*/)` or `PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/)`
+#### `PROPERTY(name, ... /*reflectable_type_or_function_type(s)*/)` or `PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*reflectable_type_or_function_type(s)*/)`
 
 Registers a member field or accessor pair.
 
@@ -1451,12 +1452,12 @@ eightrefl::find_or_add_property(xxtype, "Name", (std::string(MyClass::*) const)&
 eightrefl::find_or_add_property(xxtype, "Readonly", (int const MyClass::*)&MyClass::Readonly, nullptr);
 eightrefl::find_or_add_property(xxtype, "Writeonly", nullptr, (void(MyClass::*)(int))&MyClass::Writeonly);
 eightrefl::find_or_add_property(xxtype, "bIsActivate", &MyClass::IsActivated, &MyClass::Activate);
-eightrefl::find_or_add_property(xxtype, "flag", (char const*(MyClass::*)() const)&MyClass::get_flag, (void(MyClass::*)(int))&MyClass::set_flag);
+eightrefl::find_or_add_property(xxtype, "flag", (char const*(MyClass::*)())&MyClass::get_flag, (void(MyClass::*)(int))&MyClass::set_flag);
 ```
 
 ---
 
-#### `EXTERNAL_PROPERTY(name, ... /*variable_type_or_function_type(s)*/)` or `EXTERNAL_PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/)`
+#### `EXTERNAL_PROPERTY(name, ... /*reflectable_type_or_function_type(s)*/)` or `EXTERNAL_PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*reflectable_type_or_function_type(s)*/)`
 
 Registers a **global or static** variable in the reflection table.
 
@@ -1482,17 +1483,35 @@ Registers a bitfield. Since a bitfield address cannot be taken, copy lambdas are
 ```cpp
 struct Flags
 {
-    std::uint32_t visible : 1;
-    std::uint32_t active : 1;
+    std::uint32_t bVisible : 1;
+    std::uint32_t C_Active : 1;
 };
 
 REFLECTABLE(Flags)
-    BITFIELD(visible)
-    BITFIELD(active)
+    BITFIELD(bVisible)
+    BITFIELD_AS(C_Active, "active")
 REFLECTABLE_INIT()
 ```
 
 > Bitfield type is resolved as `std::decay_t<decltype(object.field)>`.
+
+**Equivalent without macro (simplified):**
+```cpp
+eightrefl::find_or_add_bitfield<std::uint32_t>
+(
+    xxtype,
+    "bVisible",
+    [](std::any const& context) -> std::any { return std::uint32_t(std::any_cast<Flags*>(context)->bVisible); },
+    [](std::any const& context, std::any const& value) { std::any_cast<Flags*>(context)->bVisible = std::any_cast<std::uint32_t>(value); }
+);
+eightrefl::find_or_add_bitfield<std::uint32_t>
+(
+    xxtype,
+    "active",
+    [](std::any const& context) -> std::any { return std::uint32_t(std::any_cast<Flags*>(context)->C_Active); },
+    [](std::any const& context, std::any const& value) { std::any_cast<Flags*>(context)->C_Active = std::any_cast<std::uint32_t>(value); }
+);
+```
 
 ---
 
@@ -1510,14 +1529,15 @@ REFLECTABLE_INIT()
 Up-cast: `type->parent.find("Base")->cast(derived_ctx)` → `Base*`  
 Down-cast: `base_type->child.find("Derived")->cast(base_ctx)` → `Derived*`
 
-**Equivalent without macro:**
+**Equivalent without macro (simplified):**
 ```cpp
 eightrefl::find_or_add_parent<Derived, Base>(xxtype);
+eightrefl::find_or_add_parent<Derived, Interface>(xxtype);
 ```
 
 ---
 
-#### `DELETER(... /*function_type*/)`
+#### `DELETER(... /*reflectable_function_type*/)`
 
 Registers a destructor or custom memory releaser.
 
@@ -1529,6 +1549,12 @@ REFLECTABLE_INIT()
 ```
 
 Look-up: `type->deleter.find("void(MyClass*)")`.
+
+**Equivalent without macro (simplified):**
+```cpp
+eightrefl::find_or_add_deleter<void(MyClass*)>(xxtype);
+eightrefl::find_or_add_deleter<CustomDeleter(MyClass*)>(xxtype);
+```
 
 ---
 
@@ -1555,6 +1581,13 @@ REFLECTABLE_INIT()
 ```
 
 Look-up: `type->meta.find("Version")`, `factory->meta.find("PostLoad")`.
+
+**Equivalent without macro (simplified):**
+```cpp
+eightrefl::find_or_add_meta(*xxmeta, "DisplayName", "My Class");
+eightrefl::find_or_add_meta(*xxmeta, "Version", 3);
+/*...*/
+```
 
 ---
 
@@ -1771,16 +1804,25 @@ REFLECTABLE_DECLARATION(ToStringInjection)
 REFLECTABLE_DECLARATION_INIT()
 
 REFLECTABLE(MyClass)
-    FACTORY(R())
     INJECTION(ToStringInjection)
 REFLECTABLE_INIT()
+```
+
+**Equivalent without macro (simplified):**
+```cpp
+eightrefl::find_or_add_injection<MyClass, ToStringInjection>(xxtype);
 ```
 
 **Injection call:**
 ```cpp
 auto injection = type->injection.find("ToStringInjection");
+
+// inject:
 auto injectable = std::make_any<ToStringInjection>();
 injection->call(injection->type->context(injectable));
+// same as:
+ToStringInjection injectable{};
+injection->call(&injectable);
 ```
 
 ### Injection (manual)
@@ -1839,8 +1881,11 @@ REFLECTABLE_DECLARATION_INIT()
 ```cpp
 // dirty_type → clean_reflectable_type (does not declare a new type)
 REFLECTABLE_CLEAN(std_size_t, std::size_t)
-// ↑ generates:
-//   template <> struct xxeightrefl_dirty_traits<std_size_t> { using R = std::size_t; };
+```
+
+**Equivalent without macro (simplified):**
+```cpp
+template <> struct xxeightrefl_dirty_traits<std_size_t> { using R = std::size_t; };
 ```
 
 ---
@@ -1851,9 +1896,6 @@ Declares a **new struct** `dirty_type` as a `clean_reflectable_type` wrapper and
 
 ```cpp
 REFLECTABLE_DIRTY(std_size_t, std::size_t)
-// ↑ generates:
-//   struct std_size_t : xxeightrefl_enable_dirty<std::size_t> {};
-//   template <> struct xxeightrefl_dirty_traits<std_size_t> { using R = std::size_t; };
 
 REFLECTABLE_DECLARATION(std_size_t)
     REFLECTABLE_NAME("std::size_t")
@@ -1864,6 +1906,12 @@ REFLECTABLE(std_size_t)
     FACTORY(std_size_t())
     FACTORY(R(R))  // R = std_size_t → dirty → clean = size_t
 REFLECTABLE_INIT()
+```
+
+**Equivalent without macro (simplified):**
+```cpp
+struct std_size_t : xxeightrefl_enable_dirty<std::size_t> {};
+template <> struct xxeightrefl_dirty_traits<std_size_t> { using R = std::size_t; };
 ```
 
 ---
@@ -1915,9 +1963,8 @@ REFLECTABLE_DECLARATION_INIT()
 
 // then when reflecting MyStruct:
 REFLECTABLE(MyStruct)
-    PROPERTY(items, std::vector<int>)
-    // ↑ std::vector<int> will be reflected automatically here,
-    //   without explicit eightrefl::reflectable<std::vector<int>>()
+    PROPERTY(items) // items has std::vector<int> type
+    // ↑ std::vector<int> will be reflected automatically here, without explicit eightrefl::reflectable<std::vector<int>>()
 REFLECTABLE_INIT()
 ```
 
@@ -2011,13 +2058,19 @@ class MyBaseClass
 // reflectable declaration with macro:
 REFLECTABLE_DECLARATION(MyBaseClass)
 REFLECTABLE_DECLARATION_INIT()
+// ↑ generates:
+// template <>
+// struct xxeightrefl_traits<MyBaseClass>
+// {
+//     using R = typename ::xxeightrefl_dirty_traits<MyBaseClass>::R;
+//     [[maybe_unused]] static constexpr auto xxnative_name = "MyBaseClass";
+// };
 
-// reflectable declaration without macro:
+// reflectable declaration without macro (manual):
 template <>
 struct xxeightrefl_traits<MyBaseClass>
 {
-    using R = typename ::xxeightrefl_dirty_traits<MyBaseClass>::R;
-    [[maybe_unused]] static constexpr auto xxnative_name = "MyBaseClass";
+    static constexpr name() { return "MyBaseClass"; }
 };
 ```
 
@@ -2048,13 +2101,20 @@ REFLECTABLE_DECLARATION(MyClass)
     REFLECTABLE_REGISTRY()
     REFLECTABLE_NAME("my_custom_class")
 REFLECTABLE_DECLARATION_INIT()
+// ↑ generates:
+// template <>
+// struct xxeightrefl_traits<MyClass>
+// {
+//     using R = typename ::xxeightrefl_dirty_traits<MyClass>::R;
+//     [[maybe_unused]] static constexpr auto xxnative_name = "MyClass";
+//     static auto registry() { return MyRegistry(); }
+//     static auto name() { return "my_custom_class"; }
+// };
 
-// reflectable declaration without macro:
+// reflectable declaration without macro (manual):
 template <>
 struct xxeightrefl_traits<MyClass>
 {
-    using R = typename ::xxeightrefl_dirty_traits<MyClass>::R;
-    [[maybe_unused]] static constexpr auto xxnative_name = "MyClass";
     static auto registry() { return MyRegistry(); }
     static auto name() { return "my_custom_class"; }
 };
@@ -2066,25 +2126,37 @@ struct xxeightrefl_traits<MyClass>
 
 #include <Eightrefl/Core.hpp>
 
-// reflectable declaration with macro:
+// reflectable with macro:
 REFLECTABLE(MyBaseClass)
 REFLECTABLE_INIT()
+// ↑ generates:
+// template <>
+// struct xxeightrefl<MyBaseClass>
+// {
+//     using R = MyBaseClass;
+//     using CleanR = typename ::xxeightrefl_dirty_traits<R>::R;
+//
+//     template <class InjectionType>
+//     static void evaluate(InjectionType& injection)
+//     {
+//         auto xxtype = eightrefl::find_or_add_type<R>(injection);
+//         [[maybe_unused]] auto xxmeta = &xxtype->meta;
+//     }
+//
+//     inline static auto xxfixture = eightrefl::fixture_of<R>();
+// };
 
-// reflectable declaration without macro:
+// reflectable without macro (manual):
 template <>
 struct xxeightrefl<MyBaseClass>
 {
-    using R = MyBaseClass;
-    using CleanR = typename ::xxeightrefl_dirty_traits<R>::R;
-
     template <class InjectionType>
     static void evaluate(InjectionType& injection)
     {
-        auto xxtype = eightrefl::find_or_add_type<R>(injection);
-        [[maybe_unused]] auto xxmeta = &xxtype->meta;
+        eightrefl::find_or_add_type<MyBaseClass>(injection);
     }
 
-    inline static auto xxfixture = eightrefl::fixture_of<R>();
+    inline static auto xxfixture = eightrefl::fixture_of<MyBaseClass>();
 };
 ```
 
@@ -2094,7 +2166,7 @@ struct xxeightrefl<MyBaseClass>
 
 #include <Eightrefl/Core.hpp>
 
-// reflectable declaration with macro:
+// reflectable with macro:
 REFLECTABLE(MyClass)
     META("Version", 1)
     PARENT(MyBaseClass)
@@ -2105,50 +2177,79 @@ REFLECTABLE(MyClass)
         META("Default", 8)
     FUNCTION(Function)
 REFLECTABLE_INIT()
+// ↑ generates:
+// template <>
+// struct xxeightrefl<MyClass>
+// {
+//     using R = MyClass;
+//     using CleanR = typename ::xxeightrefl_dirty_traits<R>::R;
+//
+//     template <class InjectionType>
+//     static void evaluate(InjectionType& injection)
+//     {
+//         auto xxtype = eightrefl::find_or_add_type<R>(injection);
+//         [[maybe_unused]] auto xxmeta = &xxtype->meta;
+//
+//         {
+//             eightrefl::find_or_add_meta<CleanR>(*xxmeta, "Version", 1, injection);
+//         }
+//         {
+//             auto xxparent = eightrefl::find_or_add_parent<CleanR, MyBaseClass>(xxtype, injection);
+//             xxmeta = &xxparent->meta;
+//         }
+//         if constexpr (std::is_default_constructible_v<R>)
+//         {
+//             auto xxfactory = eightrefl::find_or_add_factory<CleanR, R()>(xxtype, injection);
+//             xxmeta = &xxfactory->meta;
+//         }
+//         {
+//             auto xxdeleter = eightrefl::find_or_add_deleter<CleanR, void(R*)>(xxtype, injection);
+//             xxmeta = &xxdeleter->meta;
+//         }
+//         {
+//             auto xxproperty = eightrefl::find_or_add_property<CleanR>(xxtype, "Property", &R::Property, &R::Property, injection);
+//             xxmeta = &xxproperty->meta;
+//         }
+//         {
+//             eightrefl::find_or_add_meta<CleanR>(*xxmeta, "Default", 8, injection);
+//         }
+//         {
+//             auto xxfunction = eightrefl::find_or_add_function<CleanR>(xxtype, "Function", &R::Function, injection);
+//             xxmeta = &xxfunction->meta;
+//         }
+//     }
+//
+//     inline static auto xxfixture = eightrefl::fixture_of<R>();
+// };
 
-// reflectable declaration without macro:
+// reflectable without macro (manual):
 template <>
 struct xxeightrefl<MyClass>
 {
-    using R = MyClass;
-    using CleanR = typename ::xxeightrefl_dirty_traits<R>::R;
-
     template <class InjectionType>
     static void evaluate(InjectionType& injection)
     {
-        auto xxtype = eightrefl::find_or_add_type<R>(injection);
-        [[maybe_unused]] auto xxmeta = &xxtype->meta;
+        auto xxtype = eightrefl::find_or_add_type<MyClass>(injection);
+
+        eightrefl::find_or_add_meta<MyClass>(xxtype->meta, "Version", 1, injection);
+        eightrefl::find_or_add_parent<MyClass, MyBaseClass>(xxtype, injection);
+
+        if constexpr (std::is_default_constructible_v<MyClass>)
+        {
+            eightrefl::find_or_add_factory<MyClass, MyClass()>(xxtype, injection);
+        }
+
+        eightrefl::find_or_add_deleter<MyClass, void(MyClass*)>(xxtype, injection);
 
         {
-            eightrefl::find_or_add_meta(xxmeta, "Version", 1, injection);
+            auto xxproperty = eightrefl::find_or_add_property<CleanR>(xxtype, "Property", &MyClass::Property, &MyClass::Property, injection);
+            eightrefl::find_or_add_meta<MyClass>(xxproperty->meta, "Default", 8, injection);
         }
-        {
-            auto xxparent = eightrefl::find_or_add_parent<R, MyBaseClass>(xxtype, injection);
-            xxmeta = &xxparent->meta;
-        }
-        if constexpr (std::is_default_constructible_v<R>)
-        {
-            auto xxfactory = eightrefl::find_or_add_factory<R()>(xxtype, injection);
-            xxmeta = &xxfactory->meta;
-        }
-        {
-            auto xxdeleter = eightrefl::find_or_add_deleter<void(R*)>(xxtype, injection);
-            xxmeta = &xxdeleter->meta;
-        }
-        {
-            auto xxproperty = eightrefl::find_or_add_property(xxtype, "Property", &R::Property, &R::Property, injection);
-            xxmeta = &xxproperty->meta;
-        }
-        {
-            eightrefl::find_or_add_meta(*xxmeta, "Default", 8, injection);
-        }
-        {
-            auto xxfunction = eightrefl::find_or_add_function(xxtype, "Function", &R::Function, injection);
-            xxmeta = &xxfunction->meta;
-        }
+
+        eightrefl::find_or_add_function<MyClass>(xxtype, "Function", &MyClass::Function, injection);
     }
 
-    inline static auto xxfixture = eightrefl::fixture_of<R>();
+    inline static auto xxfixture = eightrefl::fixture_of<MyClass>();
 };
 ```
 

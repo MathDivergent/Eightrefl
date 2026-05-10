@@ -63,18 +63,27 @@ REFLECTABLE(TestMetaStruct)
     META("Configs", TestMetaStructConfigs{ true, 100.f })
     META(sMetaName, std::vector<void*>{ &R::TestDescriptor, &TestDescriptorReadOnly })
 
-    PARENT(TestParentMetaStruct) META("Hidden", true)
+    PARENT(TestParentMetaStruct)
+        META("Hidden", true)
 
-    FACTORY(R()) META("ConstructionType", std::string("PostLoad"))
+    FACTORY(R())
+        META("ConstructionType", std::string("PostLoad"))
 
-    FUNCTION(Function, int()) META("MinValue", -1) META("MaxValue", 10) META("static", true)
-    FUNCTION(Function, void(double)) META("Handler", FunctionHandler)
+    FUNCTION(Function, int())
+        META("MinValue", -1)
+        META("MaxValue", 10)
+        META("static", true)
 
-    PROPERTY(Property) META("Cast", &TestMetaStructPropertyCast)
-    META("Serializable") // meta without value
-    META("Flags", TestMetaStructFlags::Serializable | TestMetaStructFlags::Internal)
+    FUNCTION(Function, void(double))
+        META("Handler", FunctionHandler)
 
-    PROPERTY(Constant) META("Mutable", true)
+    PROPERTY(Property)
+        META("Cast", &TestMetaStructPropertyCast)
+        META("Serializable") // meta without value
+        META("Flags", TestMetaStructFlags::Serializable | TestMetaStructFlags::Internal)
+
+    PROPERTY(Constant)
+        META("Mutable", true)
 REFLECTABLE_INIT()
 
 TEST(TestLibrary, TestMeta)

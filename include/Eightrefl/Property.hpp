@@ -17,7 +17,7 @@
 
 #include <Eightrefl/Detail/Macro.hpp>
 
-#define EIGHTREFL_PROPERTY_IMPL(scope, external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/) \
+#define EIGHTREFL_PROPERTY_IMPL(scope, external_name, internal_iname, internal_oname, ... /*reflectable_type_or_function_type(s)*/) \
     { \
         auto [xxi, xxo] = ::xxeightrefl_access_traits<scope>::template property<__VA_ARGS__>::of(&scope::EIGHTREFL_DEPAREN(internal_iname), &scope::EIGHTREFL_DEPAREN(internal_oname)); \
         auto xxproperty = eightrefl::find_or_add_property<CleanR __VA_OPT__(, __VA_ARGS__)>(xxtype, external_name, xxi, xxo, injection); \
@@ -25,16 +25,16 @@
     }
 
 
-#define PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/) \
+#define PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*reflectable_type_or_function_type(s)*/) \
     EIGHTREFL_PROPERTY_IMPL(CleanR, external_name, internal_iname, internal_oname, __VA_ARGS__)
 
-#define PROPERTY(name, ... /*variable_type_or_function_type*/) \
+#define PROPERTY(name, ... /*reflectable_type_or_function_type*/) \
     PROPERTY_AS(EIGHTREFL_TO_STRING(name), name, name, __VA_ARGS__)
 
-#define EXTERNAL_PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*variable_type_or_function_type(s)*/) \
+#define EXTERNAL_PROPERTY_AS(external_name, internal_iname, internal_oname, ... /*reflectable_type_or_function_type(s)*/) \
     EIGHTREFL_PROPERTY_IMPL(, external_name, internal_iname, internal_oname, __VA_ARGS__)
 
-#define EXTERNAL_PROPERTY(name, ... /*variable_type_or_function_type(s)*/) \
+#define EXTERNAL_PROPERTY(name, ... /*reflectable_type_or_function_type(s)*/) \
     EXTERNAL_PROPERTY_AS(EIGHTREFL_TO_STRING(name), name, name, __VA_ARGS__)
 
 

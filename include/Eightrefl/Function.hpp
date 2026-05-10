@@ -17,7 +17,7 @@
 
 #include <Eightrefl/Detail/Macro.hpp>
 
-#define EIGHTREFL_FUNCTION_IMPL(scope, external_name, internal_name, ... /*function_type*/) \
+#define EIGHTREFL_FUNCTION_IMPL(scope, external_name, internal_name, ... /*reflectable_function_type*/) \
     { \
         auto xxpointer = ::xxeightrefl_access_traits<scope>::template function<__VA_ARGS__>::of(&scope::EIGHTREFL_DEPAREN(internal_name)); \
         auto xxfunction = eightrefl::find_or_add_function<CleanR __VA_OPT__(, __VA_ARGS__)>(xxtype, external_name, xxpointer, injection); \
@@ -25,16 +25,16 @@
     }
 
 
-#define FUNCTION_AS(external_name, internal_name, ... /*function_type*/) \
+#define FUNCTION_AS(external_name, internal_name, ... /*reflectable_function_type*/) \
     EIGHTREFL_FUNCTION_IMPL(CleanR, external_name, internal_name, __VA_ARGS__)
 
-#define FUNCTION(name, ... /*function_type*/) \
+#define FUNCTION(name, ... /*reflectable_function_type*/) \
     FUNCTION_AS(EIGHTREFL_TO_STRING(name), name, __VA_ARGS__)
 
-#define EXTERNAL_FUNCTION_AS(external_name, internal_name, ... /*function_type*/) \
+#define EXTERNAL_FUNCTION_AS(external_name, internal_name, ... /*reflectable_function_type*/) \
     EIGHTREFL_FUNCTION_IMPL(, external_name, internal_name, __VA_ARGS__)
 
-#define EXTERNAL_FUNCTION(name, ... /*function_type*/) \
+#define EXTERNAL_FUNCTION(name, ... /*reflectable_function_type*/) \
     EXTERNAL_FUNCTION_AS(EIGHTREFL_TO_STRING(name), name, __VA_ARGS__)
 
 
