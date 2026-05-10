@@ -10,7 +10,7 @@
 #include <Eightrefl/Meta.hpp>
 #include <Eightrefl/Utility.hpp>
 
-#define FACTORY(... /*function_type*/) \
+#define FACTORY(... /*reflectable_function_type*/) \
     { \
         auto xxfactory = eightrefl::find_or_add_factory<CleanR, __VA_ARGS__>(xxtype, injection); \
         xxmeta = &xxfactory->meta; \
