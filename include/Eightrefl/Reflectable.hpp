@@ -233,9 +233,10 @@ template <typename ReflectableType,
 factory_t* find_or_add_factory(type_t* type, InjectionType& injection)
 {
     using function_traits = ::xxeightrefl_function_traits<DirtyFactoryType>;
+    using type_pointer = typename function_traits::type_pointer;
 
     auto xxfactory = find_or_add_factory<DirtyFactoryType>(type);
-    injection.template factory<ReflectableType, typename function_traits::type_pointer>(*xxfactory);
+    injection.template factory<ReflectableType, type_pointer>(*xxfactory);
 
     return xxfactory;
 }
@@ -393,9 +394,10 @@ template <typename ReflectableType,
 deleter_t* find_or_add_deleter(type_t* type, InjectionType& injection)
 {
     using deleter_traits = ::xxeightrefl_deleter_traits<DirtyDeleterType>;
+    using type_pointer = typename deleter_traits::type_pointer;
 
     auto xxdeleter = eightrefl::find_or_add_deleter<DirtyDeleterType>(type);
-    injection.template deleter<ReflectableType, typename deleter_traits::type_pointer>(*xxdeleter);
+    injection.template deleter<ReflectableType, type_pointer>(*xxdeleter);
 
     return xxdeleter;
 }
