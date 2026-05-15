@@ -18,7 +18,7 @@ struct xxeightrefl_property_traits<PropertyType(void)>
     using context_type = std::conditional_t
     <
         std::is_reference_v<type>,
-        std::add_pointer_t<std::remove_const_t<type>>,
+        std::add_pointer_t<std::remove_const_t<std::remove_reference_t<type>>>,
         void
     >;
 };
