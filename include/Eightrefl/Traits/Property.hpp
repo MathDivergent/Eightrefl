@@ -38,7 +38,7 @@ struct xxeightrefl_property_traits<void(PropertyType)>
     using dirty_type = PropertyType;
     using type = typename ::xxeightrefl_dirty_traits<PropertyType>::R;
 
-    // using backward_type = ;
+    // using backward_type = /*...*/;
     using forward_type = type;
 
     using context_type = void;
@@ -53,7 +53,7 @@ struct xxeightrefl_property_traits<PropertyType*>
     using dirty_type = PropertyType;
     using type = typename ::xxeightrefl_dirty_traits<PropertyType>::R;
 
-    // using backward_type = ;
+    // using backward_type = /*...*/;
     #ifdef EIGHTREFL_CANONICAL_PROPERTY_ENABLE
     using forward_type = type&;
     #else
