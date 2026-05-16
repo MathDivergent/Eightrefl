@@ -3,7 +3,7 @@
 
 #include <any> // any
 #include <memory> // addressof
-#include <type_traits> // type_identity, remove_const_t, remove_reference_t, remove_pointer_t, is_reference, is_pointer
+#include <type_traits> // add_pointer, remove_const_t, remove_reference_t, remove_pointer_t, remove_const, is_reference, is_pointer
 
 namespace eightrefl
 {
@@ -12,13 +12,13 @@ namespace detail
 {
 
 template <typename ReferenceType>
-struct to_reflectable_reference : std::type_identity<std::remove_const_t<std::remove_reference_t<ReferenceType>>*> {};
+struct to_reflectable_reference : std::add_pointer<std::remove_const_t<std::remove_reference_t<ReferenceType>>> {};
 
 template <typename PointerType>
-struct to_reflectable_pointer : std::type_identity<std::remove_const_t<std::remove_pointer_t<PointerType>>*> {};
+struct to_reflectable_pointer : std::add_pointer<std::remove_const_t<std::remove_pointer_t<PointerType>>> {};
 
 template <typename ObjectType>
-struct to_reflectable_object : std::type_identity<std::remove_const_t<ObjectType>> {};
+struct to_reflectable_object : std::remove_const<ObjectType> {};
 
 } // namespace detail
 

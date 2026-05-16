@@ -6,7 +6,7 @@
 #include <utility> // pair
 #include <functional> // function
 #include <memory> // addressof
-#include <type_traits> // is_copy_assignable_v, is_reference_v
+#include <type_traits> // is_void_v
 
 #include <Eightrefl/Attribute.hpp>
 #include <Eightrefl/Meta.hpp>
@@ -267,22 +267,22 @@ template <typename ReflectableType, typename ITypePointer>
 auto handler_property_context(ITypePointer property)
 {
     using property_traits = ::xxeightrefl_property_traits<ITypePointer>;
-    using property_type = typename property_traits::type;
+    using context_type = typename property_traits::context_type;
 
-    if constexpr (std::is_reference_v<property_type>)
+    if constexpr (std::is_void_v<context_type>)
+    {
+        // context to non-reference return type is not allowed
+        return nullptr;
+    }
+    else
     {
         return [property](std::any const& outer_context) -> std::any
         {
-            return const_cast<typename detail::to_reflectable_reference<property_type>::type>
+            return const_cast<context_type>
             (
                 std::addressof((std::any_cast<ReflectableType*>(outer_context)->*property)())
             );
         };
-    }
-    else
-    {
-        // context to non-reference return type is not allowed
-        return nullptr;
     }
 }
 
@@ -291,9 +291,12 @@ auto handler_property_context(ITypePointer property)
 template <typename ReflectableType, typename PropertyType>
 auto handler_property_context(PropertyType ReflectableType::* property)
 {
+    using property_traits = ::xxeightrefl_property_traits<PropertyType ReflectableType::*>;
+    using context_type = typename property_traits::context_type;
+
     return [property](std::any const& outer_context) -> std::any
     {
-        return const_cast<typename detail::to_reflectable_object<PropertyType>::type*>
+        return const_cast<context_type>
         (
             // context to member property
             std::addressof(std::any_cast<ReflectableType*>(outer_context)->*property)
@@ -328,30 +331,36 @@ auto handler_property_context(PropertyType(ReflectableType::* property)(void)&)
 template <typename PropertyType>
 auto handler_property_context(PropertyType* property)
 {
+    using property_traits = ::xxeightrefl_property_traits<PropertyType*>;
+    using context_type = typename property_traits::context_type;
+
     return [property](std::any const&) -> std::any
     {
         // context of external (non-member) property
-        return const_cast<typename detail::to_reflectable_object<PropertyType>::type*>(property);
+        return const_cast<context_type>(property);
     };
 }
 
 template <typename PropertyType>
 auto handler_property_context(PropertyType(* property)(void))
 {
-    if constexpr (std::is_reference_v<PropertyType>)
+    using property_traits = ::xxeightrefl_property_traits<PropertyType(*)(void)>;
+    using context_type = typename property_traits::context_type;
+
+    if constexpr (std::is_void_v<context_type>)
+    {
+        // context to non-reference return type is not allowed
+        return nullptr;
+    }
+    else
     {
         return [property](std::any const&) -> std::any
         {
-            return const_cast<typename detail::to_reflectable_reference<PropertyType>::type>
+            return const_cast<context_type>
             (
                 std::addressof(property())
             );
         };
-    }
-    else
-    {
-        // context to non-reference return type is not allowed
-        return nullptr;
     }
 }
 
