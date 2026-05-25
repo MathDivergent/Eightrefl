@@ -38,7 +38,17 @@ struct xxeightrefl_property_traits<void(PropertyType)>
     using dirty_type = PropertyType;
     using type = typename ::xxeightrefl_dirty_traits<PropertyType>::R;
 
-    // using backward_type = /*...*/;
+    using backward_type = std::conditional_t
+    <
+        std::is_reference_v<PropertyType>,
+        std::add_lvalue_reference_t<std::remove_const_t<std::remove_reference_t<PropertyType>>>,
+        std::conditional_t
+        <
+            std::is_pointer_v<PropertyType>,
+            std::add_pointer_t<std::remove_const_t<std::remove_pointer_t<PropertyType>>>,
+            std::remove_const_t<PropertyType>
+        >
+    >;
     using forward_type = type;
 
     using context_type = void;
@@ -53,12 +63,24 @@ struct xxeightrefl_property_traits<PropertyType*>
     using dirty_type = PropertyType;
     using type = typename ::xxeightrefl_dirty_traits<PropertyType>::R;
 
-    // using backward_type = /*...*/;
+    using backward_type = std::conditional_t
+    <
+        std::is_pointer_v<PropertyType>,
+        std::add_pointer_t<std::remove_const_t<std::remove_pointer_t<PropertyType>>>,
+        std::remove_const_t<PropertyType>
     #ifdef EIGHTREFL_CANONICAL_PROPERTY_ENABLE
-    using forward_type = type&;
+    >&;
     #else
-    using forward_type = type;
+    >;
     #endif // EIGHTREFL_CANONICAL_PROPERTY_ENABLE
+
+    using forward_type = type
+    #ifdef EIGHTREFL_CANONICAL_PROPERTY_ENABLE
+    &;
+    #else
+    ;
+    #endif // EIGHTREFL_CANONICAL_PROPERTY_ENABLE
+
     using context_type = std::add_pointer_t<std::remove_const_t<type>>;
 };
 
