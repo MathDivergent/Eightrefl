@@ -8,7 +8,7 @@
 
 **Eightrefl** is a reflection library for C++20 that provides full type introspection **without requiring changes to reflected class code in typical external-reflection workflows**. It is an external module of the [Eightgine](https://github.com/MathDivergent/Eightgine) engine.
 
-See last stable library version 3.1.4 [here](https://github.com/MathDivergent/Eightrefl/releases).
+See last stable library version 3.1.5 [here](https://github.com/MathDivergent/Eightrefl/releases).
 
 ---
 
