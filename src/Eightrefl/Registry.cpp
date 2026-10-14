@@ -16,7 +16,7 @@ namespace eightrefl
 
 registry_t::registry_t()
 {
-    all.reserve(EIGHTREFL_REGISTRY_RESERVE_SIZE);
+    all.reserve(std::size_t(EIGHTREFL_REGISTRY_RESERVE_SIZE));
 }
 
 registry_t::~registry_t()

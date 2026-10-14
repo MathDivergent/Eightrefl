@@ -44,6 +44,14 @@ endif()
 
 set(EIGHTREFL_WARNING_FLAGS "-Wall" "-Wextra" "-Wpedantic" "-Werror")
 
+if(NOT EIGHTREFL_REGISTRY_RESERVE_SIZE)
+    set(EIGHTREFL_REGISTRY_RESERVE_SIZE 1024)
+endif()
+
+if(NOT EIGHTREFL_ATTRIBUTE_RESERVE_SIZE)
+    set(EIGHTREFL_ATTRIBUTE_RESERVE_SIZE 8)
+endif()
+
 
 # [[Launcher][Defaults]]
 if(PROJECT_IS_TOP_LEVEL AND EIGHTREFL_BUILD_TEST_LIBS)
@@ -115,6 +123,9 @@ endif()
 if(EIGHTREFL_WARNING_FLAGS_ENABLE)
     target_compile_options(Eightrefl PRIVATE ${EIGHTREFL_WARNING_FLAGS})
 endif()
+
+target_compile_definitions(Eightrefl PUBLIC "EIGHTREFL_REGISTRY_RESERVE_SIZE=${EIGHTREFL_REGISTRY_RESERVE_SIZE}")
+target_compile_definitions(Eightrefl PUBLIC "EIGHTREFL_ATTRIBUTE_RESERVE_SIZE=${EIGHTREFL_ATTRIBUTE_RESERVE_SIZE}")
 
 
 # [[Tests][Defaults]]
