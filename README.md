@@ -8,7 +8,7 @@
 
 **Eightrefl** is a reflection library for C++20 that provides full type introspection **without requiring changes to reflected class code in typical external-reflection workflows**. It is an external module of the [Eightgine](https://github.com/MathDivergent/Eightgine) engine.
 
-See last stable library version 3.1.5 [here](https://github.com/MathDivergent/Eightrefl/releases).
+See last stable library version 3.1.6 [here](https://github.com/MathDivergent/Eightrefl/releases).
 
 ---
 
@@ -2098,7 +2098,7 @@ class MyClass : public MyBaseClass
 
 // reflectable declaration with macro:
 REFLECTABLE_DECLARATION(MyClass)
-    REFLECTABLE_REGISTRY()
+    REFLECTABLE_REGISTRY(::MyRegistry())
     REFLECTABLE_NAME("my_custom_class")
 REFLECTABLE_DECLARATION_INIT()
 // ↑ generates:
@@ -2107,7 +2107,7 @@ REFLECTABLE_DECLARATION_INIT()
 // {
 //     using R = typename ::xxeightrefl_dirty_traits<MyClass>::R;
 //     [[maybe_unused]] static constexpr auto xxnative_name = "MyClass";
-//     static auto registry() { return MyRegistry(); }
+//     static auto registry() { return ::MyRegistry(); }
 //     static auto name() { return "my_custom_class"; }
 // };
 
@@ -2115,7 +2115,7 @@ REFLECTABLE_DECLARATION_INIT()
 template <>
 struct xxeightrefl_traits<MyClass>
 {
-    static auto registry() { return MyRegistry(); }
+    static auto registry() { return ::MyRegistry(); }
     static auto name() { return "my_custom_class"; }
 };
 ```

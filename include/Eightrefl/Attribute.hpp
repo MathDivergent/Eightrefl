@@ -4,10 +4,6 @@
 #include <string> // string
 #include <unordered_map> // unordered_map
 
-#ifndef EIGHTREFL_ATTRIBUTE_RESERVE_SIZE
-    #define EIGHTREFL_ATTRIBUTE_RESERVE_SIZE std::size_t(8)
-#endif // EIGHTREFL_ATTRIBUTE_RESERVE_SIZE
-
 namespace eightrefl
 {
 
@@ -18,7 +14,7 @@ struct attribute_t
 
     attribute_t()
     {
-        all.reserve(EIGHTREFL_ATTRIBUTE_RESERVE_SIZE);
+        all.reserve(std::size_t(EIGHTREFL_ATTRIBUTE_RESERVE_SIZE));
     }
 
     attribute_t(attribute_t const&) = default;
